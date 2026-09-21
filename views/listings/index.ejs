@@ -3,52 +3,26 @@
             <div class="listings-heading">
                 <div>
                     
-                    <h1><%= search ? 'Stays for "' + search + '"' : "Find a place worth remembering." %></h1>
-                    <p class="listings-intro"><%= search ? "Showing stays that match your search." : "Thoughtful stays for slow mornings, faraway views, and stories you will bring home." %></p>
+                    <h1><%= search ? 'Rooms for "' + search + '"' : "Find your next room in a new city." %></h1>
+                    <p class="listings-intro"><%= search ? "Showing rooms that match your search." : "Furnished rooms for students and interns relocating for 1–6 months." %></p>
                 </div>
-                <span class="listing-count"><%= allListings.length %> stays</span>
+                <span class="listing-count"><%= allListings.length %> rooms</span>
             </div>
             <div class="filters">
-                <a class="filter <%= !search ? 'filter-active' : '' %>" href="/listings">
+                <a class="filter <%= !campus && !verified ? 'filter-active' : '' %>" href="/listings">
                     <i class="fa-solid fa-arrow-trend-up filter-icon"></i>
-                    <p>All stays</p>
+                    <p>All rooms</p>
                 </a>
-                <a class="filter <%= search === 'beach' ? 'filter-active' : '' %>" href="/listings?q=beach">
-                    <i class="fa-solid fa-umbrella-beach"></i>
-                    <p>Beach</p>
+                <a class="filter <%= verified && !campus ? 'filter-active' : '' %>" href="/listings?verified=true">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <p>Verified only</p>
                 </a>
-                <a class="filter <%= search === 'mountain' ? 'filter-active' : '' %>" href="/listings?q=mountain">
-                    <i class="fa-solid fa-mountain"></i>
-                    <p>Mountain</p>
-                </a>
-                <a class="filter <%= search === 'cabin' ? 'filter-active' : '' %>" href="/listings?q=cabin">
-                    <i class="fa-solid fa-house"></i>
-                    <p>Cabins</p>
-                </a>
-                <a class="filter <%= search === 'apartment' ? 'filter-active' : '' %>" href="/listings?q=apartment">
-                    <i class="fa-solid fa-building"></i>
-                    <p>Apartments</p>
-                </a>
-                <a class="filter <%= search === 'villa' ? 'filter-active' : '' %>" href="/listings?q=villa">
-                    <i class="fa-solid fa-landmark"></i>
-                    <p>Villas</p>
-                </a>
-                <a class="filter <%= search === 'lake' ? 'filter-active' : '' %>" href="/listings?q=lake">
-                    <i class="fa-solid fa-water"></i>
-                    <p>Lakeside</p>
-                </a>
-                <a class="filter <%= search === 'luxury' ? 'filter-active' : '' %>" href="/listings?q=luxury">
-                    <i class="fa-solid fa-gem"></i>
-                    <p>Luxury</p>
-                </a>
-                <a class="filter <%= search === 'safari' ? 'filter-active' : '' %>" href="/listings?q=safari">
-                    <i class="fa-solid fa-binoculars"></i>
-                    <p>Safari</p>
-                </a>
-                <a class="filter <%= search === 'city' ? 'filter-active' : '' %>" href="/listings?q=city">
-                    <i class="fa-solid fa-archway"></i>
-                    <p>City</p>
-                </a>
+                <% campusOptions.forEach((campusName) => { %>
+                    <a class="filter <%= campus === campusName ? 'filter-active' : '' %>" href="/listings?campus=<%= encodeURIComponent(campusName) %>">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <p><%= campusName %></p>
+                    </a>
+                <% }) %>
             </div>
             <% if (allListings.length) { %>
             <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 listings-grid">
@@ -59,14 +33,19 @@
                                 (typeof listing.image==='string' ? listing.image : '' ); %>
                                 <div class="listing-image-wrap">
                                     <img src="<%=imgSrc %>" class="card-img-top" alt="<%= listing.title %>" loading="lazy" />
-                                    <span class="listing-image-label">Dimora stay</span>
+                                    <span class="listing-image-label">Dimora room</span>
                                 </div>
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between gap-3 align-items-start">
                                         <p class="card-text title mb-1"><b><%= listing.title %></b></p>
                                         <span class="listing-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
                                     </div>
-                                    <p class="listing-price mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> <span>/ night</span></p>
+                                    <div class="listing-meta-row">
+                                        <p class="listing-price mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> <span>/ month</span></p>
+                                        <% if (listing.nearestCampus) { %>
+                                            <button class="listing-campus-btn" type="button" aria-label="Nearest campus: <%= listing.nearestCampus %>"><%= listing.nearestCampus %></button>
+                                        <% } %>
+                                    </div>
                                 </div>
                         </div>
                     </a>
@@ -76,9 +55,9 @@
             <% } else { %>
                 <div class="listing-empty">
                     <i class="fa-solid fa-compass"></i>
-                    <h2>No stays found</h2>
-                    <p>Try a different destination or browse the full collection.</p>
-                    <a class="btn btn-dark" href="/listings">View all stays</a>
+                    <h2>No rooms found</h2>
+                    <p>Try a different city, campus, or workplace.</p>
+                    <a class="btn btn-dark" href="/listings">View all rooms</a>
                 </div>
             <% } %>
 

@@ -3,8 +3,8 @@
 <div class="auth-shell">
     <div class="auth-intro">
         <p class="eyebrow">JOIN DIMORA</p>
-        <h1>Make room for more somewhere.</h1>
-        <p>Create an account to share beautiful stays and plan the ones still waiting for you.</p>
+        <h1>Find your footing somewhere new.</h1>
+        <p>Create an account to find or share a furnished room for a semester or internship.</p>
     </div>
     <div class="auth-form-panel">
         <h2>Create your account</h2>
@@ -12,22 +12,36 @@
         <form action="/signup" method="POST" class="needs-validation" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <div class="mb-3">
+                <label for="name" class="form-label">Full name</label>
+                <input id="name" name="name" type="text" class="form-control" autocomplete="name" required />
+                <div class="valid-feedback">Looks good</div>
+                <div class="invalid-feedback">Enter your name</div>
+            </div>
+
+            <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
-                <input id="username" name="username" type="text" class="form-control" required />
+                <input id="username" name="username" type="text" class="form-control" autocomplete="username" required />
                 <div class="valid-feedback">Looks good</div>
                 <div class="invalid-feedback">Enter your username</div>
             </div>
 
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input id="email" name="email" type="email" class="form-control" required />
+                <input id="email" name="email" type="email" class="form-control" autocomplete="email" required />
                 <div class="valid-feedback">Looks good</div>
                 <div class="invalid-feedback">Enter your email</div>
             </div>
 
             <div class="mb-3">
+                <label for="dob" class="form-label">Date of birth</label>
+                <input id="dob" name="dob" type="date" class="form-control" autocomplete="bday" required />
+                <div class="valid-feedback">Looks good</div>
+                <div class="invalid-feedback">Enter your date of birth</div>
+            </div>
+
+            <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
-                <input id="password" name="password" type="password" class="form-control" required />
+                <input id="password" name="password" type="password" class="form-control" autocomplete="new-password" required />
                 <div class="valid-feedback">Looks good</div>
                 <div class="invalid-feedback">Enter a strong password</div>
             </div>

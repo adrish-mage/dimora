@@ -3,9 +3,10 @@ const router = express.Router({ mergeParams: true });
 const passport = require("passport");
 const { rateLimit } = require("express-rate-limit");
 
-const { saveRedirectUrl } = require("../middleware");
+const { isLoggedIn, saveRedirectUrl } = require("../middleware");
 const userController = require("../controllers/user.js");
 const { doubleCsrfProtection } = require("../utils/csrf.js");
+const wrapAsync = require("../utils/wrapAsync.js");
 
 const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
@@ -28,5 +29,6 @@ router.post(
     userController.login
 );
 router.get("/logout", userController.logout);
+router.get("/users/:id", isLoggedIn, wrapAsync(userController.showProfile));
 
 module.exports = router;

@@ -5,7 +5,7 @@
             <div class="col-8 offset-2">
             
             <h1 class="form-page-title">Create a new listing</h1>
-            <p class="form-page-intro">Give future guests a reason to pack their bags.</p>
+            <p class="form-page-intro">Help a student or intern settle into the city for 1–6 months.</p>
                 <form method="POST" action="/listings" novalidate class="needs-validation" enctype="multipart/form-data">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
                     <div class="mb-3">
@@ -13,7 +13,7 @@
                         <input 
                             id="title"
                             name="listing[title]" 
-                            placeholder="Enter the perfect headline" 
+                            placeholder="e.g. Furnished room near campus" 
                             type="text"
                             class="form-control"
                             required
@@ -28,7 +28,7 @@
                         <textarea
                             name="listing[description]"
                             class="form-control"
-                            placeholder="Hit the slopes in style with this luxurious ski chalet in the world-famous Aspen ski resort."
+                            placeholder="Describe the room, commute to campus or work, furnishings, and ideal lease length."
                             required
                         ></textarea>
                         <div class="valid-feedback">Aptly described it.</div>  
@@ -62,17 +62,31 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="price" class="form-label">Price </label>
+                        <label for="price" class="form-label">Monthly rent </label>
                         <input 
                             id="price" 
                             name="listing[price]" 
-                            placeholder="&#8377;20,000" 
+                            placeholder="&#8377;20,000 per month" 
                             type="number"
                             class="form-control"
                             required
                         >
                         <div class="valid-feedback">Absolutely worth it.</div>
                         <div class="invalid-feedback">How much? </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="nearestCampus" class="form-label">Nearest campus</label>
+                        <input
+                            id="nearestCampus"
+                            name="listing[nearestCampus]"
+                            placeholder="e.g. IIT Delhi"
+                            type="text"
+                            class="form-control"
+                            required
+                        >
+                        <div class="valid-feedback">Perfect match.</div>
+                        <div class="invalid-feedback">Which campus is closest?</div>
                     </div>
                     
                     <div class="row">

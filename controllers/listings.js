@@ -4,19 +4,44 @@ const escapeRegex = require("../utils/escapeRegex.js");
 
 module.exports.index = async (req, res) => {
     const search = (req.query.q || "").trim();
+    const campus = req.query.campus ? String(req.query.campus).trim() : "";
+    const verified = req.query.verified === "true";
     const escapedSearch = escapeRegex(search);
-    const filter = search
-        ? {
+
+    const filters = [];
+
+    if (search) {
+        filters.push({
             $or: [
                 { title: { $regex: escapedSearch, $options: "i" } },
                 { location: { $regex: escapedSearch, $options: "i" } },
                 { country: { $regex: escapedSearch, $options: "i" } },
-                { description: { $regex: escapedSearch, $options: "i" } }
+                { description: { $regex: escapedSearch, $options: "i" } },
+                { nearestCampus: { $regex: escapedSearch, $options: "i" } }
             ]
-        }
-        : {};
-    const allListings = await Listing.find(filter);
-    res.render("listings/index.ejs", { allListings, search });
+        });
+    }
+
+    if (campus) {
+        filters.push({ nearestCampus: campus });
+    }
+
+    if (verified) {
+        filters.push({ verificationStatus: "verified" });
+    }
+
+    const campusOptions = (await Listing.distinct("nearestCampus"))
+        .filter(Boolean)
+        .sort((first, second) => first.localeCompare(second));
+
+    const allListings = await Listing.find(filters.length ? { $and: filters } : {});
+    res.render("listings/index.ejs", {
+        allListings,
+        search,
+        campus,
+        verified,
+        campusOptions
+    });
 };
 
 module.exports.renderNewForm = (req, res) => {

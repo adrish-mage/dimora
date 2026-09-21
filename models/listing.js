@@ -18,6 +18,10 @@ const listingSchema = new mongoose.Schema({
         },
     },
     price: Number,
+    nearestCampus: {
+        type: String,
+        trim: true,
+    },
     location: String,
     country: String,
     reviews: [{

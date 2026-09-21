@@ -45,11 +45,25 @@
                     <div class="valid-feedback">Absolutely worth it.</div>
                     <div class="invalid-feedback">How much?</div>
                 </div>
+
+                <div class="mb-3">
+                    <label for="nearestCampus" class="form-label">Nearest campus</label>
+                    <input
+                        id="nearestCampus"
+                        name="listing[nearestCampus]"
+                        value="<%= listing.nearestCampus || '' %>"
+                        type="text"
+                        class="form-control"
+                        required
+                    >
+                    <div class="valid-feedback">Perfect match.</div>
+                    <div class="invalid-feedback">Which campus is closest?</div>
+                </div>
                 <div class="edit-image-section mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             <p class="edit-section-label mb-1">Listing image</p>
-                            <p class="edit-section-help mb-0">A strong photo helps guests picture the stay.</p>
+                            <p class="edit-section-help mb-0">A clear photo helps students picture the room.</p>
                         </div>
                         <span class="image-status-badge">Current</span>
                     </div>

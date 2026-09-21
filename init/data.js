@@ -1,352 +1,482 @@
-const sampleListings = [
+const sampleHosts = [
   {
-    title: "Cozy Beachfront Cottage",
-    description:
-      "Escape to this charming beachfront cottage for a relaxing getaway. Enjoy stunning ocean views and easy access to the beach.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1500,
-    location: "Malibu",
-    country: "United States",
+    name: "Priya Bhatt",
+    username: "priya_relocates",
+    email: "priya@example.com",
+    dob: "1998-04-12",
+    institution: "Google",
+    isVerifiedHost: true,
   },
   {
-    title: "Modern Loft in Downtown",
-    description:
-      "Stay in the heart of the city in this stylish loft apartment. Perfect for urban explorers!",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1200,
-    location: "New York City",
-    country: "United States",
+    name: "Arjun Kannan",
+    username: "arjun_stays",
+    email: "arjun@example.com",
+    dob: "1999-11-03",
+    institution: "IIT Bombay",
+    isVerifiedHost: false,
   },
   {
-    title: "Mountain Retreat",
-    description:
-      "Unplug and unwind in this peaceful mountain cabin. Surrounded by nature, it's a perfect place to recharge.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1000,
-    location: "Aspen",
-    country: "United States",
+    name: "Meera Shah",
+    username: "meera_shah",
+    email: "meera@example.com",
+    dob: "1997-08-16",
+    institution: "University of Mumbai",
+    isVerifiedHost: true,
   },
   {
-    title: "Historic Villa in Tuscany",
-    description:
-      "Experience the charm of Tuscany in this beautifully restored villa. Explore the rolling hills and vineyards.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 2500,
-    location: "Florence",
-    country: "Italy",
+    name: "Rohan Iyer",
+    username: "rohan_iyer",
+    email: "rohan@example.com",
+    dob: "1998-06-21",
+    institution: "BITS Pilani",
+    isVerifiedHost: false,
   },
   {
-    title: "Secluded Treehouse Getaway",
-    description:
-      "Live among the treetops in this unique treehouse retreat. A true nature lover's paradise.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 800,
-    location: "Portland",
-    country: "United States",
+    name: "Sana Khan",
+    username: "sana_khan",
+    email: "sana@example.com",
+    dob: "2000-01-09",
+    institution: "NIT Trichy",
+    isVerifiedHost: true,
   },
   {
-    title: "Beachfront Paradise",
-    description:
-      "Step out of your door onto the sandy beach. This beachfront condo offers the ultimate relaxation.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fGhvdGVsc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 2000,
-    location: "Cancun",
-    country: "Mexico",
+    name: "Vikram Nair",
+    username: "vikram_nair",
+    email: "vikram@example.com",
+    dob: "1996-12-05",
+    institution: "Anna University",
+    isVerifiedHost: true,
   },
   {
-    title: "Rustic Cabin by the Lake",
-    description:
-      "Spend your days fishing and kayaking on the serene lake. This cozy cabin is perfect for outdoor enthusiasts.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1vdW50YWlufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 900,
-    location: "Lake Tahoe",
-    country: "United States",
+    name: "Ananya Rao",
+    username: "ananya_rao",
+    email: "ananya@example.com",
+    dob: "1999-03-14",
+    institution: "IISc Bengaluru",
+    isVerifiedHost: true,
   },
   {
-    title: "Luxury Penthouse with City Views",
-    description:
-      "Indulge in luxury living with panoramic city views from this stunning penthouse apartment.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1622396481328-9b1b78cdd9fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8c2t5JTIwdmFjYXRpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 3500,
-    location: "Los Angeles",
-    country: "United States",
+    name: "Kabir Mehta",
+    username: "kabir_mehta",
+    email: "kabir@example.com",
+    dob: "1998-09-27",
+    institution: "Symbiosis Pune",
+    isVerifiedHost: false,
   },
   {
-    title: "Ski-In/Ski-Out Chalet",
-    description:
-      "Hit the slopes right from your doorstep in this ski-in/ski-out chalet in the Swiss Alps.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1502784444187-359ac186c5bb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fHNreSUyMHZhY2F0aW9ufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 3000,
-    location: "Verbier",
-    country: "Switzerland",
+    name: "Nisha Menon",
+    username: "nisha_menon",
+    email: "nisha@example.com",
+    dob: "1997-05-18",
+    institution: "TCS Bengaluru",
+    isVerifiedHost: true,
   },
   {
-    title: "Safari Lodge in the Serengeti",
-    description:
-      "Experience the thrill of the wild in a comfortable safari lodge. Witness the Great Migration up close.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fG1vdW50YWlufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 4000,
-    location: "Serengeti National Park",
-    country: "Tanzania",
-  },
-  {
-    title: "Historic Canal House",
-    description:
-      "Stay in a piece of history in this beautifully preserved canal house in Amsterdam's iconic district.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2FtcGluZ3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1800,
-    location: "Amsterdam",
-    country: "Netherlands",
-  },
-  {
-    title: "Private Island Retreat",
-    description:
-      "Have an entire island to yourself for a truly exclusive and unforgettable vacation experience.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1618140052121-39fc6db33972?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bG9kZ2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 10000,
-    location: "Fiji",
-    country: "Fiji",
-  },
-  {
-    title: "Charming Cottage in the Cotswolds",
-    description:
-      "Escape to the picturesque Cotswolds in this quaint and charming cottage with a thatched roof.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1602088113235-229c19758e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8YmVhY2glMjB2YWNhdGlvbnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1200,
-    location: "Cotswolds",
-    country: "United Kingdom",
-  },
-  {
-    title: "Historic Brownstone in Boston",
-    description:
-      "Step back in time in this elegant historic brownstone located in the heart of Boston.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1533619239233-6280475a633a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHNreSUyMHZhY2F0aW9ufGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 2200,
-    location: "Boston",
-    country: "United States",
-  },
-  {
-    title: "Beachfront Bungalow in Bali",
-    description:
-      "Relax on the sandy shores of Bali in this beautiful beachfront bungalow with a private pool.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1602391833977-358a52198938?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzJ8fGNhbXBpbmd8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1800,
-    location: "Bali",
-    country: "Indonesia",
-  },
-  {
-    title: "Mountain View Cabin in Banff",
-    description:
-      "Enjoy breathtaking mountain views from this cozy cabin in the Canadian Rockies.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1521401830884-6c03c1c87ebb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGxvZGdlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1500,
-    location: "Banff",
-    country: "Canada",
-  },
-  {
-    title: "Art Deco Apartment in Miami",
-    description:
-      "Step into the glamour of the 1920s in this stylish Art Deco apartment in South Beach.",
-    image: {
-      filename: "listingimage",
-      url: "https://plus.unsplash.com/premium_photo-1670963964797-942df1804579?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTZ8fGxvZGdlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1600,
-    location: "Miami",
-    country: "United States",
-  },
-  {
-    title: "Tropical Villa in Phuket",
-    description:
-      "Escape to a tropical paradise in this luxurious villa with a private infinity pool in Phuket.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1470165301023-58dab8118cc9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGxvZGdlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 3000,
-    location: "Phuket",
-    country: "Thailand",
-  },
-  {
-    title: "Historic Castle in Scotland",
-    description:
-      "Live like royalty in this historic castle in the Scottish Highlands. Explore the rugged beauty of the area.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1585543805890-6051f7829f98?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fGJlYWNoJTIwdmFjYXRpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 4000,
-    location: "Scottish Highlands",
-    country: "United Kingdom",
-  },
-  {
-    title: "Desert Oasis in Dubai",
-    description:
-      "Experience luxury in the middle of the desert in this opulent oasis in Dubai with a private pool.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1518684079-3c830dcef090?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZHViYWl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 5000,
-    location: "Dubai",
-    country: "United Arab Emirates",
-  },
-  {
-    title: "Rustic Log Cabin in Montana",
-    description:
-      "Unplug and unwind in this cozy log cabin surrounded by the natural beauty of Montana.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1586375300773-8384e3e4916f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTN8fGxvZGdlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1100,
-    location: "Montana",
-    country: "United States",
-  },
-  {
-    title: "Beachfront Villa in Greece",
-    description:
-      "Enjoy the crystal-clear waters of the Mediterranean in this beautiful beachfront villa on a Greek island.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8dmlsbGF8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 2500,
-    location: "Mykonos",
-    country: "Greece",
-  },
-  {
-    title: "Eco-Friendly Treehouse Retreat",
-    description:
-      "Stay in an eco-friendly treehouse nestled in the forest. It's the perfect escape for nature lovers.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1488462237308-ecaa28b729d7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c2t5JTIwdmFjYXRpb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 750,
-    location: "Costa Rica",
-    country: "Costa Rica",
-  },
-  {
-    title: "Historic Cottage in Charleston",
-    description:
-      "Experience the charm of historic Charleston in this beautifully restored cottage with a private garden.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1587381420270-3e1a5b9e6904?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGxvZGdlfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1600,
-    location: "Charleston",
-    country: "United States",
-  },
-  {
-    title: "Modern Apartment in Tokyo",
-    description:
-      "Explore the vibrant city of Tokyo from this modern and centrally located apartment.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1480796927426-f609979314bd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fHRva3lvfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 2000,
-    location: "Tokyo",
-    country: "Japan",
-  },
-  {
-    title: "Lakefront Cabin in New Hampshire",
-    description:
-      "Spend your days by the lake in this cozy cabin in the scenic White Mountains of New Hampshire.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1578645510447-e20b4311e3ce?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDF8fGNhbXBpbmd8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1200,
-    location: "New Hampshire",
-    country: "United States",
-  },
-  {
-    title: "Luxury Villa in the Maldives",
-    description:
-      "Indulge in luxury in this overwater villa in the Maldives with stunning views of the Indian Ocean.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bGFrZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 6000,
-    location: "Maldives",
-    country: "Maldives",
-  },
-  {
-    title: "Ski Chalet in Aspen",
-    description:
-      "Hit the slopes in style with this luxurious ski chalet in the world-famous Aspen ski resort.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTh8fGxha2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 4000,
-    location: "Aspen",
-    country: "United States",
-  },
-  {
-    title: "Secluded Beach House in Costa Rica",
-    description:
-      "Escape to a secluded beach house on the Pacific coast of Costa Rica. Surf, relax, and unwind.",
-    image: {
-      filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmVhY2glMjBob3VzZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=800&q=60",
-    },
-    price: 1800,
-    location: "Costa Rica",
-    country: "Costa Rica",
+    name: "Dev Patel",
+    username: "dev_patel",
+    email: "dev@example.com",
+    dob: "2000-02-22",
+    institution: "IIT Madras",
+    isVerifiedHost: true,
   },
 ];
 
-module.exports = { data: sampleListings };
+const sampleListings = [
+  {
+    title: "Sunny Private Room",
+    description:
+      "A furnished private room in a quiet shared home, with a desk for coursework and a short commute to campus. Best suited to a student relocating for a semester.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 18000,
+    nearestCampus: "IIT Delhi",
+    location: "Hauz Khas, New Delhi",
+    country: "India",
+    hostIndex: 0,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Furnished Studio",
+    description:
+      "A move-in-ready studio close to Koramangala offices and cafes, with reliable Wi-Fi and a kitchen for a 3 to 6 month internship stay.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 26000,
+    nearestCampus: "Bengaluru Tech Hub",
+    location: "Koramangala, Bengaluru",
+    country: "India",
+    hostIndex: 0,
+    verificationStatus: "pending",
+  },
+  {
+    title: "Shared Apartment",
+    description:
+      "A bright room in a three-bedroom apartment with a shared kitchen and study area. A practical base for a semester in Mumbai.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 22000,
+    nearestCampus: "University of Mumbai",
+    location: "Powai, Mumbai",
+    country: "India",
+    hostIndex: 1,
+    verificationStatus: "unverified",
+  },
+  {
+    title: "Quiet Room",
+    description:
+      "A private, furnished room with a work desk and metro access for interns working in HITEC City. Available for medium-term stays.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1560185008-b033106af5c3?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 17000,
+    nearestCampus: "HITEC City",
+    location: "Madhapur, Hyderabad",
+    country: "India",
+    hostIndex: 1,
+    verificationStatus: "flagged",
+  },
+  {
+    title: "Compact Room",
+    description:
+      "A simple furnished room with fast Wi-Fi, laundry access, and a direct bus route to campus. Designed for a one-semester move.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1564078516393-cf04bd966897?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 14500,
+    nearestCampus: "Pune University",
+    location: "Aundh, Pune",
+    country: "India",
+    hostIndex: 0,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Intern Room",
+    description:
+      "A furnished room in a shared apartment near Bengaluru's office parks, with a housemate-friendly layout and flexible 1 to 6 month availability.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 16000,
+    nearestCampus: "Whitefield Tech Park",
+    location: "Whitefield, Bengaluru",
+    country: "India",
+    hostIndex: 1,
+    verificationStatus: "unverified",
+  },
+  {
+    title: "Bright Studio",
+    description:
+      "A fully furnished studio with a study desk, pantry, and quick access to the metro for students spending a semester in Delhi.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 19500,
+    nearestCampus: "JNU",
+    location: "Malviya Nagar, New Delhi",
+    country: "India",
+    hostIndex: 2,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Comfort Room",
+    description:
+      "A bright room in a shared apartment with dedicated storage, quiet hours, and a quick commute to the university district.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 21000,
+    nearestCampus: "IIT Bombay",
+    location: "Andheri East, Mumbai",
+    country: "India",
+    hostIndex: 2,
+    verificationStatus: "pending",
+  },
+  {
+    title: "Work-Friendly Room",
+    description:
+      "A modern room with a study desk, strong Wi-Fi, and a flexible lease for interns moving into Bengaluru for a few months.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 23000,
+    nearestCampus: "Whitefield Tech Park",
+    location: "Whitefield, Bengaluru",
+    country: "India",
+    hostIndex: 3,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Minimal Private Room",
+    description:
+      "A crisp, furnished room with a clean setup, balcony access, and a practical base for a student semester in Pune.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 15500,
+    nearestCampus: "Pune University",
+    location: "Baner, Pune",
+    country: "India",
+    hostIndex: 4,
+    verificationStatus: "verified",
+  },
+  {
+    title: "City View Room",
+    description:
+      "A light-filled room in a curated shared home with a work desk and easy connectivity to Hyderabad's tech corridor.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 18000,
+    nearestCampus: "HITEC City",
+    location: "Gachibowli, Hyderabad",
+    country: "India",
+    hostIndex: 5,
+    verificationStatus: "pending",
+  },
+  {
+    title: "Modern One-Bedroom",
+    description:
+      "A move-in-ready room with a kitchen corner, good daylight, and a calm environment for a medium-term placement.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 28000,
+    nearestCampus: "BITS Pilani",
+    location: "Pilani, Rajasthan",
+    country: "India",
+    hostIndex: 3,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Quiet Corner Room",
+    description:
+      "A comfortable room in a peaceful shared home with fast internet and a manageable commute to campus life.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 17000,
+    nearestCampus: "NIT Trichy",
+    location: "Tiruchirappalli, Tamil Nadu",
+    country: "India",
+    hostIndex: 4,
+    verificationStatus: "unverified",
+  },
+  {
+    title: "Studio Near Campus",
+    description:
+      "A compact, comfortable studio with a bed nook, desk space, and a cozy setup for 1 to 6 month stays near college.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 24000,
+    nearestCampus: "Anna University",
+    location: "Guindy, Chennai",
+    country: "India",
+    hostIndex: 5,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Eco Room",
+    description:
+      "A clean, budget-friendly room with shared amenities and a good location for students relocating for a semester.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 16500,
+    nearestCampus: "University of Mumbai",
+    location: "Kurla, Mumbai",
+    country: "India",
+    hostIndex: 2,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Shared Green Room",
+    description:
+      "A lively shared room with good natural light, storage, and flexible lease terms for relocating interns and students.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 14500,
+    nearestCampus: "IIT Delhi",
+    location: "Khanpur, New Delhi",
+    country: "India",
+    hostIndex: 0,
+    verificationStatus: "unverified",
+  },
+  {
+    title: "Premium Studio",
+    description:
+      "A polished room with a modern kitchen setup, brighter finish, and an easy route to the city's internship cluster.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 30000,
+    nearestCampus: "IISc Bengaluru",
+    location: "Indiranagar, Bengaluru",
+    country: "India",
+    hostIndex: 1,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Garden Room",
+    description: "A calm furnished room near Bengaluru's university and technology corridor, with a desk and shared garden access.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 18500,
+    nearestCampus: "IISc Bengaluru",
+    location: "Malleshwaram, Bengaluru",
+    country: "India",
+    hostIndex: 6,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Metro Side Room",
+    description: "A practical private room close to offices, metro links, and several Bengaluru institutions for a flexible lease.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1560185008-b033106af5c3?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 20000,
+    nearestCampus: "Bengaluru Tech Hub",
+    location: "Indiranagar, Bengaluru",
+    country: "India",
+    hostIndex: 8,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Powai Study Room",
+    description: "A furnished room with a quiet study corner and quick access to Powai's university and workplace hubs.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 20500,
+    nearestCampus: "IIT Bombay",
+    location: "Powai, Mumbai",
+    country: "India",
+    hostIndex: 2,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Lakeside Shared Room",
+    description: "A bright shared-home room near Powai Lake, with a desk, storage, and an easy commute to nearby institutions.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 17500,
+    nearestCampus: "University of Mumbai",
+    location: "Powai, Mumbai",
+    country: "India",
+    hostIndex: 7,
+    verificationStatus: "pending",
+  },
+  {
+    title: "South Delhi Studio",
+    description: "A compact studio with a dedicated work area and dependable transport links to South Delhi campuses.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 22500,
+    nearestCampus: "JNU",
+    location: "Vasant Kunj, New Delhi",
+    country: "India",
+    hostIndex: 0,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Hauz Khas Private Room",
+    description: "A move-in-ready private room near cafes, transit, and the student neighborhoods around IIT Delhi and JNU.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 19000,
+    nearestCampus: "IIT Delhi",
+    location: "Hauz Khas, New Delhi",
+    country: "India",
+    hostIndex: 6,
+    verificationStatus: "pending",
+  },
+  {
+    title: "Aundh Student Room",
+    description: "A comfortable furnished room with Wi-Fi and a short commute to Pune's university and research districts.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 16000,
+    nearestCampus: "Pune University",
+    location: "Aundh, Pune",
+    country: "India",
+    hostIndex: 7,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Tech Park Room",
+    description: "A clean private room for interns, close to Bengaluru offices, cafes, and multiple daily commute routes.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 21500,
+    nearestCampus: "Whitefield Tech Park",
+    location: "Brookefield, Bengaluru",
+    country: "India",
+    hostIndex: 8,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Guindy Work Room",
+    description: "A furnished room with a proper work desk and quick transport to Chennai's university and technology districts.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 18500,
+    nearestCampus: "Anna University",
+    location: "Guindy, Chennai",
+    country: "India",
+    hostIndex: 9,
+    verificationStatus: "verified",
+  },
+  {
+    title: "Campus Edge Room",
+    description: "A simple, well-connected room for a semester move, with shared amenities and a short route to campus.",
+    image: {
+      filename: "listingimage",
+      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+    },
+    price: 15000,
+    nearestCampus: "Symbiosis Pune",
+    location: "Viman Nagar, Pune",
+    country: "India",
+    hostIndex: 7,
+    verificationStatus: "unverified",
+  },
+];
+
+module.exports = { data: sampleListings, hosts: sampleHosts };

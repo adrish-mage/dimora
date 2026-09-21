@@ -12,7 +12,7 @@
     <link rel="icon" type="image/png" href="/image.png">
     <title>Dimora</title>
 </head>
-<body>
+<body class="<%= currentPath.startsWith('/users/') ? 'profile-route' : '' %>">
         <%- include("../includes/navbar.ejs") %>
         <div class="container mt-3">
             <% if (success && success.length) { %>
