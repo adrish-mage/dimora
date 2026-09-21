@@ -193,7 +193,7 @@ const sampleListings = [
       "A bright room in a shared apartment with dedicated storage, quiet hours, and a quick commute to the university district.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80",
     },
     price: 21000,
     nearestCampus: "IIT Bombay",
@@ -223,7 +223,7 @@ const sampleListings = [
       "A crisp, furnished room with a clean setup, balcony access, and a practical base for a student semester in Pune.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
     },
     price: 15500,
     nearestCampus: "Pune University",
@@ -268,7 +268,7 @@ const sampleListings = [
       "A comfortable room in a peaceful shared home with fast internet and a manageable commute to campus life.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&w=800&q=80",
     },
     price: 17000,
     nearestCampus: "NIT Trichy",
@@ -298,7 +298,7 @@ const sampleListings = [
       "A clean, budget-friendly room with shared amenities and a good location for students relocating for a semester.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=800&q=80",
     },
     price: 16500,
     nearestCampus: "University of Mumbai",
@@ -328,7 +328,7 @@ const sampleListings = [
       "A polished room with a modern kitchen setup, brighter finish, and an easy route to the city's internship cluster.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1501045661006-fcebe0257c3f?auto=format&fit=crop&w=800&q=80",
     },
     price: 30000,
     nearestCampus: "IISc Bengaluru",
@@ -339,10 +339,11 @@ const sampleListings = [
   },
   {
     title: "Garden Room",
-    description: "A calm furnished room near Bengaluru's university and technology corridor, with a desk and shared garden access.",
+    description:
+      "A calm furnished room near Bengaluru's university and technology corridor, with a desk and shared garden access.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1493809842364-78817add7ffb?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?auto=format&fit=crop&w=800&q=80",
     },
     price: 18500,
     nearestCampus: "IISc Bengaluru",
@@ -353,10 +354,11 @@ const sampleListings = [
   },
   {
     title: "Metro Side Room",
-    description: "A practical private room close to offices, metro links, and several Bengaluru institutions for a flexible lease.",
+    description:
+      "A practical private room close to offices, metro links, and several Bengaluru institutions for a flexible lease.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1560185008-b033106af5c3?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=800&q=80",
     },
     price: 20000,
     nearestCampus: "Bengaluru Tech Hub",
@@ -367,10 +369,11 @@ const sampleListings = [
   },
   {
     title: "Powai Study Room",
-    description: "A furnished room with a quiet study corner and quick access to Powai's university and workplace hubs.",
+    description:
+      "A furnished room with a quiet study corner and quick access to Powai's university and workplace hubs.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
     },
     price: 20500,
     nearestCampus: "IIT Bombay",
@@ -381,10 +384,11 @@ const sampleListings = [
   },
   {
     title: "Lakeside Shared Room",
-    description: "A bright shared-home room near Powai Lake, with a desk, storage, and an easy commute to nearby institutions.",
+    description:
+      "A bright shared-home room near Powai Lake, with a desk, storage, and an easy commute to nearby institutions.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
     },
     price: 17500,
     nearestCampus: "University of Mumbai",
@@ -395,10 +399,11 @@ const sampleListings = [
   },
   {
     title: "South Delhi Studio",
-    description: "A compact studio with a dedicated work area and dependable transport links to South Delhi campuses.",
+    description:
+      "A compact studio with a dedicated work area and dependable transport links to South Delhi campuses.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1484154218962-a197022b5858?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
     },
     price: 22500,
     nearestCampus: "JNU",
@@ -409,10 +414,11 @@ const sampleListings = [
   },
   {
     title: "Hauz Khas Private Room",
-    description: "A move-in-ready private room near cafes, transit, and the student neighborhoods around IIT Delhi and JNU.",
+    description:
+      "A move-in-ready private room near cafes, transit, and the student neighborhoods around IIT Delhi and JNU.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&w=800&q=80",
     },
     price: 19000,
     nearestCampus: "IIT Delhi",
@@ -423,10 +429,11 @@ const sampleListings = [
   },
   {
     title: "Aundh Student Room",
-    description: "A comfortable furnished room with Wi-Fi and a short commute to Pune's university and research districts.",
+    description:
+      "A comfortable furnished room with Wi-Fi and a short commute to Pune's university and research districts.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1554995207-c18c203602cb?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=800&q=80",
     },
     price: 16000,
     nearestCampus: "Pune University",
@@ -437,10 +444,11 @@ const sampleListings = [
   },
   {
     title: "Tech Park Room",
-    description: "A clean private room for interns, close to Bengaluru offices, cafes, and multiple daily commute routes.",
+    description:
+      "A clean private room for interns, close to Bengaluru offices, cafes, and multiple daily commute routes.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
     },
     price: 21500,
     nearestCampus: "Whitefield Tech Park",
@@ -451,10 +459,11 @@ const sampleListings = [
   },
   {
     title: "Guindy Work Room",
-    description: "A furnished room with a proper work desk and quick transport to Chennai's university and technology districts.",
+    description:
+      "A furnished room with a proper work desk and quick transport to Chennai's university and technology districts.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1448630360428-65456885c650?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=800&q=80",
     },
     price: 18500,
     nearestCampus: "Anna University",
@@ -465,10 +474,11 @@ const sampleListings = [
   },
   {
     title: "Campus Edge Room",
-    description: "A simple, well-connected room for a semester move, with shared amenities and a short route to campus.",
+    description:
+      "A simple, well-connected room for a semester move, with shared amenities and a short route to campus.",
     image: {
       filename: "listingimage",
-      url: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=80",
+      url: "https://images.unsplash.com/photo-1600607688969-a5bfcd646154?auto=format&fit=crop&w=800&q=80",
     },
     price: 15000,
     nearestCampus: "Symbiosis Pune",
