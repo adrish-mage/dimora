@@ -1,0 +1,31 @@
+# Exported from Render on 2026-09-22T13:59:39Z
+version: "1"
+projects:
+- name: Dimora
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: wanderlust
+      runtime: node
+      repo: https://github.com/adrish-mage/dimora
+      plan: free
+      envVars:
+      - key: PORT
+        sync: false
+      - key: SESSION_SECRET
+        sync: false
+      - key: CLOUD_API_SECRET
+        sync: false
+      - key: CLOUD_API_KEY
+        sync: false
+      - key: CLOUD_NAME
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      region: singapore
+      buildCommand: npm install --legacy-peer-deps
+      startCommand: node app.js
+      domains:
+      - dimora.adrish.me
+      autoDeployTrigger: commit
