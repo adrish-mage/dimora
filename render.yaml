@@ -6,7 +6,7 @@ projects:
   - name: Production
     services:
     - type: web
-      name: wanderlust
+      name: Dimora
       runtime: node
       repo: https://github.com/adrish-mage/dimora
       plan: free
