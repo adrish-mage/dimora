@@ -1,5 +1,6 @@
 const ExpressError = require("../utils/expressError.js");
 const Listing = require("../models/listing");
+const { transitionListingStatus } = require("../utils/verificationStateMachine");
 const escapeRegex = require("../utils/escapeRegex.js");
 
 module.exports.index = async (req, res) => {
@@ -117,4 +118,16 @@ module.exports.destroy = async (req, res) => {
     await Listing.findByIdAndDelete(listing._id);
     req.flash("error", `${listing.title} is deleted successfully`);
     res.redirect("/listings");
+};
+
+
+module.exports.requestVerification = async (req, res) => {
+    try{
+        await transitionListingStatus(req.params.id, "pending");
+        req.flash("success", "Verification requested");
+    } catch (err) {
+        req.flash("error", err.message);
+    }
+    res.redirect(`/listings/${req.params.id}`);
+    
 };

@@ -13,6 +13,7 @@
                     <i class="fa-solid fa-arrow-trend-up filter-icon"></i>
                     <p>All rooms</p>
                 </a>
+                
                 <a class="filter <%= verified && !campus ? 'filter-active' : '' %>" href="/listings?verified=true">
                     <i class="fa-solid fa-location-dot"></i>
                     <p>Verified only</p>
@@ -29,6 +30,7 @@
                 <% for(let listing of allListings) { %>
                     <a href="/listings/<%=listing._id%>" class="listing-link">
                         <div class="card col listing-card h-100">
+                            <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
                             <% const imgSrc=(listing && listing.image && listing.image.url) ? listing.image.url :
                                 (typeof listing.image==='string' ? listing.image : '' ); %>
                                 <div class="listing-image-wrap">
@@ -42,10 +44,11 @@
                                     </div>
                                     <div class="listing-meta-row">
                                         <p class="listing-price mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> <span>/ month</span></p>
-                                        <% if (listing.nearestCampus) { %>
-                                            <button class="listing-campus-btn" type="button" aria-label="Nearest campus: <%= listing.nearestCampus %>"><%= listing.nearestCampus %></button>
-                                        <% } %>
+                                        <span class="badge status-<%= listing.verificationStatus %>"><span class="status-dot" aria-hidden="true"></span><%= verificationLabels[listing.verificationStatus] %></span>
                                     </div>
+                                    <% if (listing.nearestCampus) { %>
+                                        <button class="listing-campus-btn" type="button" aria-label="Nearest campus: <%= listing.nearestCampus %>"><%= listing.nearestCampus %></button>
+                                    <% } %>
                                 </div>
                         </div>
                     </a>

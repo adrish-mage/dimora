@@ -1,0 +1,62 @@
+<% layout('layouts/boilerplate') -%>
+<main class="admin-pending-page">
+    <header class="admin-pending-header">
+        <div>
+            <p class="admin-eyebrow">Admin review</p>
+            <h1>Pending listings</h1>
+            <p class="admin-pending-intro">Review rooms waiting for verification before they appear as trusted listings.</p>
+        </div>
+        <span class="badge status-pending"><span class="status-dot" aria-hidden="true"></span><%= pending.length %> pending</span>
+    </header>
+
+    <% if (pending.length === 0) { %>
+        <section class="admin-empty-state" aria-live="polite">
+            <span class="admin-empty-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
+            <h2>Review queue is clear</h2>
+            <p>No listings are waiting for verification right now.</p>
+            <a class="btn btn-dark" href="/listings">View all rooms</a>
+        </section>
+    <% } else { %>
+        <section class="admin-review-list" aria-label="Listings awaiting review">
+            <% pending.forEach(listing => { %>
+                <article class="admin-review-item">
+                    <% const imgSrc = (listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === "string" ? listing.image : ""); %>
+                    <a class="admin-review-image-link" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
+                        <img class="admin-review-image" src="<%= imgSrc %>" alt="<%= listing.title %>" loading="lazy">
+                    </a>
+                    <div class="admin-review-details">
+                        <div>
+                            <h2><a href="/listings/<%= listing._id %>"><%= listing.title %></a></h2>
+                            <p class="admin-review-location"><%= listing.location %></p>
+                        </div>
+                        <dl>
+                            <div>
+                                <dt>Host</dt>
+                                <dd><a class="admin-review-owner" href="/users/<%= listing.owner._id %>"><%= listing.owner.username %></a></dd>
+                            </div>
+                            <div>
+                                <dt>Institution</dt>
+                                <dd>
+                                    <%= listing.owner.institution || "Not provided" %>
+                                    <% if (listing.owner.institutionVerified) { %>
+                                        <span class="badge status-verified"><span class="status-dot" aria-hidden="true"></span>Verified</span>
+                                    <% } %>
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                    <div class="admin-review-actions">
+                        <form method="POST" action="/admin/listings/<%= listing._id %>/approve">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button class="btn btn-dark" type="submit">Approve</button>
+                        </form>
+                        <form method="POST" action="/admin/listings/<%= listing._id %>/reject">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                            <button class="btn btn-outline-danger" type="submit">Reject</button>
+                        </form>
+                    </div>
+                </article>
+            <% }) %>
+        </section>
+    <% } %>
+</main>

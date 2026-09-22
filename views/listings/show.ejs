@@ -3,8 +3,10 @@
     <body>
         <div class="row mt-3 detail-page">
             <div class="col-8 offset-2">
+                <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
                 <h1 class="detail-title mb-3">
                     <%= listing.title %>
+                    <span class="badge status-<%= listing.verificationStatus %>"><span class="status-dot" aria-hidden="true"></span><%= verificationLabels[listing.verificationStatus] %></span>
                 </h1>
 
                 <div class="card show-card">
@@ -15,8 +17,17 @@
 
                         <div class="card-body px-0">
                             <p class="card-text owner-line mt-3 mb-2 text-muted">
-                                <i>Owned by <%=listing.owner.username || "Unknown user"%></i> 
+                                <i>Owned by 
+                                    <b><a href="/users/<%=listing.owner._id%>" style="text-decoration: underline; color:rgb(6, 69, 50)"><%=listing.owner.name || "Unknown user"%></a></b>
+                                </i> 
                             </p>
+
+                            <% if (CurrUser && CurrUser._id.equals(listing.owner._id) && (listing.verificationStatus === "unverified" || listing.verificationStatus === "flagged")) { %>
+                                <form method="POST" action="/listings/<%= listing._id %>/request-verification" class="mb-3">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <button class="btn btn-dark" type="submit">Request verification</button>
+                                </form>
+                            <% } %>
 
                             <p class="card-text description-text mb-3">
                                 <%= listing.description %>

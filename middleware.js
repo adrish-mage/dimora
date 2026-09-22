@@ -5,7 +5,17 @@ const { ListingSchema, ReviewSchema } = require("./schemaValidator.js");
 module.exports.isLoggedIn = (req, res, next) => {
     if (!req.isAuthenticated()) {
         req.session.redirectUrl = req.originalUrl;
-        req.flash("error", "you must be logged in to add a new listing !");
+        let errorMessage = "You must be logged in to perform this action";
+        if(req.originalUrl === "/listings/new"){
+            errorMessage = "You must be logged in to add a new listing !";
+        }
+        if (req.originalUrl.includes("/reviews")) {
+            errorMessage = "You must be logged in to leave a review!";
+        }
+        if (req.originalUrl.includes("/reviews")) {
+            errorMessage = "You must be logged in to leave a review!";
+        }
+        req.flash("error", errorMessage);
         return res.redirect("/login");
     }
     next();
@@ -31,7 +41,13 @@ module.exports.isOwner = async (req, res, next) => {
     req.listing = listing;
     next();
 }
-
+module.exports.isAdmin = async (req,res,next) => {
+    if(!res.locals.CurrUser || res.locals.CurrUser.role !== "admin"){
+        req.flash("error","You dont have permission to do that");
+        return res.redirect(`/listings`);
+    }
+    next();
+}
 module.exports.validateListing = (req, res, next) => {
     const listingData = { ...req.body };
     delete listingData._csrf;

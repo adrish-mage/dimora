@@ -97,6 +97,7 @@ app.get("/", wrapAsync(homeController.index));
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+app.use("/admin", require("./routes/admin"));
 app.use("/", userRouter);
 
 // 404

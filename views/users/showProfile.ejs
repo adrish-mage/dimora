@@ -1,5 +1,6 @@
 <% layout('layouts/boilerplate') -%>
-<main class="profile-page">
+<main class="profile-page <%= user.role === "admin" ? "admin-profile-page" : "" %>">
+    <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
     <div class="profile-shell">
         <section class="profile-header" aria-labelledby="profile-title">
             <div class="profile-identity">
@@ -15,6 +16,12 @@
             </div>
             <% if (CurrUser && CurrUser._id.equals(user._id)) { %>
                 <div class="profile-header-actions">
+                    <% if (user.role === "admin") { %>
+                        <a class="profile-admin-link" href="/admin/listings/pending">
+                            <i class="fa-solid fa-list-check" aria-hidden="true"></i>
+                            Pending listings
+                        </a>
+                    <% } %>
                     <a class="profile-logout-button" href="/logout">
                         <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
                         Log out
@@ -37,6 +44,24 @@
                 <span>Account type</span>
             </div>
         </section>
+
+        <% if (user.role === "admin" && CurrUser && CurrUser._id.equals(user._id)) { %>
+            <section class="admin-profile-tools" aria-labelledby="admin-tools-title">
+                <div>
+                    <p class="admin-eyebrow">Workspace</p>
+                    <h2 id="admin-tools-title">Verification desk</h2>
+                    <p>Review submitted rooms and keep trust decisions moving.</p>
+                </div>
+                <a class="admin-profile-tool-link" href="/admin/listings/pending">
+                    <span class="admin-profile-tool-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></span>
+                    <span>
+                        <strong>Review pending listings</strong>
+                        <small>Open the moderation queue</small>
+                    </span>
+                    <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                </a>
+            </section>
+        <% } %>
 
         <div class="profile-content-grid">
             <section class="profile-contact" aria-labelledby="profile-info-title">
@@ -92,7 +117,7 @@
                                         </div>
                                         <div class="profile-listing-meta">
                                             <p class="listing-price mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> <span>/ month</span></p>
-                                            <span class="badge status-<%= listing.verificationStatus %>"><%= listing.verificationStatus %></span>
+                                            <span class="badge status-<%= listing.verificationStatus %>"><span class="status-dot" aria-hidden="true"></span><%= verificationLabels[listing.verificationStatus] %></span>
                                         </div>
                                     </div>
                                 </a>

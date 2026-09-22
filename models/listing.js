@@ -31,6 +31,11 @@ const listingSchema = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
+    },
+    verificationStatus: {
+        type: String,
+        enum : ["unverified", "verified", "pending", "flagged"],
+        default: "unverified",
     }
 });
 

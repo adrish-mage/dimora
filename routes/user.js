@@ -29,6 +29,6 @@ router.post(
     userController.login
 );
 router.get("/logout", userController.logout);
-router.get("/users/:id", isLoggedIn, wrapAsync(userController.showProfile));
+router.get("/users/:id", wrapAsync(userController.showProfile));
 
 module.exports = router;
