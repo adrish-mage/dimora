@@ -109,6 +109,7 @@
                                     <div class="listing-image-wrap">
                                         <img src="<%= imgSrc %>" class="card-img-top" alt="<%= listing.title %>" loading="lazy">
                                         <span class="listing-image-label">Dimora room</span>
+                                        <span class="listing-verification-overlay status-<%= listing.verificationStatus %>"><%= verificationLabels[listing.verificationStatus] %></span>
                                     </div>
                                     <div class="card-body">
                                         <div class="d-flex justify-content-between gap-3 align-items-start">

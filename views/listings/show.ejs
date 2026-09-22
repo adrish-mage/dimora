@@ -1,6 +1,7 @@
 <% layout('layouts/boilerplate') -%>
 
         <div class="row mt-3 detail-page">
+            <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
             <% const hostDisplayName = listing.owner.name || listing.owner.username || "Host"; %>
             <% const hostInitials = hostDisplayName.split(/\s+/).filter(Boolean).slice(0, 2).map(namePart => namePart.charAt(0).toUpperCase()).join(""); %>
             <aside class="listing-sidebar" aria-label="Listing summary">
@@ -15,23 +16,70 @@
                         </div>
                     </div>
                     <button class="sidebar-book-button" type="button">Request to book</button>
+                    <details class="trust-panel">
+                        <summary class="trust-panel-summary">
+                            <span class="trust-panel-brand">
+                                <span class="trust-panel-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+                                <span>Dimora<strong>Trust profile</strong></span>
+                            </span>
+                            <span class="trust-panel-copy">
+                                <strong>Confidence for your next room</strong>
+                                <span>Built from verification and guest feedback</span>
+                            </span>
+                            <span class="trust-panel-metric">
+                                <strong><%= listing.reviews && listing.reviews.length ? avgRating.toFixed(1) : "-" %></strong>
+                                <span><i class="fa-solid fa-star" aria-hidden="true"></i> <%= listing.reviews && listing.reviews.length ? "Rating" : "No reviews" %></span>
+                            </span>
+                            <span class="trust-panel-metric">
+                                <strong><%= listing.reviews ? listing.reviews.length : 0 %></strong>
+                                <span><i class="fa-solid fa-comments" aria-hidden="true"></i> Reviews</span>
+                            </span>
+                            <span class="trust-panel-metric trust-panel-metric-score">
+                                <strong><%= trustScore %></strong>
+                                <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trust score</span>
+                            </span>
+                        </summary>
+                        <div class="trust-panel-details">
+                            <div class="trust-panel-score">
+                                <span class="trust-panel-score-label">Dimora trust score</span>
+                                <strong><%= trustScore %><small>/100</small></strong>
+                            </div>
+                            <div class="trust-panel-facts">
+                                <div class="trust-panel-fact">
+                                    <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
+                                    <span>Host identity<small><%= listing.owner.isVerifiedHost ? "Verified" : "Not verified" %></small></span>
+                                </div>
+                                <div class="trust-panel-fact">
+                                    <i class="fa-solid fa-certificate" aria-hidden="true"></i>
+                                    <span>Listing status<small><%= verificationLabels[listing.verificationStatus] %></small></span>
+                                </div>
+                                <div class="trust-panel-fact">
+                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
+                                    <span>Guest rating<small><%= listing.reviews && listing.reviews.length ? `${avgRating.toFixed(1)}/5 average` : "No reviews yet" %></small></span>
+                                </div>
+                                <div class="trust-panel-fact">
+                                    <i class="fa-solid fa-comments" aria-hidden="true"></i>
+                                    <span>Reviews<small><%= listing.reviews ? listing.reviews.length : 0 %> published</small></span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
                 </div>
             </aside>
             <div class="detail-main-column">
-                <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
                 <h1 class="detail-title mb-3">
                     <%= listing.title %>
                 </h1>
-                <p class="detail-verification-caption <%= listing.verificationStatus === "verified" ? "detail-verification-caption-verified" : "" %>">
-                    <span class="detail-verification-dot" aria-hidden="true"></span>
-                    <%= verificationLabels[listing.verificationStatus] %>
-                </p>
+                
 
                 <div class="card show-card">
                     <!-- Custom responsive show-img class handles framing -->
                     <% const imgSrc=(listing && listing.image && listing.image.url) ? listing.image.url : (typeof
                         listing.image==='string' ? listing.image : '' ); %>
-                        <img src="<%= imgSrc %>" class="card-img-top show-img" alt="<%= listing.title %>">
+                        <div class="show-image-wrap">
+                            <img src="<%= imgSrc %>" class="card-img-top show-img" alt="<%= listing.title %>">
+                            <span class="listing-verification-overlay status-<%= listing.verificationStatus %>"><%= verificationLabels[listing.verificationStatus] %></span>
+                        </div>
 
                         <div class="listing-primary-meta">
                             <p class="listing-detail-price"><b>₹<%= listing.price.toLocaleString("en-IN") %></b><span>/ month</span></p>

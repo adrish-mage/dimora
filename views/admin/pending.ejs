@@ -23,6 +23,7 @@
                     <% const imgSrc = (listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === "string" ? listing.image : ""); %>
                     <a class="admin-review-image-link" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
                         <img class="admin-review-image" src="<%= imgSrc %>" alt="<%= listing.title %>" loading="lazy">
+                        <span class="listing-verification-overlay status-pending">Verification pending</span>
                     </a>
                     <div class="admin-review-details">
                         <div>

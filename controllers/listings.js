@@ -1,6 +1,7 @@
 const ExpressError = require("../utils/expressError.js");
 const Listing = require("../models/listing");
 const { transitionListingStatus } = require("../utils/verificationStateMachine");
+const { computeTrustScore, averageRating } = require("../utils/trustScore");
 const escapeRegex = require("../utils/escapeRegex.js");
 
 module.exports.index = async (req, res) => {
@@ -58,11 +59,13 @@ module.exports.show = async (req, res) => {
     if (!listing) {
         throw new ExpressError(404, "Listing not found");
     }
+    const trustScore = computeTrustScore(listing);
+    const avgRating = averageRating(listing.reviews || []);
 
     listing.reviews.sort((first, second) =>
         new Date(second.createdAt) - new Date(first.createdAt)
     );
-    res.render("listings/show.ejs", { listing });
+    res.render("listings/show.ejs", { listing, trustScore, avgRating });
 };
 
 module.exports.renderEditForm = async (req, res) => {

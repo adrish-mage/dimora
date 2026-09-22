@@ -83,7 +83,7 @@ const sampleHosts = [
 
 const sampleListings = [
   {
-    title: "Sunny Private Room",
+    title: "Sunlit Private Room",
     description:
       "A furnished private room in a quiet shared home, with a desk for coursework and a short commute to campus. Best suited to a student relocating for a semester.",
     image: {
@@ -98,7 +98,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Furnished Studio",
+    title: "Move-In Studio",
     description:
       "A move-in-ready studio close to Koramangala offices and cafes, with reliable Wi-Fi and a kitchen for a 3 to 6 month internship stay.",
     image: {
@@ -113,7 +113,7 @@ const sampleListings = [
     verificationStatus: "pending",
   },
   {
-    title: "Shared Apartment",
+    title: "Study Flatshare",
     description:
       "A bright room in a three-bedroom apartment with a shared kitchen and study area. A practical base for a semester in Mumbai.",
     image: {
@@ -128,7 +128,7 @@ const sampleListings = [
     verificationStatus: "unverified",
   },
   {
-    title: "Quiet Room",
+    title: "Quiet Workroom",
     description:
       "A private, furnished room with a work desk and metro access for interns working in HITEC City. Available for medium-term stays.",
     image: {
@@ -143,7 +143,7 @@ const sampleListings = [
     verificationStatus: "flagged",
   },
   {
-    title: "Compact Room",
+    title: "Compact Campus Room",
     description:
       "A simple furnished room with fast Wi-Fi, laundry access, and a direct bus route to campus. Designed for a one-semester move.",
     image: {
@@ -158,7 +158,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Intern Room",
+    title: "Internship Room",
     description:
       "A furnished room in a shared apartment near Bengaluru's office parks, with a housemate-friendly layout and flexible 1 to 6 month availability.",
     image: {
@@ -173,7 +173,7 @@ const sampleListings = [
     verificationStatus: "unverified",
   },
   {
-    title: "Bright Studio",
+    title: "Bright Campus Studio",
     description:
       "A fully furnished studio with a study desk, pantry, and quick access to the metro for students spending a semester in Delhi.",
     image: {
@@ -188,7 +188,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Comfort Room",
+    title: "Comfortable Room",
     description:
       "A bright room in a shared apartment with dedicated storage, quiet hours, and a quick commute to the university district.",
     image: {
@@ -203,7 +203,7 @@ const sampleListings = [
     verificationStatus: "pending",
   },
   {
-    title: "Work-Friendly Room",
+    title: "Work-Ready Room",
     description:
       "A modern room with a study desk, strong Wi-Fi, and a flexible lease for interns moving into Bengaluru for a few months.",
     image: {
@@ -233,7 +233,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "City View Room",
+    title: "City-View Room",
     description:
       "A light-filled room in a curated shared home with a work desk and easy connectivity to Hyderabad's tech corridor.",
     image: {
@@ -278,7 +278,7 @@ const sampleListings = [
     verificationStatus: "unverified",
   },
   {
-    title: "Studio Near Campus",
+    title: "Campus-Ready Studio",
     description:
       "A compact, comfortable studio with a bed nook, desk space, and a cozy setup for 1 to 6 month stays near college.",
     image: {
@@ -308,7 +308,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Shared Green Room",
+    title: "Green Shared Room",
     description:
       "A lively shared room with good natural light, storage, and flexible lease terms for relocating interns and students.",
     image: {
@@ -323,7 +323,7 @@ const sampleListings = [
     verificationStatus: "unverified",
   },
   {
-    title: "Premium Studio",
+    title: "Premium Internship Studio",
     description:
       "A polished room with a modern kitchen setup, brighter finish, and an easy route to the city's internship cluster.",
     image: {
@@ -353,7 +353,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Metro Side Room",
+    title: "Metro-Connected Room",
     description:
       "A practical private room close to offices, metro links, and several Bengaluru institutions for a flexible lease.",
     image: {
@@ -368,7 +368,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Powai Study Room",
+    title: "Scholar's Room",
     description:
       "A furnished room with a quiet study corner and quick access to Powai's university and workplace hubs.",
     image: {
@@ -383,7 +383,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Lakeside Shared Room",
+    title: "Lakeside Room",
     description:
       "A bright shared-home room near Powai Lake, with a desk, storage, and an easy commute to nearby institutions.",
     image: {
@@ -398,7 +398,7 @@ const sampleListings = [
     verificationStatus: "pending",
   },
   {
-    title: "South Delhi Studio",
+    title: "Work Studio",
     description:
       "A compact studio with a dedicated work area and dependable transport links to South Delhi campuses.",
     image: {
@@ -413,7 +413,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Hauz Khas Private Room",
+    title: "Private Room",
     description:
       "A move-in-ready private room near cafes, transit, and the student neighborhoods around IIT Delhi and JNU.",
     image: {
@@ -428,7 +428,7 @@ const sampleListings = [
     verificationStatus: "pending",
   },
   {
-    title: "Aundh Student Room",
+    title: "Semester Room",
     description:
       "A comfortable furnished room with Wi-Fi and a short commute to Pune's university and research districts.",
     image: {
@@ -443,7 +443,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Tech Park Room",
+    title: "Tech-Ready Private Room",
     description:
       "A clean private room for interns, close to Bengaluru offices, cafes, and multiple daily commute routes.",
     image: {
@@ -458,7 +458,7 @@ const sampleListings = [
     verificationStatus: "verified",
   },
   {
-    title: "Guindy Work Room",
+    title: "Work-Ready Room",
     description:
       "A furnished room with a proper work desk and quick transport to Chennai's university and technology districts.",
     image: {
@@ -513,6 +513,312 @@ const sampleReviews = [
     authorIndex: 4,
     rating: 4,
     comment: "Good location and a welcoming shared apartment. The kitchen and study area worked well for a longer stay.",
+  },
+  {
+    listingIndex: 3,
+    authorIndex: 5,
+    rating: 4,
+    comment: "Quiet room with a useful desk and easy metro access. A comfortable base for my Hyderabad internship.",
+  },
+  {
+    listingIndex: 4,
+    authorIndex: 6,
+    rating: 5,
+    comment: "Simple, clean, and well connected to campus. The Wi-Fi and laundry access made the semester very easy.",
+  },
+  {
+    listingIndex: 5,
+    authorIndex: 7,
+    rating: 4,
+    comment: "Friendly housemates and a practical layout. The room had everything I needed for a short internship lease.",
+  },
+  {
+    listingIndex: 6,
+    authorIndex: 8,
+    rating: 5,
+    comment: "Bright studio with a proper study desk and a quick route to campus. It felt ready from day one.",
+  },
+  {
+    listingIndex: 7,
+    authorIndex: 9,
+    rating: 4,
+    comment: "Comfortable shared apartment with plenty of storage and a calm atmosphere. The commute was manageable.",
+  },
+  {
+    listingIndex: 8,
+    authorIndex: 0,
+    rating: 5,
+    comment: "Excellent setup for remote work and a very responsive host. The internet was reliable throughout my stay.",
+  },
+  {
+    listingIndex: 9,
+    authorIndex: 1,
+    rating: 4,
+    comment: "Clean private room in a convenient neighborhood. The balcony and natural light were a great bonus.",
+  },
+  {
+    listingIndex: 10,
+    authorIndex: 2,
+    rating: 4,
+    comment: "Good daylight and a peaceful shared home. Transport to the tech corridor was straightforward.",
+  },
+  {
+    listingIndex: 11,
+    authorIndex: 3,
+    rating: 5,
+    comment: "The kitchen corner was genuinely useful and the room was move-in ready. A great option near campus.",
+  },
+  {
+    listingIndex: 12,
+    authorIndex: 4,
+    rating: 4,
+    comment: "Peaceful place with fast internet and a reasonable commute. The room matched the listing description well.",
+  },
+  {
+    listingIndex: 13,
+    authorIndex: 5,
+    rating: 5,
+    comment: "Compact but thoughtfully arranged, with a comfortable bed nook and enough desk space for coursework.",
+  },
+  {
+    listingIndex: 14,
+    authorIndex: 6,
+    rating: 4,
+    comment: "Budget-friendly room in a useful location. Shared facilities were clean and easy to use.",
+  },
+  {
+    listingIndex: 15,
+    authorIndex: 7,
+    rating: 4,
+    comment: "Lively shared home with good light and enough storage. Flexible lease terms made relocating much easier.",
+  },
+  {
+    listingIndex: 16,
+    authorIndex: 8,
+    rating: 5,
+    comment: "Polished studio with a modern finish and a smooth commute to the internship district. Very comfortable overall.",
+  },
+  {
+    listingIndex: 17,
+    authorIndex: 9,
+    rating: 5,
+    comment: "Calm room with a lovely shared garden and a dedicated desk. The host made move-in simple.",
+  },
+  {
+    listingIndex: 18,
+    authorIndex: 0,
+    rating: 4,
+    comment: "Convenient location close to the metro and offices. The room was practical and well maintained.",
+  },
+  {
+    listingIndex: 19,
+    authorIndex: 1,
+    rating: 5,
+    comment: "Quiet study corner and a quick commute to IIT Bombay. The room worked especially well for exam season.",
+  },
+  {
+    listingIndex: 20,
+    authorIndex: 2,
+    rating: 4,
+    comment: "Bright room with good storage and a pleasant neighborhood. The shared spaces were kept tidy.",
+  },
+  {
+    listingIndex: 21,
+    authorIndex: 3,
+    rating: 5,
+    comment: "The studio was compact but well planned, with dependable transport to South Delhi campuses.",
+  },
+  {
+    listingIndex: 22,
+    authorIndex: 4,
+    rating: 4,
+    comment: "Great access to cafes and transit, and the room was ready for a semester move. Communication was clear.",
+  },
+  {
+    listingIndex: 23,
+    authorIndex: 5,
+    rating: 5,
+    comment: "Comfortable furnished room with strong Wi-Fi and an easy commute to the university district.",
+  },
+  {
+    listingIndex: 24,
+    authorIndex: 6,
+    rating: 4,
+    comment: "Clean private room close to offices and cafes. The daily commute was much easier than expected.",
+  },
+  {
+    listingIndex: 25,
+    authorIndex: 7,
+    rating: 5,
+    comment: "Proper work desk and reliable transport made this a strong choice for my Chennai placement.",
+  },
+  {
+    listingIndex: 26,
+    authorIndex: 8,
+    rating: 4,
+    comment: "Straightforward room with convenient shared amenities and a short route to campus.",
+  },
+  {
+    listingIndex: 0,
+    authorIndex: 9,
+    rating: 5,
+    comment: "The neighborhood was peaceful and the room had plenty of natural light. The host made the move-in process easy.",
+  },
+  {
+    listingIndex: 1,
+    authorIndex: 4,
+    rating: 4,
+    comment: "Well laid out studio with a useful kitchen and good access to cafes. It suited my three-month placement well.",
+  },
+  {
+    listingIndex: 2,
+    authorIndex: 6,
+    rating: 5,
+    comment: "The apartment was bright, social, and close to everything I needed. The study area was a real advantage.",
+  },
+  {
+    listingIndex: 3,
+    authorIndex: 8,
+    rating: 4,
+    comment: "A quiet place to work after office hours, with a straightforward commute and a helpful host.",
+  },
+  {
+    listingIndex: 4,
+    authorIndex: 0,
+    rating: 4,
+    comment: "The room is compact but thoughtfully arranged. I appreciated the direct bus route and clean shared spaces.",
+  },
+  {
+    listingIndex: 5,
+    authorIndex: 2,
+    rating: 5,
+    comment: "A very easy landing spot for an internship. The house was welcoming and the room had a comfortable work setup.",
+  },
+  {
+    listingIndex: 6,
+    authorIndex: 7,
+    rating: 4,
+    comment: "The studio gets great daylight and feels larger than expected. Metro access made campus days simple.",
+  },
+  {
+    listingIndex: 7,
+    authorIndex: 5,
+    rating: 4,
+    comment: "Good storage, quiet evenings, and a reliable commute. The listing was accurate and easy to settle into.",
+  },
+  {
+    listingIndex: 8,
+    authorIndex: 9,
+    rating: 5,
+    comment: "The desk and Wi-Fi were exactly what I needed for hybrid work. Everything felt considered and dependable.",
+  },
+  {
+    listingIndex: 9,
+    authorIndex: 3,
+    rating: 4,
+    comment: "A clean and calm room in a convenient part of Pune. The balcony made the space feel especially pleasant.",
+  },
+  {
+    listingIndex: 10,
+    authorIndex: 6,
+    rating: 5,
+    comment: "Bright room, easy transport, and a considerate shared-home setup. I would happily stay here again.",
+  },
+  {
+    listingIndex: 11,
+    authorIndex: 0,
+    rating: 4,
+    comment: "The room had good daylight and the kitchen corner was useful for a longer placement. Very practical overall.",
+  },
+  {
+    listingIndex: 12,
+    authorIndex: 7,
+    rating: 5,
+    comment: "Peaceful and comfortable with strong internet. It gave me a reliable base for my semester in Trichy.",
+  },
+  {
+    listingIndex: 13,
+    authorIndex: 1,
+    rating: 4,
+    comment: "The bed nook and desk made excellent use of the space. It was a convenient option close to work and campus.",
+  },
+  {
+    listingIndex: 14,
+    authorIndex: 3,
+    rating: 4,
+    comment: "Good value for the location, with clean shared amenities and a manageable route to the university.",
+  },
+  {
+    listingIndex: 15,
+    authorIndex: 9,
+    rating: 5,
+    comment: "The shared home had a friendly atmosphere and lots of natural light. Flexible terms made planning easy.",
+  },
+  {
+    listingIndex: 16,
+    authorIndex: 4,
+    rating: 5,
+    comment: "The finish is polished without feeling impractical. It was a comfortable and quiet base for my internship.",
+  },
+  {
+    listingIndex: 17,
+    authorIndex: 1,
+    rating: 4,
+    comment: "Lovely garden access and a calm room with enough space to work. The host was quick to answer questions.",
+  },
+  {
+    listingIndex: 18,
+    authorIndex: 5,
+    rating: 5,
+    comment: "Being close to the metro made this room a great choice. It was clean, practical, and ready on arrival.",
+  },
+  {
+    listingIndex: 19,
+    authorIndex: 8,
+    rating: 4,
+    comment: "The study corner was quiet and the room had enough storage for a semester. The location was excellent.",
+  },
+  {
+    listingIndex: 20,
+    authorIndex: 0,
+    rating: 4,
+    comment: "Comfortable shared room with a pleasant view and an easy route to the university. Good value for the area.",
+  },
+  {
+    listingIndex: 21,
+    authorIndex: 6,
+    rating: 5,
+    comment: "The work area and transport links made this ideal for my placement. The studio was clean and thoughtfully arranged.",
+  },
+  {
+    listingIndex: 22,
+    authorIndex: 2,
+    rating: 4,
+    comment: "Excellent neighborhood for a semester in Delhi. Cafes and transit were close, and the room felt secure.",
+  },
+  {
+    listingIndex: 23,
+    authorIndex: 4,
+    rating: 5,
+    comment: "A comfortable room with a short commute and dependable Wi-Fi. The host gave clear instructions before arrival.",
+  },
+  {
+    listingIndex: 24,
+    authorIndex: 9,
+    rating: 4,
+    comment: "Very convenient for office commutes and the room was exactly as pictured. Shared areas were well maintained.",
+  },
+  {
+    listingIndex: 25,
+    authorIndex: 1,
+    rating: 5,
+    comment: "The proper desk made workdays much easier, and transport around Chennai was simple from this location.",
+  },
+  {
+    listingIndex: 26,
+    authorIndex: 6,
+    rating: 4,
+    comment: "A straightforward, well-connected room with everything needed for a semester. The shared facilities were useful.",
   },
 ];
 

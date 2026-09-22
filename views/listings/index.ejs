@@ -1,5 +1,6 @@
 <% layout('layouts/boilerplate') -%>
         <body>
+            <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
             <div class="listings-heading">
                 <div>
                     
@@ -35,14 +36,19 @@
                                 <div class="listing-image-wrap">
                                     <img src="<%=imgSrc %>" class="card-img-top" alt="<%= listing.title %>" loading="lazy" />
                                     <span class="listing-image-label">Dimora room</span>
+                                    <span class="listing-verification-overlay status-<%= listing.verificationStatus %>"><%= verificationLabels[listing.verificationStatus] %></span>
                                 </div>
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between gap-3 align-items-start">
-                                        <p class="card-text title mb-1"><b><%= listing.title %></b></p>
+                                <div class="card-body listing-card-body">
+                                    <div class="listing-card-kicker">
+                                        <span><i class="fa-solid fa-door-open" aria-hidden="true"></i> Room in <%= listing.location %></span>
                                         <span class="listing-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
                                     </div>
+                                    <div class="listing-card-title-row">
+                                        <p class="card-text title mb-0"><b><%= listing.title %></b></p>
+                                    </div>
                                     <div class="listing-meta-row">
-                                        <p class="listing-price mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> <span>/ month</span></p>
+                                        <p class="listing-price mb-0"><strong>&#8377;<%= listing.price.toLocaleString("en-IN") %></strong> <span>/ month</span></p>
+                                        <span class="listing-lease"><i class="fa-regular fa-calendar" aria-hidden="true"></i> 1–6 month lease</span>
                                     </div>
                                     <% if (listing.nearestCampus) { %>
                                         <p class="listing-campus-meta"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Near to <%= listing.nearestCampus %></p>
