@@ -1,13 +1,31 @@
 <% layout('layouts/boilerplate') -%>
 
-    <body>
         <div class="row mt-3 detail-page">
-            <div class="col-8 offset-2">
+            <% const hostDisplayName = listing.owner.name || listing.owner.username || "Host"; %>
+            <% const hostInitials = hostDisplayName.split(/\s+/).filter(Boolean).slice(0, 2).map(namePart => namePart.charAt(0).toUpperCase()).join(""); %>
+            <aside class="listing-sidebar" aria-label="Listing summary">
+                <div class="listing-summary-card">
+                    <div class="sidebar-host">
+                        <span class="sidebar-host-avatar" aria-hidden="true"><%= hostInitials %></span>
+                        <div>
+                            <a class="sidebar-host-name" href="/users/<%= listing.owner._id %>"><%= hostDisplayName %></a>
+                            <% if (listing.owner.isVerifiedHost) { %>
+                                <p class="sidebar-host-verification"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Identity verified</p>
+                            <% } %>
+                        </div>
+                    </div>
+                    <button class="sidebar-book-button" type="button">Request to book</button>
+                </div>
+            </aside>
+            <div class="detail-main-column">
                 <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
                 <h1 class="detail-title mb-3">
                     <%= listing.title %>
-                    <span class="badge status-<%= listing.verificationStatus %>"><span class="status-dot" aria-hidden="true"></span><%= verificationLabels[listing.verificationStatus] %></span>
                 </h1>
+                <p class="detail-verification-caption <%= listing.verificationStatus === "verified" ? "detail-verification-caption-verified" : "" %>">
+                    <span class="detail-verification-dot" aria-hidden="true"></span>
+                    <%= verificationLabels[listing.verificationStatus] %>
+                </p>
 
                 <div class="card show-card">
                     <!-- Custom responsive show-img class handles framing -->
@@ -15,13 +33,12 @@
                         listing.image==='string' ? listing.image : '' ); %>
                         <img src="<%= imgSrc %>" class="card-img-top show-img" alt="<%= listing.title %>">
 
-                        <div class="card-body px-0">
-                            <p class="card-text owner-line mt-3 mb-2 text-muted">
-                                <i>Owned by 
-                                    <b><a href="/users/<%=listing.owner._id%>" style="text-decoration: underline; color:rgb(6, 69, 50)"><%=listing.owner.name || "Unknown user"%></a></b>
-                                </i> 
-                            </p>
+                        <div class="listing-primary-meta">
+                            <p class="listing-detail-price"><b>₹<%= listing.price.toLocaleString("en-IN") %></b><span>/ month</span></p>
+                            <p class="listing-detail-location"><i class="fa-solid fa-location-dot" aria-hidden="true"></i><%= listing.location %>, <%= listing.country %></p>
+                        </div>
 
+                        <div class="card-body px-0">
                             <% if (CurrUser && CurrUser._id.equals(listing.owner._id) && (listing.verificationStatus === "unverified" || listing.verificationStatus === "flagged")) { %>
                                 <form method="POST" action="/listings/<%= listing._id %>/request-verification" class="mb-3">
                                     <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -33,17 +50,7 @@
                                 <%= listing.description %>
                             </p>
 
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <p class="card-text price-text mb-1">
-                                        <b>₹<%= listing.price.toLocaleString("en-IN") %></b> / month
-                                    </p>
-                                    <p class="card-text location-text text-muted mb-0">
-                                        <i class="fa-solid fa-location-dot me-2"></i>
-                                        <%= listing.location %>, <%= listing.country %>
-                                    </p>
-                                </div>
-                                
+                            <div class="d-flex justify-content-end align-items-start">
                                 <%if (CurrUser && CurrUser._id.equals(listing.owner._id)){%>
                                     <div class="d-flex gap-2 align-items-start">
                                         <a href="/listings/<%=listing._id%>/edit" class="btn btn-dark btn-sm">Edit</a>
@@ -56,6 +63,9 @@
                                 <%}%> 
                             </div>
                         </div>
+                </div>
+            </div>
+            <section class="detail-reviews" aria-labelledby="reviews-title">
                         <hr>
                         <%if (CurrUser) { %>
                             <div class="col-10 offset-1 mb-4 mt-4 review-section">
@@ -85,7 +95,7 @@
                                     </div>
                                 </div>
                             <% } %>
-                            <div class="reviews-heading"><p class="mb-0"><b>Guest notes</b> <span>(<%= listing.reviews ? listing.reviews.length : 0 %>)</span></p></div>
+                            <div class="reviews-heading"><p id="reviews-title" class="mb-0"><b>Guest notes</b> <span>(<%= listing.reviews ? listing.reviews.length : 0 %>)</span></p></div>
                             <div class="row g-4">
                                 <% if (listing.reviews && listing.reviews.length) { %>
                                     <% for (const review of listing.reviews) { %>
@@ -95,7 +105,7 @@
                                                     <div class="d-flex align-items-start mb-2">
                                                         <i class="fa-solid fa-user-circle fa-2x text-secondary me-3"></i>
                                                         <div>
-                                                            <h6 class="reviewer-name mb-0">@<%= review.author?.username || "Anonymous" %>
+                                                            <h6 class="reviewer-name mb-0"><%= review.author?.name || review.author?.username || "Anonymous" %>
 </h6>
                                                             <small class="review-date text-muted"><%= new Date(review.createdAt).toLocaleDateString() %></small>
                                                         </div>
@@ -125,10 +135,6 @@
                            
                             
                             
-                        </div>
-                </div>
-
-            </div>
+            </section>
         </div>
         
-    </body>

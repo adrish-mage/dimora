@@ -489,4 +489,31 @@ const sampleListings = [
   },
 ];
 
-module.exports = { data: sampleListings, hosts: sampleHosts };
+const sampleReviews = [
+  {
+    listingIndex: 0,
+    authorIndex: 1,
+    rating: 5,
+    comment: "Quiet street and an easy commute to campus. The room was clean, bright, and ready for a semester move.",
+  },
+  {
+    listingIndex: 0,
+    authorIndex: 2,
+    rating: 4,
+    comment: "The host was responsive and the shared home felt comfortable. The desk was especially useful for coursework.",
+  },
+  {
+    listingIndex: 1,
+    authorIndex: 3,
+    rating: 5,
+    comment: "A practical studio for an internship, with reliable Wi-Fi and a short commute to the office park.",
+  },
+  {
+    listingIndex: 2,
+    authorIndex: 4,
+    rating: 4,
+    comment: "Good location and a welcoming shared apartment. The kitchen and study area worked well for a longer stay.",
+  },
+];
+
+module.exports = { data: sampleListings, hosts: sampleHosts, reviews: sampleReviews };

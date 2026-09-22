@@ -1,13 +1,14 @@
 const path = require("path");
 
 require("dotenv").config({
-    path: path.join(__dirname, "..", ".env")
+    path: path.join(__dirname, "..", "..", ".env")
 });
 
 const mongoose = require("mongoose");
 const initData = require("./data.js");
-const Listing = require("../models/listing.js");
-const User = require("../models/user.js");
+const Listing = require("../listing.js");
+const Review = require("../review.js");
+const User = require("../user.js");
 
 async function connectDB() {
     await mongoose.connect(process.env.MONGO_URI);
@@ -20,6 +21,7 @@ const adminUsername = "Adrish Dey";
 const adminPassword = "dimoraAdmin";
 
 const initDB = async () => {
+    await Review.deleteMany({});
     await Listing.deleteMany({});
     await User.deleteMany({
         username: { $in: [...initData.hosts.map(h => h.username), adminUsername] }
@@ -55,9 +57,22 @@ const initDB = async () => {
         owner: seededHosts[hostIndex]._id,
     }));
 
-    await Listing.insertMany(dataWithOwner);
+    const seededListings = await Listing.insertMany(dataWithOwner);
+
+    const reviewData = initData.reviews.map(({ listingIndex, authorIndex, rating, comment }) => ({
+        listing: seededListings[listingIndex]._id,
+        author: seededHosts[authorIndex]._id,
+        rating,
+        comment,
+    }));
+    const seededReviews = await Review.insertMany(reviewData);
+
+    await Promise.all(seededReviews.map((review) =>
+        Listing.findByIdAndUpdate(review.listing, { $push: { reviews: review._id } })
+    ));
 
     console.log("data was initialized");
+    console.log(`Seeded ${seededReviews.length} reviews`);
     console.log(`Seeded ${seededHosts.length} hosts, login with password: password123`);
     console.log(`Seeded admin "${adminUsername}", login with password: ${adminPassword}`);
 };
