@@ -1,0 +1,55 @@
+<% layout('layouts/boilerplate') -%>
+<main class="admin-pending-page host-review-page">
+    <header class="admin-pending-header">
+        <div>
+            <p class="admin-eyebrow">Admin review</p>
+            <h1><%= queueStatus === "approved" ? "Approved hosts" : "Host applications" %></h1>
+            <p class="admin-pending-intro"><%= queueStatus === "approved" ? "Browse hosts who are approved to publish rooms." : "Check whether each applicant is authorized to offer a room before granting listing access." %></p>
+        </div>
+        <nav class="admin-queue-tabs" aria-label="Host verification queues">
+            <a class="<%= queueStatus === 'pending' ? 'is-active' : '' %>" href="/admin/hosts/pending">Pending</a>
+            <a class="<%= queueStatus === 'approved' ? 'is-active' : '' %>" href="/admin/hosts/pending?status=approved">Approved</a>
+        </nav>
+        <span class="badge <%= queueStatus === 'approved' ? 'status-verified' : 'status-pending' %>"><span class="status-dot" aria-hidden="true"></span><%= pendingHosts.length %> <%= queueStatus === "approved" ? "approved" : "awaiting review" %></span>
+    </header>
+
+    <% if (!pendingHosts.length) { %>
+        <section class="admin-empty-state" aria-live="polite">
+            <span class="admin-empty-icon"><i class="fa-solid fa-user-shield" aria-hidden="true"></i></span>
+            <h2><%= queueStatus === "approved" ? "No approved hosts yet" : "Host queue is clear" %></h2>
+            <p><%= queueStatus === "approved" ? "Approved hosts will appear here after review." : "New host applications will appear here for review." %></p>
+            <a class="btn btn-dark" href="/listings">View rooms</a>
+        </section>
+    <% } else { %>
+        <section class="host-review-list" aria-label="Host applications awaiting review">
+            <% pendingHosts.forEach(applicant => { %>
+                <article class="host-review-card">
+                    <div class="host-review-card-header">
+                        <span class="host-review-avatar"><%= (applicant.name || applicant.username).slice(0, 1).toUpperCase() %></span>
+                        <div>
+                            <h2><%= applicant.name || applicant.username %></h2>
+                            <p><%= applicant.email %> · Applied <%= applicant.hostApplicationSubmittedAt ? new Date(applicant.hostApplicationSubmittedAt).toLocaleDateString() : "recently" %></p>
+                        </div>
+                        <span class="badge <%= queueStatus === 'approved' ? 'status-verified' : applicant.hostApplicationStatus === 'needs_information' ? 'status-pending' : 'status-unverified' %>"><span class="status-dot" aria-hidden="true"></span><%= queueStatus === 'approved' ? 'Approved' : applicant.hostApplicationStatus === 'needs_information' ? 'Needs information' : 'Pending' %></span>
+                    </div>
+                    <div class="host-review-grid">
+                        <div><span>Institution</span><strong><%= applicant.institution || "Not provided" %> <%= applicant.institutionVerified ? "· Verified" : "" %></strong></div>
+                        <div><span>Connection to room</span><strong><%= applicant.hostType === "owner" ? "Property owner" : applicant.hostType === "tenant" ? "Current tenant" : "Property manager" %></strong></div>
+                        <div><span>Contact</span><strong><%= applicant.hostContactVerified ? "Confirmed" : "Not confirmed" %></strong></div>
+                        <div><span>Proof documents</span><strong><%= applicant.hostDocuments ? applicant.hostDocuments.length : 0 %> uploaded</strong></div>
+                    </div>
+                    <p class="host-review-note"><%= applicant.hostApplicationNote %></p>
+                    <p class="host-review-note"><strong>Trust flags:</strong> <%= applicant.hostTrustFlags && applicant.hostTrustFlags.length ? applicant.hostTrustFlags.join(", ") : "None recorded" %></p>
+                    <% if (applicant.hostApplicationAdminNote) { %><p class="host-review-admin-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i> <%= applicant.hostApplicationAdminNote %></p><% } %>
+                    <% if (queueStatus !== "approved") { %>
+                    <div class="host-review-actions">
+                        <form method="POST" action="/admin/hosts/<%= applicant._id %>/approve"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-dark" type="submit"><i class="fa-solid fa-check" aria-hidden="true"></i> Approve host</button></form>
+                        <form method="POST" action="/admin/hosts/<%= applicant._id %>/needs-information"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-outline-secondary" type="submit"><i class="fa-solid fa-message" aria-hidden="true"></i> Request information</button></form>
+                        <form method="POST" action="/admin/hosts/<%= applicant._id %>/reject"><input type="hidden" name="_csrf" value="<%= csrfToken %>"><button class="btn btn-outline-danger" type="submit"><i class="fa-solid fa-xmark" aria-hidden="true"></i> Reject</button></form>
+                    </div>
+                    <% } %>
+                </article>
+            <% }) %>
+        </section>
+    <% } %>
+</main>

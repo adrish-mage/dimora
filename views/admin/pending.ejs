@@ -3,27 +3,31 @@
     <header class="admin-pending-header">
         <div>
             <p class="admin-eyebrow">Admin review</p>
-            <h1>Pending listings</h1>
-            <p class="admin-pending-intro">Review rooms waiting for verification before they appear as trusted listings.</p>
+            <h1><%= queueStatus === "approved" ? "Approved listings" : "Pending listings" %></h1>
+            <p class="admin-pending-intro"><%= queueStatus === "approved" ? "Browse rooms that have passed listing verification." : "Review rooms waiting for verification before they appear as trusted listings." %></p>
         </div>
-        <span class="badge status-pending"><span class="status-dot" aria-hidden="true"></span><%= pending.length %> pending</span>
+        <nav class="admin-queue-tabs" aria-label="Listing verification queues">
+            <a class="<%= queueStatus === 'pending' ? 'is-active' : '' %>" href="/admin/listings/pending">Pending</a>
+            <a class="<%= queueStatus === 'approved' ? 'is-active' : '' %>" href="/admin/listings/pending?status=approved">Approved</a>
+        </nav>
+        <span class="badge <%= queueStatus === 'approved' ? 'status-verified' : 'status-pending' %>"><span class="status-dot" aria-hidden="true"></span><%= pending.length %> <%= queueStatus === "approved" ? "approved" : "pending" %></span>
     </header>
 
     <% if (pending.length === 0) { %>
         <section class="admin-empty-state" aria-live="polite">
             <span class="admin-empty-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
-            <h2>Review queue is clear</h2>
-            <p>No listings are waiting for verification right now.</p>
+            <h2><%= queueStatus === "approved" ? "No approved listings yet" : "Review queue is clear" %></h2>
+            <p><%= queueStatus === "approved" ? "Approved listings will appear here after review." : "No listings are waiting for verification right now." %></p>
             <a class="btn btn-dark" href="/listings">View all rooms</a>
         </section>
     <% } else { %>
-        <section class="admin-review-list" aria-label="Listings awaiting review">
+        <section class="admin-review-list" aria-label="<%= queueStatus === 'approved' ? 'Approved listings' : 'Listings awaiting review' %>">
             <% pending.forEach(listing => { %>
                 <article class="admin-review-item">
                     <% const imgSrc = (listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === "string" ? listing.image : ""); %>
                     <a class="admin-review-image-link" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
                         <img class="admin-review-image" src="<%= imgSrc %>" alt="<%= listing.title %>" loading="lazy">
-                        <span class="listing-verification-overlay status-pending">Verification pending</span>
+                        <span class="listing-verification-overlay <%= queueStatus === 'approved' ? 'status-verified' : 'status-pending' %>"><%= queueStatus === 'approved' ? 'Verified listing' : 'Verification pending' %></span>
                     </a>
                     <div class="admin-review-details">
                         <div>
@@ -46,6 +50,7 @@
                             </div>
                         </dl>
                     </div>
+                    <% if (queueStatus !== "approved") { %>
                     <div class="admin-review-actions">
                         <form method="POST" action="/admin/listings/<%= listing._id %>/approve">
                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
@@ -56,6 +61,7 @@
                             <button class="btn btn-outline-danger" type="submit">Reject</button>
                         </form>
                     </div>
+                    <% } %>
                 </article>
             <% }) %>
         </section>

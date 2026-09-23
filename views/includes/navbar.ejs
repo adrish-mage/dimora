@@ -11,7 +11,22 @@
       <div class="navbar-nav site-nav-links">
         <a class="nav-link <%= currentPath === '/' ? 'nav-link-active' : '' %>" href="/" <%= currentPath === '/' ? 'aria-current="page"' : '' %>>Home</a>
         <a class="nav-link <%= currentPath.startsWith('/listings') && !currentPath.includes('/new') ? 'nav-link-active' : '' %>" href="/listings" <%= currentPath.startsWith('/listings') && !currentPath.includes('/new') ? 'aria-current="page"' : '' %>>Find a room</a>
-        <a class="nav-link nav-link-accent <%= currentPath === '/listings/new' ? 'nav-link-active' : '' %>" href="/listings/new" <%= currentPath === '/listings/new' ? 'aria-current="page"' : '' %>><i class="fa-solid fa-plus me-1" aria-hidden="true"></i>Add a listing</a>
+        <% if (CurrUser && CurrUser.isVerifiedHost) { %>
+          <a class="nav-link nav-link-accent <%= currentPath === '/listings/new' ? 'nav-link-active' : '' %>" href="/listings/new" <%= currentPath === '/listings/new' ? 'aria-current="page"' : '' %>><i class="fa-solid fa-plus me-1" aria-hidden="true"></i>Add a listing</a>
+        <% } else if (CurrUser && CurrUser.hostApplicationStatus === "pending") { %>
+          <a class="nav-link nav-link-accent" href="/host/apply"><i class="fa-solid fa-hourglass-half me-1" aria-hidden="true"></i>Host application</a>
+        <% } else if (CurrUser && CurrUser.hostApplicationStatus === "needs_information") { %>
+          <a class="nav-link nav-link-accent" href="/host/apply"><i class="fa-solid fa-circle-exclamation me-1" aria-hidden="true"></i>Finish host application</a>
+        <% } else if (CurrUser) { %>
+          <a class="nav-link nav-link-accent" href="/host/apply"><i class="fa-solid fa-house-circle-check me-1" aria-hidden="true"></i>Become a host</a>
+        <% } else { %>
+          <a class="nav-link nav-link-accent" href="/login"><i class="fa-solid fa-house-circle-check me-1" aria-hidden="true"></i>Become a host</a>
+        <% } %>
+        <% if (CurrUser && CurrUser.verificationStatus !== "verified") { %>
+          <a class="nav-link <%= currentPath === '/verify/student' ? 'nav-link-active' : '' %>" href="/verify/student" <%= currentPath === '/verify/student' ? 'aria-current="page"' : '' %>><i class="fa-solid fa-user-check me-1" aria-hidden="true"></i>Verify student status</a>
+        <% } else if (CurrUser && CurrUser.verificationStatus === "verified") { %>
+          <a class="nav-link <%= currentPath === '/verify/student' ? 'nav-link-active' : '' %>" href="/verify/student" <%= currentPath === '/verify/student' ? 'aria-current="page"' : '' %>><i class="fa-solid fa-circle-check me-1" aria-hidden="true"></i>Student verified</a>
+        <% } %>
       </div>
       <form class="navbar-nav d-flex ms-auto navbar-search" role="search" action="/listings" method="GET">
         <input class="form-control me-2" type="search" name="q" value="<%= typeof search !== 'undefined' ? search : '' %>" placeholder="Search cities, campuses" aria-label="Search cities, campuses" autocomplete="off"/>
@@ -26,6 +41,9 @@
         
         <%}%>
         <%if (CurrUser) {%>
+        <% if (CurrUser.role === "admin") { %>
+          <a class="nav-link" href="/admin/verification"><i class="fa-solid fa-shield-halved me-1" aria-hidden="true"></i>Verification desk</a>
+        <% } %>
         <a class="profile-nav-link" href="/users/<%= CurrUser._id %>" aria-label="View your profile" title="View your profile">
           <i class="fa-regular fa-circle-user" aria-hidden="true"></i>
           <span>Profile</span>

@@ -6,7 +6,7 @@ const multer = require('multer');
 const { storage } = require("../cloudConfig.js");
 const upload = multer({ storage });
 
-const { isLoggedIn, isOwner, validateListing } = require("../middleware.js");
+const { isLoggedIn, isApprovedHost, isOwner, validateListing } = require("../middleware.js");
 const listingController = require("../controllers/listings.js");
 const { doubleCsrfProtection } = require("../utils/csrf.js");
 
@@ -14,7 +14,7 @@ const { doubleCsrfProtection } = require("../utils/csrf.js");
 router.get("/", wrapAsync(listingController.index));
 
 // New Route
-router.get("/new", isLoggedIn, listingController.renderNewForm);
+router.get("/new", isLoggedIn, isApprovedHost, listingController.renderNewForm);
 
 // Show Route
 router.get("/:id", wrapAsync(listingController.show));
@@ -23,6 +23,7 @@ router.get("/:id", wrapAsync(listingController.show));
 router.get(
     "/:id/edit", 
     isLoggedIn,
+    isApprovedHost,
     isOwner,
     wrapAsync(listingController.renderEditForm)
 );
@@ -31,6 +32,7 @@ router.get(
 router.put(
     "/:id",
     isLoggedIn,
+    isApprovedHost,
     isOwner,
     upload.single("listing[image]"),
     doubleCsrfProtection,
@@ -42,6 +44,7 @@ router.put(
 router.post(
     "/",
     isLoggedIn,
+    isApprovedHost,
     upload.single("listing[image]"),
     doubleCsrfProtection,
     validateListing,

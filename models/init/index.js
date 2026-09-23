@@ -38,6 +38,7 @@ const initDB = async () => {
             institution: host.institution,
             institutionVerified: host.isVerifiedHost,
             isVerifiedHost: host.isVerifiedHost,
+            hostApplicationStatus: host.isVerifiedHost ? "approved" : "not_started",
         });
         const registered = await User.register(newUser, "password123");
         seededHosts.push(registered);

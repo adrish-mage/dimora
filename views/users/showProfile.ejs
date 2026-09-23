@@ -1,30 +1,38 @@
 <% layout('layouts/boilerplate') -%>
 <main class="profile-page <%= user.role === "admin" ? "admin-profile-page" : "" %>">
     <% const verificationLabels = { unverified: "Not yet verified", pending: "Verification pending", verified: "Verified", flagged: "Flagged for review" }; %>
+    <% const isStudentVerified = user.verificationStatus === "verified"; %>
+    <% const isHostApproved = user.isVerifiedHost || user.hostApplicationStatus === "approved"; %>
+    <% const roleLabel = user.role === "admin" ? "Admin" : user.role === "host" ? "Host" : "Guest"; %>
+    <% const profileRoleText = user.role === "admin" ? "Admin" : isStudentVerified && isHostApproved ? "Verified student + host" : isStudentVerified ? "Verified student" : isHostApproved ? "Host" : roleLabel; %>
+    <% const studentStatusLabels = { unverified: "Not started", pending: "Pending review", verified: "Verified", rejected: "Rejected", needs_information: "Needs information" }; %>
+    <% const hostStatusLabels = { not_started: "Not started", pending: "Pending review", approved: "Approved", rejected: "Rejected", needs_information: "Needs information" }; %>
+    <% const studentStatus = isStudentVerified && user.verificationExpiresAt && new Date(user.verificationExpiresAt) <= new Date() ? "Expired" : studentStatusLabels[user.verificationStatus] || "Not started"; %>
+    <% const hostStatus = isHostApproved ? "Approved" : hostStatusLabels[user.hostApplicationStatus] || "Not started"; %>
     <div class="profile-shell">
         <section class="profile-header" aria-labelledby="profile-title">
             <div class="profile-identity">
-                <span class="profile-avatar" aria-hidden="true"><i class="fa-regular fa-user"></i></span>
+                
                 <div class="profile-name-block">
                     <h1 id="profile-title"><%= user.name || user.username %></h1>
                     <p class="profile-username">@<%= user.username %></p>
-                    <p class="profile-email"><%= user.email %></p>
-                    <% if (user.isVerifiedHost) { %>
-                        <span class="profile-verification"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Verified host</span>
-                    <% } %>
+                    <div class="profile-verification-list" aria-label="Profile verification statuses">
+                        <span class="profile-verification <%= isStudentVerified ? '' : 'is-muted' %>"><i class="fa-solid <%= isStudentVerified ? 'fa-circle-check' : 'fa-user-check' %>" aria-hidden="true"></i> Student: <%= studentStatus %></span>
+                        <span class="profile-verification host-pill <%= isHostApproved ? '' : 'is-muted' %>"><i class="fa-solid <%= isHostApproved ? 'fa-house-circle-check' : 'fa-house' %>" aria-hidden="true"></i> Host: <%= hostStatus %></span>
+                    </div>
                 </div>
             </div>
             <% if (CurrUser && CurrUser._id.equals(user._id)) { %>
                 <div class="profile-header-actions">
                     <% if (user.role === "admin") { %>
-                        <a class="profile-admin-link" href="/admin/listings/pending">
-                            <i class="fa-solid fa-list-check" aria-hidden="true"></i>
-                            Pending listings
+                        <a class="profile-admin-link" href="/admin/verification">
+                            <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+                            Verification desk
                         </a>
                     <% } %>
                     <a class="profile-logout-button" href="/logout">
-                        <i class="fa-solid fa-arrow-right-from-bracket" aria-hidden="true"></i>
-                        Log out
+                        
+                        LOG OUT
                     </a>
                 </div>
             <% } %>
@@ -40,8 +48,8 @@
                 <span><%= reviews.length === 1 ? "Review" : "Reviews" %></span>
             </div>
             <div>
-                <strong><%= user.role %></strong>
-                <span>Account type</span>
+                <strong><%= profileRoleText %></strong>
+                <span>Profile type</span>
             </div>
         </section>
 
@@ -50,22 +58,42 @@
                 <div>
                     <p class="admin-eyebrow">Workspace</p>
                     <h2 id="admin-tools-title">Verification desk</h2>
-                    <p>Review submitted rooms and keep trust decisions moving.</p>
+                    <p>Review people and rooms that make Dimora trustworthy.</p>
                 </div>
-                <a class="admin-profile-tool-link" href="/admin/listings/pending">
-                    <span class="admin-profile-tool-icon"><i class="fa-solid fa-list-check" aria-hidden="true"></i></span>
+                <a class="admin-profile-tool-link" href="/admin/verification">
+                    <span class="admin-profile-tool-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></span>
                     <span>
-                        <strong>Review pending listings</strong>
-                        <small>Open the moderation queue</small>
+                        <strong>Open verification desk</strong>
+                        <small>View all verification portals</small>
                     </span>
                     <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
                 </a>
+            </section>
+            <section class="profile-verification-portals" aria-label="Verification portals">
+                <% verificationPortals.forEach(portal => { %>
+                    <article class="verification-portal">
+                        <a class="verification-portal-main" href="<%= portal.pendingHref %>">
+                            <span class="verification-portal-icon"><i class="fa-solid <%= portal.icon %>" aria-hidden="true"></i></span>
+                            <span class="verification-portal-copy">
+                                <strong><%= portal.title %></strong>
+                                <span><%= portal.description %></span>
+                            </span>
+                            <i class="fa-solid fa-arrow-up-right-from-square verification-portal-arrow" aria-hidden="true"></i>
+                        </a>
+                        <div class="verification-portal-divider" aria-hidden="true"></div>
+                        <nav class="verification-portal-tabs" aria-label="<%= portal.title %> queues">
+                            <a class="verification-portal-tab verification-portal-tab-active" href="<%= portal.pendingHref %>"><span>Pending</span><strong><%= portal.pending %></strong></a>
+                            <a class="verification-portal-tab" href="<%= portal.approvedHref %>"><span>Approved</span><strong><%= portal.approved %></strong></a>
+                        </nav>
+                    </article>
+                <% }) %>
             </section>
         <% } %>
 
         <div class="profile-content-grid">
             <section class="profile-contact" aria-labelledby="profile-info-title">
                 <h2 id="profile-info-title">Profile details</h2>
+                <br>
                 <dl class="profile-details">
                     <div>
                         <dt>Name</dt>
@@ -88,6 +116,29 @@
                             <% } %>
                         </dd>
                     </div>
+                    <div>
+                        <dt>Student verification</dt>
+                        <dd>
+                            <%= studentStatus %>
+                            <% if (user.verificationExpiresAt && isStudentVerified) { %>
+                                <small class="profile-status-meta">Until <%= new Date(user.verificationExpiresAt).toLocaleDateString() %></small>
+                            <% } %>
+                        </dd>
+                    </div>
+                    <div>
+                        <dt>Host approval</dt>
+                        <dd><%= hostStatus %></dd>
+                    </div>
+                    <div>
+                        <dt>Account role</dt>
+                        <dd><%= roleLabel %></dd>
+                    </div>
+                    <% if (isStudentVerified && isHostApproved) { %>
+                    <div>
+                        <dt>Combined access</dt>
+                        <dd>Verified student + host</dd>
+                    </div>
+                    <% } %>
                 </dl>
             </section>
 
@@ -122,15 +173,7 @@
                                         </div>
                                     </div>
                                 </a>
-                                <% if (CurrUser && CurrUser._id.equals(user._id)) { %>
-                                    <div class="profile-listing-actions">
-                                        <a href="/listings/<%= listing._id %>/edit">Edit</a>
-                                        <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                            <button type="submit">Delete</button>
-                                        </form>
-                                    </div>
-                                <% } %>
+                                
                             </article>
                         <% }) %>
                     </div>

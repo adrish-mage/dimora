@@ -21,6 +21,25 @@ module.exports.isLoggedIn = (req, res, next) => {
     next();
 }
 
+module.exports.isApprovedHost = (req, res, next) => {
+    if (!res.locals.CurrUser || !res.locals.CurrUser.isVerifiedHost) {
+        req.flash("error", "Apply to become an approved host before adding a listing.");
+        return res.redirect("/host/apply");
+    }
+    next();
+}
+
+module.exports.isStudentVerified = (req, res, next) => {
+    const user = res.locals.CurrUser;
+    const hasActiveVerification = user && user.verificationStatus === "verified" &&
+        (!user.verificationExpiresAt || new Date(user.verificationExpiresAt) > new Date());
+
+    if (!hasActiveVerification) {
+        req.flash("error", "Verify your student status before continuing.");
+        return res.redirect("/verify/student");
+    }
+    next();
+}
 
 module.exports.saveRedirectUrl = (req, res, next) => {
     if (req.session.redirectUrl) {

@@ -7,7 +7,7 @@
             <p class="home-hero-text">Find a furnished room for your semester or internship, with the details you need before you arrive.</p>
             <div class="home-actions">
                 <a class="btn btn-dark btn-lg" href="/listings">Find a room <i class="fa-solid fa-arrow-right ms-2" aria-hidden="true"></i></a>
-                <a class="home-secondary-link" href="/listings/new">Have a room to share? <span>Add a listing</span></a>
+                <a class="home-secondary-link" href="<%= CurrUser && CurrUser.isVerifiedHost ? '/listings/new' : (CurrUser ? '/host/apply' : '/login') %>">Have a room to share? <span><%= CurrUser && CurrUser.isVerifiedHost ? 'Add a listing' : 'Become a host' %></span></a>
             </div>
             
         </div>

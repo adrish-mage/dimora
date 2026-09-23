@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const passport = require("passport");
+const multer = require("multer");
 const { rateLimit } = require("express-rate-limit");
 
+const { storage } = require("../cloudConfig.js");
+const upload = multer({ storage });
 const { isLoggedIn, saveRedirectUrl } = require("../middleware");
 const userController = require("../controllers/user.js");
 const { doubleCsrfProtection } = require("../utils/csrf.js");
@@ -30,5 +33,9 @@ router.post(
 );
 router.get("/logout", userController.logout);
 router.get("/users/:id", wrapAsync(userController.showProfile));
+router.get("/verify/student", isLoggedIn, userController.renderStudentVerificationForm);
+router.post("/verify/student", isLoggedIn, upload.array("verificationDocs", 3), doubleCsrfProtection, wrapAsync(userController.submitStudentVerification));
+router.get("/host/apply", isLoggedIn, userController.renderHostApplication);
+router.post("/host/apply", isLoggedIn, upload.array("hostDocuments", 3), doubleCsrfProtection, wrapAsync(userController.submitHostApplication));
 
 module.exports = router;

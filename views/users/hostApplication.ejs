@@ -1,0 +1,70 @@
+<% layout('layouts/boilerplate') -%>
+<main class="host-application-page">
+    <section class="host-application-intro">
+        <p class="admin-eyebrow">Dimora hosting</p>
+        <h1><%= user.hostApplicationStatus === "needs_information" ? "Finish your host application" : "Become a host" %></h1>
+        <p>Share a room with students and interns who are relocating for a semester or internship. Your student identity verification is already separate from this application: this step checks your authority to offer a room.</p>
+    </section>
+
+    <% if (user.hostApplicationStatus === "pending") { %>
+        <section class="host-application-status" aria-live="polite">
+            <span class="host-application-status-icon"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i></span>
+            <div>
+                <strong>Your application is under review</strong>
+                <p>Dimora is checking how you are connected to the room. You can continue browsing while we review it.</p>
+            </div>
+        </section>
+    <% } else if (user.hostApplicationStatus === "approved" || user.isVerifiedHost) { %>
+        <section class="host-application-status host-application-status-approved" aria-live="polite">
+            <span class="host-application-status-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+            <div>
+                <strong>You are an approved host</strong>
+                <p>You can now publish a room. Each listing will still receive its own verification review.</p>
+                <a class="btn btn-dark btn-sm" href="/listings/new">Add a listing</a>
+            </div>
+        </section>
+    <% } else { %>
+        <% if (user.hostApplicationStatus === "needs_information") { %>
+            <div class="host-application-admin-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span><strong>More information needed.</strong> <%= user.hostApplicationAdminNote %></span></div>
+        <% } %>
+        <form class="host-application-form" action="/host/apply" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="host-application-form-header">
+                <div>
+                    <p class="admin-eyebrow">Step 1 of 1</p>
+                    <h2>Tell us about your room</h2>
+                </div>
+                <span class="host-application-required">Required for approval</span>
+            </div>
+
+            <fieldset>
+                <legend>How are you connected to this room?</legend>
+                <p class="host-application-help">Choose the option that best describes your authority to offer it.</p>
+                <div class="host-type-options">
+                    <% const hostTypes = [{ value: "owner", icon: "fa-house", label: "I own the property", help: "You own or co-own the room or home." }, { value: "tenant", icon: "fa-key", label: "I rent the property", help: "You have permission to sublet or host a roommate." }, { value: "manager", icon: "fa-clipboard-check", label: "I manage it for the owner", help: "You are authorized to manage rooms for the owner." }]; %>
+                    <% hostTypes.forEach(type => { %>
+                        <label class="host-type-option">
+                            <input type="radio" name="hostType" value="<%= type.value %>" <%= user.hostType === type.value ? "checked" : "" %> required>
+                            <span class="host-type-option-content"><i class="fa-solid <%= type.icon %>" aria-hidden="true"></i><strong><%= type.label %></strong><small><%= type.help %></small></span>
+                        </label>
+                    <% }) %>
+                </div>
+            </fieldset>
+
+            <div class="host-application-field">
+                <label for="hostApplicationNote">How will you host this room?</label>
+                <textarea id="hostApplicationNote" name="hostApplicationNote" rows="5" minlength="30" maxlength="1000" required placeholder="Tell us where the room is, how you are connected to it, and what permission you have to offer it."><%= user.hostApplicationNote || "" %></textarea>
+                <small>At least 30 characters. Do not include passwords, bank details, or unnecessary sensitive information.</small>
+            </div>
+            <div class="host-application-field">
+                <label for="hostDocuments">Proof of authority</label>
+                <input id="hostDocuments" name="hostDocuments" type="file" accept=".pdf,.png,.jpg,.jpeg" multiple required>
+                <small>Owner: ownership proof. Tenant: landlord permission. Manager: owner authorization letter.</small>
+            </div>
+            <div class="host-application-form-footer">
+                <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reviewed by a Dimora admin</span>
+                <button class="btn btn-dark" type="submit">Submit for review <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+        </form>
+    <% } %>
+</main>

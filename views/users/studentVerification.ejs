@@ -1,0 +1,91 @@
+<% layout('layouts/boilerplate') -%>
+<main class="host-application-page">
+    <section class="host-application-intro">
+        <p class="admin-eyebrow">Dimora verification</p>
+        <h1>Verify your student status</h1>
+        <p>We verify your institution details before you can book rooms that are meant for students and interns. This helps keep the housing experience safer, clearer, and more trustworthy.</p>
+    </section>
+
+    <% if (user.verificationStatus === "pending") { %>
+        <section class="host-application-status" aria-live="polite">
+            <span class="host-application-status-icon"><i class="fa-solid fa-hourglass-half" aria-hidden="true"></i></span>
+            <div>
+                <strong>Your verification is under review</strong>
+                <p>We are checking your institution information and proof. You will be notified once the review is complete.</p>
+            </div>
+        </section>
+    <% } else if (user.verificationStatus === "verified") { %>
+        <section class="host-application-status host-application-status-approved" aria-live="polite">
+            <span class="host-application-status-icon"><i class="fa-solid fa-circle-check" aria-hidden="true"></i></span>
+            <div>
+                <strong>You are verified</strong>
+                <p>Your student or intern status has been confirmed. You can continue browsing and booking verified student housing.</p>
+            </div>
+        </section>
+    <% } else { %>
+        <% if (user.verificationStatus === "needs_information") { %>
+            <div class="host-application-admin-note"><i class="fa-solid fa-circle-info" aria-hidden="true"></i><span><strong>More information needed.</strong> <%= user.verificationAdminNote %></span></div>
+        <% } %>
+
+        <form class="host-application-form" action="/verify/student" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+            <div class="host-application-form-header">
+                <div>
+                    <p class="admin-eyebrow">Step 1 of 1</p>
+                    <h2>Tell us about your institution</h2>
+                </div>
+                <span class="host-application-required">Required for student access</span>
+            </div>
+
+            <div class="host-application-field">
+                <label for="institution">Institution name</label>
+                <input id="institution" name="institution" type="text" value="<%= user.institution || '' %>" maxlength="200" required placeholder="University, college, internship program, or employer">
+            </div>
+
+            <div class="host-application-field">
+                <label for="institutionEmail">Institutional email</label>
+                <input id="institutionEmail" name="institutionEmail" type="email" value="<%= user.institutionEmail || '' %>" autocomplete="email" placeholder="you@university.edu">
+                <small>A recognized academic domain is a strong signal. If you do not have one, admin review can use your proof document.</small>
+            </div>
+
+            <fieldset>
+                <legend>What best describes your current status?</legend>
+                <div class="host-type-options">
+                    <% const verificationOptions = [
+                        { value: "student", label: "Student", help: "I am currently enrolled at an institution." },
+                        { value: "intern", label: "Intern", help: "I am joining an internship or placement program." },
+                        { value: "other", label: "Other", help: "I am affiliated through another approved route." }
+                    ]; %>
+                    <% verificationOptions.forEach(option => { %>
+                        <label class="host-type-option">
+                            <input type="radio" name="verificationType" value="<%= option.value %>" <%= user.verificationType === option.value ? "checked" : "" %> required>
+                            <span class="host-type-option-content"><strong><%= option.label %></strong><small><%= option.help %></small></span>
+                        </label>
+                    <% }) %>
+                </div>
+            </fieldset>
+
+            <div class="host-application-field">
+                <label for="verificationDocs">Proof of enrollment or affiliation</label>
+                <input id="verificationDocs" name="verificationDocs" type="file" accept=".pdf,.png,.jpg,.jpeg" multiple required>
+                <small>Upload your student ID, enrollment receipt, admitted student letter, or internship confirmation.</small>
+            </div>
+
+            <div class="host-application-field">
+                <label for="verificationProof">Add details about your proof</label>
+                <textarea id="verificationProof" name="verificationProof" rows="4" minlength="20" maxlength="1000" required placeholder="Add details about your proof, such as student ID, enrollment receipt, admitted student letter, or internship confirmation."><%= user.verificationDocs && user.verificationDocs[0] ? user.verificationDocs[0] : '' %></textarea>
+                <small>At least 20 characters. This should describe the document or proof you will submit for verification.</small>
+            </div>
+
+            <div class="host-application-field">
+                <label for="verificationNote">Optional note</label>
+                <textarea id="verificationNote" name="verificationNote" rows="3" maxlength="500" placeholder="Add any helpful context for the admin review."><%= user.verificationNote || '' %></textarea>
+            </div>
+
+            <div class="host-application-form-footer">
+                <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Reviewed by a Dimora admin</span>
+                <button class="btn btn-dark" type="submit">Submit for review <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+        </form>
+    <% } %>
+</main>
