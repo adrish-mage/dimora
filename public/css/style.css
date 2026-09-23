@@ -604,6 +604,7 @@ body {
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.16em;
+  visibility: hidden;
 }
 
 h1,
@@ -1956,6 +1957,7 @@ textarea.form-control {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  visibility: hidden;
 }
 
 .admin-pending-header h1 {
@@ -2840,6 +2842,7 @@ textarea.form-control {
 
 .admin-profile-tools .admin-eyebrow {
   margin-bottom: 0.25rem;
+  visibility: hidden;
 }
 
 .admin-profile-tools h2 {
