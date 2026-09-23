@@ -38,7 +38,9 @@ function computeTrustScore(listing) {
         verificationScore = 12.5;
     } else if (listing.verificationStatus === "unverified") {
         verificationScore = 5;
-    }
+    }else if (listing.verificationStatus === "flagged") {
+        verificationScore = 0;
+    }   
 
 
     // 4. Review consistency - 15
