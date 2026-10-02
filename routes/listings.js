@@ -55,6 +55,6 @@ router.post(
 router.delete("/:id", isLoggedIn, isOwner, doubleCsrfProtection, wrapAsync(listingController.destroy));
 
 // verification route 
-router.post("/:id/request-verification", isLoggedIn, isOwner, doubleCsrfProtection,     wrapAsync(listingController.requestVerification));
+router.post("/:id/request-verification", isLoggedIn, isOwner, doubleCsrfProtection,wrapAsync(listingController.requestVerification));
 
 module.exports = router;

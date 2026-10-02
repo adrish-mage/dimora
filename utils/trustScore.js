@@ -1,4 +1,4 @@
-const Listing = require("../models/listing");
+
 
 function averageRating(reviews) {
     if (!reviews.length) return 0;

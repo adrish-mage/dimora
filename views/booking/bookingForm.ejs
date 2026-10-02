@@ -1,0 +1,194 @@
+<% layout('layouts/boilerplate') -%>
+
+    <body>
+        <div class="row form-page">
+            <div class="col-8 offset-2">
+
+                <h1 class="form-page-title">Request to book</h1>
+                <p class="form-page-intro">
+                    Choose your stay details and send a booking request to the host.
+                </p>
+
+                <form method="POST" action="/booking/<%= listing._id %>/request-booking" novalidate class="needs-validation">
+
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+                    <!-- Dates -->
+                    <div class="row">
+                        <div class="mb-3 col-md-6">
+                            <label for="checkIn" class="form-label">Check-in</label>
+                            <input id="checkIn" name="booking[checkIn]" type="date" class="form-control" required>
+                            <div class="valid-feedback">Perfect.</div>
+                            <div class="invalid-feedback">
+                                Please select a check-in date.
+                            </div>
+                        </div>
+
+                        <div class="mb-3 col-md-6">
+                            <label for="checkOut" class="form-label">Check-out</label>
+                            <input id="checkOut" name="booking[checkOut]" type="date" class="form-control" required>
+                            <div class="valid-feedback">Looks good.</div>
+                            <div class="invalid-feedback">
+                                Please select a check-out date.
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Guests -->
+                    <div class="mb-3">
+                        <label for="guests" class="form-label">
+                            Number of guests
+                        </label>
+
+                        <input id="guests" name="booking[guests]" type="number" min="1" value="1" class="form-control"
+                            required>
+
+                        <div class="valid-feedback">Got it.</div>
+                        <div class="invalid-feedback">
+                            Please enter the number of guests.
+                        </div>
+                    </div>
+
+
+
+
+                    <!-- Guest information -->
+                    <div class="mb-3">
+                        <label for="guestName" class="form-label">
+                            Guest name
+                        </label>
+
+                        <input id="guestName" type="text" class="form-control"
+                            value="<%= CurrUser.name || CurrUser.username || '' %>" readonly>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="guestEmail" class="form-label">
+                            Email
+                        </label>
+
+                        <input id="guestEmail" type="email" class="form-control" value="<%= CurrUser.email || '' %>"
+                            readonly>
+                    </div>
+
+
+                    <!-- Message -->
+                    <div class="mb-4">
+                        <label for="message" class="form-label">
+                            Message to host
+                        </label>
+
+                        <textarea id="message" name="booking[message]" class="form-control" rows="4"
+                            placeholder="Introduce yourself or leave a message for the host..."></textarea>
+                    </div>
+                    <input type="hidden" name="booking[days]" id="booking-days">
+                    <input type="hidden" name="booking[basePrice]" id="booking-base-price">
+                    <input type="hidden" name="booking[cleaningFee]" value="<%= listing.cleaningFee || 0 %>">
+                    <input type="hidden" name="booking[serviceFee]" value="<%= listing.serviceFee || 0 %>">
+                    <input type="hidden" name="booking[totalPrice]" id="booking-total-price">
+
+
+                    <!-- Price summary -->
+                    <div class="mb-4">
+                        <h5>Price summary</h5>
+
+                        <div class="d-flex justify-content-between">
+                            <span>
+                                ₹<%= listing.price.toLocaleString("en-IN") %> × <span id="days">(days not selected or entered range is invalid)</span> days
+                            </span>
+
+                            <span>
+                                Base Price : ₹<span id="base-price">0</span>
+                            </span>
+                        </div>
+
+                        <% if (listing.cleaningFee) { %>
+                            <div class="d-flex justify-content-between">
+                                <span>Cleaning fee</span>
+                                <span>₹<%= listing.cleaningFee %></span>
+                            </div>
+                            <% } %>
+
+                                <% if (listing.serviceFee) { %>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Service fee</span>
+                                        <span>₹<%= listing.serviceFee %></span>
+                                    </div>
+                                    <% } %>
+
+                                        <hr>
+
+                                        <div class="d-flex justify-content-between">
+                                            <strong>Total</strong>
+                                            <strong id="total-price">₹0</strong>
+                                        </div>
+                    </div>
+
+
+                    <button class="btn btn-dark">
+                        Request to book
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+    </body>
+    <script>
+    const checkIn = document.querySelector("#checkIn");
+    const checkOut = document.querySelector("#checkOut");
+
+    const daysElement = document.querySelector("#days");
+    const basePriceElement = document.querySelector("#base-price");
+    const totalPriceElement = document.querySelector("#total-price");
+
+    const bookingDays = document.querySelector("#booking-days");
+    const bookingBasePrice = document.querySelector("#booking-base-price");
+    const bookingTotalPrice = document.querySelector("#booking-total-price");
+
+    const pricePerDay = <%= listing.price %>;
+    const cleaningFee = <%= listing.cleaningFee || 0 %>;
+    const serviceFee = <%= listing.serviceFee || 0 %>;
+
+    function updatePrice() {
+
+        if (!checkIn.value || !checkOut.value) {
+            return;
+        }
+
+        const checkInDate = new Date(checkIn.value);
+        const checkOutDate = new Date(checkOut.value);
+        if((checkOutDate - checkInDate) < 0){
+            
+        }
+        const days =
+            (checkOutDate - checkInDate) /
+            (1000 * 60 * 60 * 24);
+
+        if (days <= 0) {
+            return;
+        }
+
+        const basePrice = pricePerDay * days;
+
+        const total =
+            basePrice +
+            cleaningFee +
+            serviceFee;
+
+        // Display on page
+        daysElement.textContent = days;
+        basePriceElement.textContent = basePrice.toLocaleString("en-IN");
+        totalPriceElement.textContent = `₹${total.toLocaleString("en-IN")}`;
+
+
+        // Store values in form
+        bookingDays.value = days;
+        bookingBasePrice.value = basePrice;
+        bookingTotalPrice.value = total;
+    }
+
+    checkIn.addEventListener("change", updatePrice);
+    checkOut.addEventListener("change", updatePrice);
+</script>

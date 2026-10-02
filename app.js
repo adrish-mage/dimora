@@ -20,6 +20,7 @@ const User = require("./models/user.js");
 const listingsRouter = require("./routes/listings.js");
 const reviewRouter = require("./routes/review.js");
 const userRouter = require("./routes/user.js");
+const bookingRouter = require("./routes/booking.js");
 const {
     generateCsrfToken,
     invalidCsrfTokenError
@@ -97,6 +98,7 @@ app.get("/", wrapAsync(homeController.index));
 
 app.use("/listings", listingsRouter);
 app.use("/listings/:id/reviews", reviewRouter);
+app.use("/booking",bookingRouter);
 app.use("/admin", require("./routes/admin"));
 app.use("/", userRouter);
 

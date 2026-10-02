@@ -4,6 +4,7 @@
     <% const isStudentVerified = user.verificationStatus === "verified"; %>
     <% const isHostApproved = user.isVerifiedHost || user.hostApplicationStatus === "approved"; %>
     <% const roleLabel = user.role === "admin" ? "Admin" : user.role === "host" ? "Host" : "Guest"; %>
+    <% const isOwnAdminProfile = user.role === "admin" && CurrUser && CurrUser._id.equals(user._id); %>
     <% const profileRoleText = user.role === "admin" ? "Admin" : isStudentVerified && isHostApproved ? "Verified student + host" : isStudentVerified ? "Verified student" : isHostApproved ? "Host" : roleLabel; %>
     <% const studentStatusLabels = { unverified: "Not started", pending: "Pending review", verified: "Verified", rejected: "Rejected", needs_information: "Needs information" }; %>
     <% const hostStatusLabels = { not_started: "Not started", pending: "Pending review", approved: "Approved", rejected: "Rejected", needs_information: "Needs information" }; %>
@@ -53,7 +54,7 @@
             </div>
         </section>
 
-        <% if (user.role === "admin" && CurrUser && CurrUser._id.equals(user._id)) { %>
+        <% if (isOwnAdminProfile) { %>
             <section class="admin-profile-tools" aria-labelledby="admin-tools-title">
                 <div>
                     <p class="admin-eyebrow">Workspace</p>
@@ -90,6 +91,7 @@
             </section>
         <% } %>
 
+        <% if (!isOwnAdminProfile) { %>
         <div class="profile-content-grid">
             <section class="profile-contact" aria-labelledby="profile-info-title">
                 <h2 id="profile-info-title">Profile details</h2>
@@ -148,35 +150,57 @@
                         <h2 id="listings-title">Rooms listed</h2>
                         <span class="section-count"><%= listings.length %></span>
                     </div>
+                    <% if (isHostApproved && CurrUser && CurrUser._id.equals(user._id)) { %>
+                        <p><a class="btn btn-dark" href="/booking/view-bookings">View all room bookings</a></p>
+                    <% } %>
 
                     <% if (listings.length === 0) { %>
                         <p class="profile-empty-state">No rooms listed yet.</p>
                     <% } %>
-                    <div class="row row-cols-lg-2 row-cols-md-1 row-cols-sm-1 g-4 listings-grid profile-listings-grid">
+                    <section class="admin-review-list profile-listing-bars" aria-label="Rooms listed by <%= user.username %>">
                         <% listings.forEach(listing => { %>
-                            <article class="card col listing-card h-100 profile-listing-card">
-                                <a href="/listings/<%= listing._id %>" class="listing-link">
-                                    <% const imgSrc=(listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === 'string' ? listing.image : ''); %>
-                                    <div class="listing-image-wrap">
-                                        <img src="<%= imgSrc %>" class="card-img-top" alt="<%= listing.title %>" loading="lazy">
-                                        <span class="listing-image-label">Dimora room</span>
-                                        <span class="listing-verification-overlay status-<%= listing.verificationStatus %>"><%= verificationLabels[listing.verificationStatus] %></span>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between gap-3 align-items-start">
-                                            <p class="card-text title mb-1"><b><%= listing.title %></b></p>
-                                            <span class="listing-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
-                                        </div>
-                                        <div class="profile-listing-meta">
-                                            <p class="listing-price mb-0">&#8377;<%= listing.price.toLocaleString("en-IN") %> <span>/ month</span></p>
-                                            <span class="badge status-<%= listing.verificationStatus %>"><span class="status-dot" aria-hidden="true"></span><%= verificationLabels[listing.verificationStatus] %></span>
-                                        </div>
-                                    </div>
+                            <article class="admin-review-item profile-listing-bar">
+                                <% const imgSrc = (listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === "string" ? listing.image : ""); %>
+
+                                <a class="admin-review-image-link" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
+                                    <img class="admin-review-image" src="<%= imgSrc %>" alt="<%= listing.title %>" loading="lazy">
+                                    <span class="listing-verification-overlay status-<%= listing.verificationStatus %>">
+                                        <%= verificationLabels[listing.verificationStatus] %>
+                                    </span>
                                 </a>
-                                
+
+                                <div class="admin-review-details">
+                                    <div>
+                                        <h2><a href="/listings/<%= listing._id %>"><%= listing.title %></a></h2>
+                                        <p class="admin-review-location"><%= listing.location %></p>
+                                    </div>
+
+                                    <dl>
+                                        <div>
+                                            <dt>Price</dt>
+                                            <dd>&#8377;<%= listing.price.toLocaleString("en-IN") %> / month</dd>
+                                        </div>
+                                        <div>
+                                            <dt>Status</dt>
+                                            <dd>
+                                                <span class="badge status-<%= listing.verificationStatus %>">
+                                                    <span class="status-dot" aria-hidden="true"></span>
+                                                    <%= verificationLabels[listing.verificationStatus] %>
+                                                </span>
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
+
+                                <div class="admin-review-actions">
+                                    <a class="btn btn-dark" href="/listings/<%= listing._id %>">View Room</a>
+                                    <% if (isHostApproved && CurrUser && CurrUser._id.equals(user._id)) { %>
+                                        <a class="btn btn-outline-dark" href="/booking/<%= listing._id %>/view-booking">View Bookings</a>
+                                    <% } %>
+                                </div>
                             </article>
                         <% }) %>
-                    </div>
+                    </section>
                 </section>
 
                 <section class="profile-section profile-reviews" aria-labelledby="reviews-title">
@@ -199,5 +223,6 @@
                 </section>
             </div>
         </div>
+        <% } %>
     </div>
 </main>
