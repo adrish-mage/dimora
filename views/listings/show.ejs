@@ -76,13 +76,21 @@
                 
 
                 <div class="card show-card">
-                    <!-- Custom responsive show-img class handles framing -->
-                    <% const imgSrc=(listing && listing.image && listing.image.url) ? listing.image.url : (typeof
-                        listing.image==='string' ? listing.image : '' ); %>
-                        <div class="show-image-wrap">
-                            <img src="<%= imgSrc %>" class="card-img-top show-img" alt="<%= listing.title %>">
+                    <% const listingImages = Array.isArray(listing.images) && listing.images.length ? listing.images : [listing.image]; %>
+                    <% const imageUrl = image => typeof image === "string" ? image : image?.url || ""; %>
+                    <div class="listing-gallery" aria-label="Photos of <%= listing.title %>">
+                        <div class="listing-gallery-main">
+                            <img src="<%= imageUrl(listingImages[0]) %>" class="listing-gallery-photo" alt="<%= listing.title %>">
                             <span class="listing-verification-overlay status-<%= listing.verificationStatus %>"><%= verificationLabels[listing.verificationStatus] %></span>
                         </div>
+                        <% if (listingImages.length > 1) { %>
+                            <div class="listing-gallery-supporting">
+                                <% listingImages.slice(1, 5).forEach((image, index) => { %>
+                                    <img src="<%= imageUrl(image) %>" class="listing-gallery-photo" alt="<%= listing.title %> photo <%= index + 2 %>">
+                                <% }); %>
+                            </div>
+                        <% } %>
+                    </div>
 
                         <div class="listing-primary-meta">
                             <p class="listing-detail-price"><b>₹<%= listing.price.toLocaleString("en-IN") %></b><span>/ month</span></p>
