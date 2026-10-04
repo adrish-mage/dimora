@@ -60,6 +60,7 @@
 
 ---
 
+<!-- TODO: add Part 2 screenshots to PRODUCT TOUR: lease request form, host dashboard, status filters -->
 <h2 align="center">WHAT'S HERE (PART 1: DISCOVER + TRUST)</h2>
 
 - Room search and browsing, filtered by campus/workplace proximity
@@ -69,14 +70,69 @@
 - Reviews and ratings tied to listings
 - Auth, CSRF protection, and rate-limited login/signup
 
-<p align="center">Two more parts are planned: booking requests + host decisions, then saved rooms/comparisons and the wider relocation flow. Neither is built yet; this repo is Part 1 only.</p>
+---
+
+<h2 align="center">WHAT'S NEW (PART 2: REQUEST + SECURE)</h2>
+
+Dimora isn't a nightly-stay app. A host renting a spare room for three months wants to vet the guest, so booking is built around **lease requests with host approval**, not instant checkout.
+
+- Lease requests: pick move-in and move-out dates, add a message, send to the host
+- Prorated pricing: monthly rent, with partial months priced by the day, as a standalone pure function
+- Server-side price and date handling: the browser's numbers are never trusted
+- Double-booking protection: overlap check on every request, plus an insert-then-verify step for simultaneous requests
+- Host dashboard: approve, decline, complete or cancel, filterable by status
+- Enforced lease lifecycle: invalid status jumps are rejected
+- Automated tests for pricing, overlap, status rules and the booking controller
+
+<p align="center">Part 3 (saved rooms, comparisons, in-app communication, relocation tools) is not built yet.</p>
+
+---
+
+<h2 align="center">HOW BOOKING WORKS</h2>
+
+**Lease lifecycle**
+
+```
+pending ──▶ approved ──▶ completed
+   │            │
+   │            └──────▶ cancelled
+   ├──────────────────▶ rejected
+   └──────────────────▶ cancelled
+```
+
+`pending` and `approved` leases block their dates. `rejected`, `cancelled` and `completed` free them. Transitions are defined once in [`utils/bookingRules.js`](./utils/bookingRules.js); anything not listed there is refused.
+
+**No double-booking**
+
+Two leases overlap when `existing.start < new.end && new.start < existing.end`, so back-to-back leases (one ends the day the next begins) are allowed. Checking and then inserting as two separate steps would let two simultaneous requests both pass, so a request goes through three stages:
+
+1. Check for an overlapping `pending` or `approved` lease. If one exists, reject.
+2. Insert the request as `pending`.
+3. Check again, excluding itself. If another blocking lease now exists, two requests raced: the one with the lower `_id` wins and the other deletes its own request.
+
+Approving a request re-runs the overlap check, since state may have changed since it was submitted.
+
+**Prorated pricing**
+
+[`utils/proration.js`](./utils/proration.js) takes the monthly rent and the lease dates, counts full months, and prices the leftover days at `monthlyRate / 30` per day. It has no database or request logic, so it is tested in isolation. The server recalculates the price on every request. Dates are parsed and stored as UTC midnight to avoid timezone off-by-one errors.
+
+**Known limits**
+
+- The race handling is insert-then-verify, not a database-level constraint or transaction. MongoDB transactions are the next step up.
+- A `pending` request blocks its dates for everyone else until the host decides.
+
+---
 
 ---
 
 <h2 align="center">ROADMAP</h2>
 
 - [x] **Part 1: Discover + Trust**: search, verification, trust scoring, reviews
-- [ ] **Part 2: Request + Secure**: booking requests, host decisions, move-in dates, in-app communication
+- [ ] **Part 2: Request + Secure**: lease requests, host decisions, prorated pricing, double-booking protection
+  - [x] lease requests, proration, overlap + race handling, host approve/decline/complete/cancel
+  - [ ] guest cancel and "My Leases" view
+  - [ ] reviews gated on a completed lease
+  - [ ] real concurrency test against a test database
 - [ ] **Part 3: Relocate + Grow**: saved rooms, comparisons, relocation tools
 
 ---
@@ -153,6 +209,23 @@ Admins handle this through a dedicated verification desk (`/admin/verification`)
 </details>
 
 <details>
+<summary>Booking (students and hosts)</summary>
+
+<div align="center">
+
+| Method | Route | Description |
+|---|---|---|
+| GET | `/booking/:id/request-booking` | Lease request form (verified students) |
+| POST | `/booking/:id/request-booking` | Submit a lease request for listing `:id` |
+| GET | `/booking/view-bookings` | Host: requests across all own listings |
+| GET | `/booking/:id/view-booking` | Host: requests for one listing (owner only) |
+| POST | `/booking/:id/status` | Host: approve, reject, complete or cancel booking `:id` |
+
+</div>
+
+</details>
+
+<details>
 <summary>Admin only</summary>
 
 <div align="center">
@@ -180,10 +253,10 @@ dimora/
 ├── middleware.js         auth guards, ownership checks, request validation
 ├── schemaValidator.js    Joi schemas for listings/reviews
 ├── cloudConfig.js        Cloudinary storage config for image uploads
-├── routes/               listings, reviews, users, admin
-├── controllers/          route handlers, one file per resource
-├── models/               Mongoose schemas (User, Listing, Review) + init/ seed data
-├── utils/                trustScore, expressError, csrf, wrapAsync
+├── routes/               listings, reviews, users, booking, admin
+├── controllers/          route handlers, one file per resource (+ booking.test.js)
+├── models/               Mongoose schemas (User, Listing, Review, Booking) + init/ seed data
+├── utils/                trustScore, proration, bookingRules, durationOfStay, csrf, wrapAsync (+ tests)
 ├── views/                EJS templates (listings, users, admin, layouts, includes)
 └── public/               static assets (css, js, images)
 ```
@@ -221,9 +294,10 @@ dimora/
 2. `npm install`
 3. Seed the database: `node models/init/index.js`
 4. `node app.js`
+5. Run the tests: `npm test`
 
 ---
 
 <h2 align="center">STATUS</h2>
 
-<p align="center">Solo project, actively being built. Part 1 is live and usable end to end (sign up, browse, list a room, request verification, leave a review). No license file yet, so treat this as "source visible, all rights reserved" until one's added. Feedback and issues welcome.</p>
+<p align="center">Solo project, actively being built. Parts 1 and 2 are live: sign up, browse, list a room, request verification, send a lease request, and manage requests as a host. No license file yet, so treat this as "source visible, all rights reserved" until one's added. Feedback and issues welcome.</p>
