@@ -44,6 +44,9 @@
         <% if (CurrUser.role === "admin") { %>
           <a class="nav-link" href="/admin/verification"><i class="fa-solid fa-shield-halved me-1" aria-hidden="true"></i>Verification desk</a>
         <% } %>
+        <% if (CurrUser.role === "guest") { %>
+          <a class="nav-link <%= currentPath === '/booking/my-leases' ? 'nav-link-active' : '' %>" href="/booking/my-leases" <%= currentPath === '/booking/my-leases' ? 'aria-current="page"' : '' %>><i class="fa-solid fa-file-contract me-1" aria-hidden="true"></i>My Leases</a>
+        <% } %>
         <a class="profile-nav-link" href="/users/<%= CurrUser._id %>" aria-label="View your profile" title="View your profile">
           <i class="fa-regular fa-circle-user" aria-hidden="true"></i>
           <span>Profile</span>

@@ -37,6 +37,9 @@
         </div>
         <% if (isOwn) { %>
             <div class="dm-head-links">
+                <% if (!isAdmin) { %>
+                    <a class="dm-btn dm-btn-primary" href="/booking/my-leases">My Leases</a>
+                <% } %>
                 <a class="dm-btn dm-btn-quiet" href="/logout">Log out</a>
             </div>
         <% } %>
