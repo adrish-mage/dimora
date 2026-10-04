@@ -95,7 +95,7 @@
 
                         <div class="d-flex justify-content-between">
                             <span>
-                                ₹<%= listing.price.toLocaleString("en-IN") %> × <span id="days">(days not selected or entered range is invalid)</span> days
+                                ₹<%= listing.price.toLocaleString("en-IN") %> monthly rent, prorated over <span id="days">(select lease dates)</span> days
                             </span>
 
                             <span>
@@ -147,7 +147,7 @@
     const bookingBasePrice = document.querySelector("#booking-base-price");
     const bookingTotalPrice = document.querySelector("#booking-total-price");
 
-    const pricePerDay = <%= listing.price %>;
+    const monthlyRate = <%= listing.price %>;
     const cleaningFee = <%= listing.cleaningFee || 0 %>;
     const serviceFee = <%= listing.serviceFee || 0 %>;
 
@@ -159,9 +159,6 @@
 
         const checkInDate = new Date(checkIn.value);
         const checkOutDate = new Date(checkOut.value);
-        if((checkOutDate - checkInDate) < 0){
-            
-        }
         const days =
             (checkOutDate - checkInDate) /
             (1000 * 60 * 60 * 24);
@@ -170,7 +167,19 @@
             return;
         }
 
-        const basePrice = pricePerDay * days;
+        let fullMonths = 0;
+        let current = new Date(checkInDate);
+        while (true) {
+            const next = new Date(current);
+            next.setUTCMonth(next.getUTCMonth() + 1);
+            if (next > checkOutDate) {
+                break;
+            }
+            fullMonths++;
+            current = next;
+        }
+        const extraDays = (checkOutDate - current) / (1000 * 60 * 60 * 24);
+        const basePrice = fullMonths * monthlyRate + extraDays * (monthlyRate / 30);
 
         const total =
             basePrice +

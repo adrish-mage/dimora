@@ -1,8 +1,70 @@
-<% layout('layouts/boilerplate')-%>
-<div class="error-state">
-    <p class="eyebrow">A LITTLE DETOUR</p>
-    <h1>That page wandered off.</h1>
-    <p>We could not find what you were looking for. Let us get you back to the good part.</p>
-    <a href="/listings" class="btn btn-dark">Find a room</a>
+<% layout('layouts/boilerplate') -%>
+<%
+    const errorPages = {
+        400: {
+            eyebrow: "REQUEST NEEDS A CHECK",
+            title: "A few details need another look.",
+            icon: "fa-clipboard-check",
+            action: "Back to rooms",
+            href: "/listings",
+            fallback: "Please review the request and try again."
+        },
+        403: {
+            eyebrow: "ACCESS RESTRICTED",
+            title: "This part of Dimora is private.",
+            icon: "fa-lock",
+            action: "Explore rooms",
+            href: "/listings",
+            fallback: "You do not have permission to view this page."
+        },
+        404: {
+            eyebrow: "ROOM NOT FOUND",
+            title: "Looks like this page has moved out.",
+            icon: "fa-house-circle-xmark",
+            action: "Find a room",
+            href: "/listings",
+            fallback: "We could not find the page you requested."
+        },
+        429: {
+            eyebrow: "TAKE A BREATH",
+            title: "That was a lot of requests at once.",
+            icon: "fa-hourglass-half",
+            action: "Back to rooms",
+            href: "/listings",
+            fallback: "Please wait a moment, then try again."
+        },
+        500: {
+            eyebrow: "A TEMPORARY SETBACK",
+            title: "We hit a snag on our side.",
+            icon: "fa-screwdriver-wrench",
+            action: "Find a room",
+            href: "/listings",
+            fallback: "Something went wrong on our side. Please try again in a little while."
+        }
+    };
+    const errorPage = errorPages[statusCode] || errorPages[500];
+%>
+<main class="error-state" aria-labelledby="error-title">
+    <div class="error-state__visual" aria-hidden="true">
+        <span class="error-state__brand">DIMORA / ROOM TO BEGIN</span>
+        <i class="fa-solid <%= errorPage.icon %>"></i>
+        <span class="error-state__code"><%= statusCode %></span>
+        <span class="error-state__note">A small detour in your search</span>
     </div>
-</div>
+
+    <section class="error-state__content">
+        <p class="error-state__eyebrow"><%= errorPage.eyebrow %></p>
+        <h1 id="error-title"><%= errorPage.title %></h1>
+        <p class="error-state__message"><%= message || errorPage.fallback %></p>
+        <div class="error-state__actions">
+            <a href="<%= errorPage.href %>" class="btn btn-dark">
+                <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+                <%= errorPage.action %>
+            </a>
+            <a href="/" class="error-state__home-link">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Go home
+            </a>
+        </div>
+    </section>
+</main>

@@ -1364,18 +1364,32 @@ textarea.form-control {
 
 .auth-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 440px);
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
   align-items: center;
-  gap: clamp(2rem, 8vw, 8rem);
-  max-width: 980px;
-  margin-right: auto;
-  margin-left: auto;
+  gap: clamp(2rem, 4vw, 3.5rem);
+  width: min(100%, 850px);
+  max-width: 850px;
+  margin: 2rem auto;
+}
+
+body.auth-route > .container.mt-3 {
+  flex: 0 0 auto;
+}
+
+body.auth-route > .page-shell {
+  display: flex;
+  flex: 1 0 auto;
+  align-items: center;
+}
+
+body.auth-route .auth-shell {
+  margin: 2rem auto;
 }
 
 .auth-intro h1 {
   max-width: 480px;
   margin: 0.55rem 0 1rem;
-  font-size: clamp(2.5rem, 5vw, 4.4rem);
+  font-size: clamp(2.5rem, 4vw, 3.6rem);
   line-height: 0.98;
 }
 
@@ -2253,23 +2267,153 @@ textarea.form-control {
 }
 
 .error-state {
-  max-width: 620px;
-  margin-right: auto;
-  margin-left: auto;
-  text-align: center;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.78fr) minmax(0, 1.22fr);
+  width: min(calc(100% - 2.5rem), 980px);
+  min-height: 430px;
+  margin: clamp(2.5rem, 8vh, 6rem) auto;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
-.error-state h1 {
-  margin: 0.65rem 0 0.9rem;
-  font-size: clamp(2.5rem, 6vw, 5rem);
-  line-height: 0.95;
+.error-state__visual {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: clamp(1.5rem, 4vw, 3rem);
+  background-color: var(--brand-green);
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 35px, rgb(255 255 255 / 7%) 36px),
+    repeating-linear-gradient(90deg, transparent 0 35px, rgb(255 255 255 / 7%) 36px);
+  color: #fff;
 }
 
-.error-state p:not(.eyebrow) {
-  max-width: 420px;
-  margin: 0 auto 1.7rem;
+.error-state__brand,
+.error-state__note {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.error-state__brand {
+  color: #d4e2d6;
+}
+
+.error-state__visual > i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  color: rgb(255 255 255 / 17%);
+  font-size: clamp(7rem, 16vw, 12rem);
+  transform: translate(-50%, -56%);
+}
+
+.error-state__code {
+  margin-top: auto;
+  font-size: clamp(4.5rem, 9vw, 7.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+}
+
+.error-state__note {
+  margin-top: 1rem;
+  color: #d4e2d6;
+}
+
+.error-state__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  padding: clamp(2rem, 6vw, 5rem);
+}
+
+.error-state__eyebrow {
+  margin: 0 0 1rem;
+  color: var(--brand-green);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.error-state__content h1 {
+  max-width: 13ch;
+  margin: 0 0 1rem;
+  font-size: clamp(2.2rem, 4.5vw, 3.7rem);
+  line-height: 1.02;
+}
+
+.error-state__message {
+  max-width: 38ch;
+  margin: 0;
   color: var(--muted-ink);
   line-height: 1.6;
+}
+
+.error-state__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.error-state__actions .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.error-state__home-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.error-state__home-link:hover {
+  color: var(--brand-green-hover);
+}
+
+@media (max-width: 640px) {
+  .error-state {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    margin-top: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .error-state__visual {
+    min-height: 210px;
+    padding: 1.5rem;
+  }
+
+  .error-state__visual > i {
+    top: 48%;
+    left: auto;
+    right: 1.5rem;
+    font-size: 6rem;
+    transform: translateY(-50%);
+  }
+
+  .error-state__code {
+    font-size: 4.5rem;
+  }
+
+  .error-state__content {
+    padding: 2rem 1.5rem;
+  }
 }
 
 .f-info {

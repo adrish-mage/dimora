@@ -1,11 +1,30 @@
 const Listing = require("../models/listing");
 const Booking = require("../models/booking.js");
 const { getDays } = require("../utils/durationOfStay");
+const proration = require("../utils/proration");
 const {
     canTransitionBooking,
     createDateOverlapQuery,
     normalizeBookingStatus
 } = require("../utils/bookingRules");
+
+function parseUtcMidnight(dateValue) {
+    const match = typeof dateValue === "string" && /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
+    if (!match) {
+        return new Date(NaN);
+    }
+
+    const [, year, month, day] = match.map(Number);
+    const date = new Date(0);
+    date.setUTCFullYear(year, month - 1, day);
+    date.setUTCHours(0, 0, 0, 0);
+
+    if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) {
+        return new Date(NaN);
+    }
+
+    return date;
+}
 
 module.exports.requestBooking = async (req, res) => {
     const listing = await Listing.findById(req.params.id);
@@ -27,44 +46,59 @@ module.exports.sendBooking = async (req, res) => {
         message
     } = req.body.booking || {};
 
-    const checkInDate = new Date(checkIn);
-    const checkOutDate = new Date(checkOut);
+    const checkInDate = parseUtcMidnight(checkIn);
+    const checkOutDate = parseUtcMidnight(checkOut);
     const days = getDays(checkInDate, checkOutDate);
     const guestCount = Number(guests);
 
-    if (!Number.isFinite(days) || days <= 0 || !Number.isInteger(days) || !Number.isInteger(guestCount) || guestCount < 1) {
+    if (checkInDate <= new Date() || !Number.isFinite(days) || days <= 0 || !Number.isInteger(days) || !Number.isInteger(guestCount) || guestCount < 1) {
         req.flash("error", "Choose valid lease dates and at least one guest.");
         return res.redirect(`/booking/${listing._id}/request-booking`);
     }
 
-    const conflictingBooking = await Booking.exists(
-        createDateOverlapQuery(listing._id, checkInDate, checkOutDate)
-    );
+    if (listing.owner && String(listing.owner) === String(req.user._id)) {
+        req.flash("error", "You cannot book your own listing.");
+        return res.redirect(`/listings/${listing._id}`);
+    }
+
+    const overlapQuery = createDateOverlapQuery(listing._id, checkInDate, checkOutDate);
+    const conflictingBooking = await Booking.exists(overlapQuery);
     if (conflictingBooking) {
-        req.flash("error", "Those dates overlap another pending or approved booking.");
+        req.flash("error", "dates unavailable");
         return res.redirect(`/booking/${listing._id}/request-booking`);
     }
 
     const cleaningFee = Number(listing.cleaningFee) || 0;
     const serviceFee = Number(listing.serviceFee) || 0;
-    const basePrice = Number(listing.price) * days;
+    const basePrice = proration(Number(listing.price), checkInDate, checkOutDate).total;
     const totalPrice = basePrice + cleaningFee + serviceFee;
 
     const booking = new Booking({
         listing: listing._id,
         guest: req.user._id,
-        checkIn,
-        checkOut,
+        checkIn: checkInDate,
+        checkOut: checkOutDate,
         guests: guestCount,
         message,
         days,
         basePrice,
         cleaningFee,
         serviceFee,
-        totalPrice
+        totalPrice,
+        status: "pending"
     });
 
     await booking.save();
+
+    const racedBooking = await Booking.findOne(
+        createDateOverlapQuery(listing._id, checkInDate, checkOutDate, booking._id)
+    ).sort({ _id: 1 });
+
+    if (racedBooking && String(racedBooking._id) < String(booking._id)) {
+        await booking.deleteOne();
+        req.flash("error", "dates unavailable");
+        return res.redirect(`/booking/${listing._id}/request-booking`);
+    }
 
     req.flash("success", "Your booking request has been sent to the host.");
     res.redirect(`/listings/${listing._id}`);

@@ -114,10 +114,14 @@ app.use((err, req, res, next) => {
         return res.redirect(req.get("Referrer") || "/listings");
     }
 
-    const {
-        statusCode = 500,
-        message = "something went wrong"
-    } = err;
+    if (res.headersSent) {
+        return next(err);
+    }
 
-    res.status(statusCode).send(message);
+    const statusCode = Number(err.statusCode) || 500;
+    const message = statusCode >= 500
+        ? "Something went wrong on our side. Please try again in a little while."
+        : err.message || "We could not complete that request.";
+
+    return res.status(statusCode).render("error.ejs", { statusCode, message });
 });
