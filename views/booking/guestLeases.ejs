@@ -8,7 +8,7 @@
                 Back to profile
             </a>
             <h1>My Leases</h1>
-            <p class="host-bookings-intro">Track your room requests and lease decisions.</p>
+            <p class="host-bookings-intro">Track your listing requests and lease decisions.</p>
         </div>
     </div>
 
@@ -16,8 +16,8 @@
         <section class="host-bookings-empty" aria-label="No leases yet">
             <span class="host-bookings-empty-icon" aria-hidden="true"><i class="fa-regular fa-calendar"></i></span>
             <h2>No lease requests yet</h2>
-            <p>Your room requests and their status will appear here.</p>
-            <a class="btn btn-dark mt-3" href="/listings">Find a room</a>
+            <p>Your listing requests and their status will appear here.</p>
+            <a class="btn btn-dark mt-3" href="/listings">Find a listing</a>
         </section>
     <% } else { %>
         <section class="host-bookings-list" aria-label="Your leases">
@@ -43,7 +43,7 @@
                                         <h2><a href="/listings/<%= leaseListing._id %>"><%= leaseListing.title %></a></h2>
                                         <p class="admin-review-location"><%= leaseListing.location %></p>
                                     <% } else { %>
-                                        <h2><%= leaseListing?.title || "Room no longer available" %></h2>
+                                        <h2><%= leaseListing?.title || "Listing no longer available" %></h2>
                                     <% } %>
                                 </div>
                             </div>

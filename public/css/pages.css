@@ -1,0 +1,1224 @@
+/*
+  Dimora page styles: login, signup, profile, booking request, host requests.
+  Loaded after style.css. Everything is namespaced "dm-" so it never fights
+  the older rules. Tokens (--ink, --paper, --line, --brand-green, --sage,
+  --muted-ink) come from style.css.
+*/
+
+:root {
+  --dm-ok: #064532;
+  --dm-wait: #82621a;
+  --dm-bad: #94392b;
+  --dm-quiet: #6d7772;
+  --dm-field: #cdd5cf;
+  --dm-leader: #b4beb6;
+}
+
+/* ---------- shared bits ---------- */
+
+.dm-auth,
+.dm-profile,
+.dm-book,
+.dm-requests {
+  width: 100%;
+  margin: 0 auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.dm-profile,
+.dm-book,
+.dm-requests {
+  max-width: 1080px;
+  padding: 2.5rem 0 5rem;
+}
+
+.dm-profile h1,
+.dm-book h1,
+.dm-requests h1,
+.dm-auth h1 {
+  margin: 0;
+  font-size: clamp(2.2rem, 4.6vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.dm-link {
+  color: var(--brand-green);
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+.dm-link:hover {
+  color: var(--ink);
+}
+
+.dm-link-muted {
+  color: var(--dm-quiet);
+}
+
+.dm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.9rem;
+  padding: 0 1.5rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dm-btn:hover,
+.dm-btn:focus-visible {
+  background: #34443d;
+  border-color: #34443d;
+  color: #fff;
+}
+
+.dm-btn-block {
+  width: 100%;
+}
+
+.dm-btn-quiet {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--dm-field);
+}
+
+.dm-btn-quiet:hover,
+.dm-btn-quiet:focus-visible {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: var(--ink);
+}
+
+.dm-btn[disabled] {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+/* state text: a coloured dot plus plain words */
+.dm-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.dm-state::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--dm-quiet);
+}
+
+.dm-state[data-state="verified"]::before,
+.dm-state[data-state="approved"]::before {
+  background: var(--dm-ok);
+}
+
+.dm-state[data-state="pending"]::before,
+.dm-state[data-state="needs_information"]::before {
+  background: var(--dm-wait);
+}
+
+.dm-state[data-state="flagged"]::before,
+.dm-state[data-state="rejected"]::before,
+.dm-state[data-state="cancelled"]::before {
+  background: var(--dm-bad);
+}
+
+/* ---------- fields ---------- */
+
+.dm-field {
+  margin-bottom: 1.25rem;
+}
+
+.dm-field label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--ink);
+  font-size: 0.86rem;
+  font-weight: 500;
+}
+
+.dm-field .form-control {
+  min-height: 3rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--dm-field);
+  border-radius: 0.5rem;
+  background-color: #fff;
+  background-image: none;
+  color: var(--ink);
+  font-size: 1rem;
+  box-shadow: none;
+}
+
+.dm-field textarea.form-control {
+  min-height: 7.5rem;
+  resize: vertical;
+  line-height: 1.55;
+}
+
+.dm-field .form-control:focus {
+  border-color: var(--brand-green);
+  box-shadow: 0 0 0 3px rgba(6, 69, 50, 0.16);
+}
+
+/* bootstrap paints green ticks on valid fields; the ledger tone doesn't need them */
+.was-validated .dm-field .form-control:valid,
+.was-validated .dm-field .form-control:valid:focus {
+  border-color: var(--dm-field);
+  background-image: none;
+  padding-right: 0.9rem;
+}
+
+.was-validated .dm-field .form-control:invalid {
+  border-color: var(--dm-bad);
+  background-image: none;
+  padding-right: 0.9rem;
+}
+
+.dm-field .invalid-feedback {
+  margin-top: 0.4rem;
+  color: var(--dm-bad);
+  font-size: 0.84rem;
+}
+
+.dm-field-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1rem;
+}
+
+.dm-hint {
+  margin: 0.4rem 0 0;
+  color: var(--dm-quiet);
+  font-size: 0.84rem;
+}
+
+.dm-password {
+  position: relative;
+}
+
+.dm-password .form-control {
+  padding-right: 4.5rem;
+}
+
+.was-validated .dm-password .form-control:valid,
+.was-validated .dm-password .form-control:invalid {
+  padding-right: 4.5rem;
+}
+
+.dm-reveal {
+  position: absolute;
+  top: 50%;
+  right: 0.9rem;
+  transform: translateY(-50%);
+  padding: 0.25rem;
+  border: 0;
+  background: none;
+  color: var(--brand-green);
+  font-family: inherit;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ---------- flash messages (only on the pages redesigned here) ---------- */
+
+body:has(.dm-auth, .dm-profile, .dm-book, .dm-requests) .flash-message {
+  padding: 0.8rem 1.1rem;
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--brand-green);
+  border-radius: 0.5rem;
+  background: #fff;
+  color: var(--ink);
+  font-size: 0.92rem;
+  box-shadow: none;
+}
+
+body:has(.dm-auth, .dm-profile, .dm-book, .dm-requests) .flash-message.alert-danger {
+  border-left-color: var(--dm-bad);
+}
+
+/* ---------- login / signup ---------- */
+
+body.auth-route > .page-shell {
+  align-items: stretch;
+}
+
+.dm-auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 25rem);
+  gap: clamp(2rem, 6vw, 5.5rem);
+  align-items: center;
+  max-width: 1040px;
+  padding: 2rem 0 4rem;
+}
+
+.dm-auth-photo {
+  position: relative;
+  align-self: stretch;
+  min-height: 32rem;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 1.25rem 1.25rem 1.25rem 5rem;
+  background: var(--sage);
+}
+
+.dm-auth-photo img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dm-auth-photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(27, 36, 33, 0.55));
+}
+
+.dm-auth-photo figcaption {
+  position: absolute;
+  z-index: 1;
+  left: 2rem;
+  bottom: 1.75rem;
+  max-width: 17rem;
+  color: #fff;
+  font-size: 1.05rem;
+  line-height: 1.4;
+}
+
+.dm-auth-main h1 {
+  font-size: clamp(2.2rem, 4vw, 3rem);
+}
+
+.dm-auth-lede {
+  margin: 0.8rem 0 2rem;
+  color: var(--muted-ink);
+  line-height: 1.6;
+}
+
+.dm-auth-switch {
+  margin: 1.75rem 0 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted-ink);
+  font-size: 0.92rem;
+}
+
+/* ---------- profile ---------- */
+
+.dm-profile-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dm-handle {
+  margin: 0.7rem 0 0;
+  color: var(--muted-ink);
+  font-size: 1.02rem;
+}
+
+.dm-head-links {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-shrink: 0;
+}
+
+.dm-profile-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 19rem) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+  padding-top: 2.5rem;
+}
+
+.dm-side {
+  position: sticky;
+  top: 6rem;
+}
+
+.dm-block + .dm-block {
+  margin-top: 2.5rem;
+}
+
+.dm-block h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.dm-checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dm-checks li {
+  display: flex;
+  gap: 0.85rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.dm-check-mark {
+  display: grid;
+  flex: 0 0 1.35rem;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.1rem;
+  place-items: center;
+  border: 1.5px solid var(--dm-field);
+  border-radius: 50%;
+  color: #fff;
+}
+
+.dm-check-mark svg {
+  width: 0.75rem;
+  height: 0.75rem;
+  display: none;
+}
+
+.dm-checks li[data-state="verified"] .dm-check-mark,
+.dm-checks li[data-state="approved"] .dm-check-mark {
+  border-color: var(--dm-ok);
+  background: var(--dm-ok);
+}
+
+.dm-checks li[data-state="verified"] svg,
+.dm-checks li[data-state="approved"] svg {
+  display: block;
+}
+
+.dm-checks li[data-state="pending"] .dm-check-mark,
+.dm-checks li[data-state="needs_information"] .dm-check-mark,
+.dm-checks li[data-state="unverified"] .dm-check-mark,
+.dm-checks li[data-state="not_started"] .dm-check-mark {
+  border-color: var(--dm-wait);
+}
+
+.dm-checks li[data-state="pending"] .dm-check-mark::after,
+.dm-checks li[data-state="needs_information"] .dm-check-mark::after,
+.dm-checks li[data-state="unverified"] .dm-check-mark::after,
+.dm-checks li[data-state="not_started"] .dm-check-mark::after {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--dm-wait);
+}
+
+.dm-checks li[data-state="rejected"] .dm-check-mark {
+  border-color: var(--dm-bad);
+}
+
+.dm-checks strong {
+  display: block;
+  font-weight: 500;
+}
+
+.dm-checks span.dm-check-text {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+}
+
+.dm-checks .dm-link {
+  display: inline-block;
+  margin-top: 0.35rem;
+}
+
+.dm-facts {
+  margin: 0;
+}
+
+.dm-facts div {
+  padding: 0.85rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.dm-facts dt {
+  color: var(--muted-ink);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.dm-facts dd {
+  margin: 0.15rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.dm-section + .dm-section {
+  margin-top: 3.5rem;
+}
+
+.dm-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+}
+
+.dm-section-head h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  letter-spacing: -0.03em;
+}
+
+.dm-section-head h2 span {
+  margin-left: 0.4rem;
+  color: var(--dm-quiet);
+  font-weight: 400;
+}
+
+.dm-empty {
+  margin: 0;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+  color: var(--muted-ink);
+}
+
+.dm-room {
+  display: grid;
+  grid-template-columns: 8rem minmax(0, 1fr);
+  gap: 1.25rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.dm-room-photo {
+  display: block;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--sage);
+}
+
+.dm-room-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dm-room h3 {
+  margin: 0;
+  font-size: 1.18rem;
+  letter-spacing: -0.02em;
+}
+
+.dm-room h3 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.dm-room h3 a:hover {
+  color: var(--brand-green);
+}
+
+.dm-room-place {
+  margin: 0.15rem 0 0.7rem;
+  color: var(--muted-ink);
+  font-size: 0.92rem;
+}
+
+.dm-room-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 1.5rem;
+}
+
+.dm-room-meta strong {
+  font-weight: 500;
+}
+
+.dm-room-links {
+  display: flex;
+  gap: 1.25rem;
+  margin-top: 0.8rem;
+}
+
+.dm-review {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.dm-review-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dm-review-top a {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.dm-review-top a:hover {
+  color: var(--brand-green);
+}
+
+.dm-review-top span {
+  flex-shrink: 0;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+}
+
+.dm-review p {
+  max-width: 62ch;
+  margin: 0.5rem 0 0;
+  line-height: 1.65;
+}
+
+/* admin desk */
+
+.dm-desk-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.5rem 2rem;
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.dm-desk-row h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.dm-desk-row p {
+  margin: 0.15rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.92rem;
+}
+
+.dm-desk-count {
+  color: var(--ink);
+  font-size: 0.92rem;
+  text-decoration: none;
+}
+
+.dm-desk-count strong {
+  font-size: 1.15rem;
+  font-weight: 500;
+}
+
+.dm-desk-count:hover {
+  color: var(--brand-green);
+}
+
+.dm-desk-count.is-open strong {
+  color: var(--dm-wait);
+}
+
+/* ---------- booking request ---------- */
+
+.dm-book-head p {
+  max-width: 34rem;
+  margin: 0.8rem 0 0;
+  color: var(--muted-ink);
+  line-height: 1.6;
+}
+
+.dm-back {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  color: var(--muted-ink);
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.dm-back:hover {
+  color: var(--brand-green);
+}
+
+.dm-book-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: start;
+  margin-top: 2.5rem;
+}
+
+.dm-group {
+  margin-bottom: 2.25rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dm-group:last-of-type {
+  border-bottom: 0;
+}
+
+.dm-group h2 {
+  margin: 0 0 1.1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.dm-guest {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.dm-guest dt {
+  color: var(--muted-ink);
+  font-size: 0.82rem;
+  font-weight: 400;
+}
+
+.dm-guest dd {
+  margin: 0.15rem 0 0;
+  overflow-wrap: anywhere;
+}
+
+.dm-submit-note {
+  margin: 0.9rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.88rem;
+}
+
+.dm-lease {
+  position: sticky;
+  top: 6.5rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1rem 1rem 1rem 2.75rem;
+  background: var(--surface);
+}
+
+.dm-lease-photo {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  background: var(--sage);
+}
+
+.dm-lease-body {
+  padding: 1.25rem 1.4rem 1.5rem;
+}
+
+.dm-lease h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
+}
+
+.dm-lease-place {
+  margin: 0.15rem 0 1.25rem;
+  color: var(--muted-ink);
+  font-size: 0.92rem;
+}
+
+.dm-ledger {
+  margin: 0;
+}
+
+.dm-ledger div {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+}
+
+.dm-ledger dt {
+  font-weight: 400;
+}
+
+.dm-ledger .dm-leader {
+  flex: 1 1 auto;
+  min-width: 1rem;
+  border-bottom: 1.5px dotted var(--dm-leader);
+  transform: translateY(-0.2rem);
+}
+
+.dm-ledger dd {
+  margin: 0;
+  text-align: right;
+}
+
+.dm-ledger .dm-total {
+  margin-top: 0.6rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--line);
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.dm-ledger .dm-total dt {
+  font-weight: 500;
+}
+
+.dm-lease-note {
+  margin: 1rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+
+/* ---------- host requests ---------- */
+
+.dm-requests-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.dm-requests-head p {
+  margin: 0.7rem 0 0;
+  color: var(--muted-ink);
+}
+
+.dm-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 1.75rem;
+  margin-top: 2rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.dm-tabs button {
+  margin-bottom: -1px;
+  padding: 0.8rem 0;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted-ink);
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.dm-tabs button span {
+  margin-left: 0.25rem;
+  color: var(--dm-quiet);
+  font-size: 0.85rem;
+}
+
+.dm-tabs button:hover {
+  color: var(--ink);
+}
+
+.dm-tabs button[aria-pressed="true"] {
+  border-bottom-color: var(--brand-green);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.dm-request {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.dm-request[hidden],
+.dm-no-results[hidden] {
+  display: none;
+}
+
+.dm-request-photo {
+  display: block;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  background: var(--sage);
+}
+
+.dm-request-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dm-request h2 {
+  margin: 0;
+  font-size: 1.18rem;
+  letter-spacing: -0.02em;
+}
+
+.dm-request h2 a {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.dm-request h2 a:hover {
+  color: var(--brand-green);
+}
+
+.dm-request-guest {
+  margin: 0.3rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.92rem;
+}
+
+.dm-request-guest a {
+  color: var(--ink);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.dm-request-guest a:hover {
+  color: var(--brand-green);
+}
+
+.dm-request-terms {
+  margin: 0.8rem 0 0;
+  font-size: 0.95rem;
+}
+
+.dm-request-terms span {
+  color: var(--muted-ink);
+}
+
+.dm-request-message {
+  max-width: 56ch;
+  margin: 0.9rem 0 0;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--sage);
+  color: var(--ink);
+  line-height: 1.6;
+}
+
+.dm-request-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  text-align: right;
+}
+
+.dm-request-total {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.dm-request-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  margin-top: 0.6rem;
+}
+
+.dm-request-actions form {
+  margin: 0;
+}
+
+.dm-request-actions .dm-btn {
+  min-height: 2.5rem;
+  padding: 0 1.25rem;
+  font-size: 0.88rem;
+}
+
+.dm-no-results {
+  margin: 1.5rem 0 0;
+  color: var(--muted-ink);
+}
+
+.dm-blank {
+  margin-top: 2.5rem;
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.dm-blank h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.3rem;
+}
+
+.dm-blank p {
+  max-width: 30rem;
+  margin: 0;
+  color: var(--muted-ink);
+}
+
+/* ---------- small screens ---------- */
+
+@media (max-width: 900px) {
+  .dm-auth {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 26rem;
+  }
+
+  .dm-auth-photo {
+    display: none;
+  }
+
+  .dm-profile-grid,
+  .dm-book-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dm-side,
+  .dm-lease {
+    position: static;
+  }
+
+  .dm-book-grid .dm-lease {
+    order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .dm-profile-head,
+  .dm-requests-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dm-field-row,
+  .dm-guest {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .dm-room {
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .dm-desk-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .dm-desk-row > div:first-child {
+    grid-column: 1 / -1;
+  }
+
+  .dm-request {
+    grid-template-columns: 4.5rem minmax(0, 1fr);
+    gap: 1rem;
+  }
+
+  .dm-request-side {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .dm-request-actions {
+    width: 100%;
+    margin-top: 0;
+    justify-content: flex-end;
+  }
+}
+
+.dm-handle .dm-role {
+  margin-left: 1.25rem;
+  color: var(--dm-quiet);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+  .dm-lease-photo {
+    display: none;
+  }
+}
+
+/* The empty flash-message container was growing to fill the page and pushing
+   short pages (admin profile, empty request list) toward the vertical middle. */
+body:has(.dm-auth, .dm-profile, .dm-book, .dm-requests) > .container.mt-3 {
+  flex: 0 0 auto;
+}
+
+body:has(.dm-auth, .dm-profile, .dm-book, .dm-requests) > .page-shell {
+  flex: 1 0 auto;
+}
+
+/* spacing around the original admin queue cards and room cards on the profile page */
+.dm-orig .admin-profile-tools {
+  margin: 2.5rem 0 1.25rem;
+}
+
+.dm-orig .profile-verification-portals {
+  margin-bottom: 2rem;
+}
+
+.dm-orig .profile-rooms {
+  margin: 0;
+}
+
+/* Room rows on the profile page: the photo fills the full height of the row
+   (no empty bands above and below it), and the buttons stack so the title,
+   price and status get room instead of wrapping. Scoped to the profile page;
+   the admin review lists keep their original layout. */
+@media (min-width: 681px) {
+  .dm-orig .profile-listing-bar {
+    align-items: stretch;
+    gap: 1.75rem;
+  }
+
+  .dm-orig .profile-listing-bar .admin-review-image-link {
+    height: auto;
+    min-height: 11.5rem;
+    align-self: stretch;
+  }
+
+  .dm-orig .profile-listing-bar .admin-review-image {
+    position: absolute;
+    inset: 0;
+    height: 100%;
+  }
+
+  .dm-orig .profile-listing-bar .admin-review-details {
+    align-self: center;
+    padding: 1.25rem 0;
+  }
+
+  .dm-orig .profile-listing-bar .admin-review-actions {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: center;
+    width: 10.5rem;
+    padding: 1.25rem 1.35rem 1.25rem 0;
+  }
+
+  .dm-orig .profile-listing-bar .admin-review-actions .btn {
+    white-space: nowrap;
+  }
+}
+
+/* ---------- profile header: monogram + identity card ---------- */
+
+.dm-profile-head {
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1.75rem;
+  padding: 1.75rem 2rem;
+  border: 1px solid var(--line);
+  border-radius: 1rem 1rem 1rem 2.75rem;
+  background: var(--surface);
+}
+
+.dm-profile-head h1 {
+  font-size: clamp(2rem, 3.6vw, 2.75rem);
+}
+
+.dm-monogram {
+  display: grid;
+  flex: 0 0 auto;
+  width: 5.5rem;
+  height: 5.5rem;
+  place-items: center;
+  border-radius: 0.9rem 0.9rem 0.9rem 2.2rem;
+  background: var(--brand-green);
+  color: #fff;
+  font-size: 1.9rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.dm-head-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dm-head-text .dm-handle {
+  margin-top: 0.55rem;
+}
+
+.dm-handle .dm-role {
+  margin-left: 0;
+  color: var(--ink);
+  font-size: inherit;
+  font-weight: 500;
+}
+
+.dm-handle .dm-role::before {
+  content: "\00b7";
+  margin: 0 0.6rem;
+  color: var(--dm-quiet);
+}
+
+.dm-head-inst {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  margin: 0.35rem 0 0;
+  color: var(--muted-ink);
+  font-size: 0.95rem;
+}
+
+.dm-inst-ok {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--dm-ok);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.dm-profile-head .dm-head-links {
+  margin-left: auto;
+}
+
+.dm-profile-head .dm-btn {
+  min-height: 2.6rem;
+  padding: 0 1.4rem;
+}
+
+@media (max-width: 640px) {
+  .dm-profile-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding: 1.4rem;
+    border-radius: 1rem 1rem 1rem 2rem;
+  }
+
+  .dm-monogram {
+    width: 4.25rem;
+    height: 4.25rem;
+    border-radius: 0.75rem 0.75rem 0.75rem 1.7rem;
+    font-size: 1.5rem;
+  }
+
+  .dm-profile-head .dm-head-links {
+    margin-left: 0;
+  }
+}

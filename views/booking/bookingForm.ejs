@@ -1,188 +1,153 @@
 <% layout('layouts/boilerplate') -%>
 
-    <body>
-        <div class="row form-page">
-            <div class="col-8 offset-2">
+<main class="dm-book">
+    <header class="dm-book-head">
+        <a class="dm-back" href="/listings/<%= listing._id %>"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to listing</a>
+        <h1>Request to book</h1>
+        <p>Choose your lease dates and send a booking request to the host.</p>
+    </header>
 
-                <h1 class="form-page-title">Request to book</h1>
-                <p class="form-page-intro">
-                    Choose your stay details and send a booking request to the host.
-                </p>
+    <div class="dm-book-grid">
+        <form method="POST" action="/booking/<%= listing._id %>/request-booking" novalidate class="needs-validation">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
 
-                <form method="POST" action="/booking/<%= listing._id %>/request-booking" novalidate class="needs-validation">
-
-                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
-                    <!-- Dates -->
-                    <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label for="checkIn" class="form-label">Check-in</label>
-                            <input id="checkIn" name="booking[checkIn]" type="date" class="form-control" required>
-                            <div class="valid-feedback">Perfect.</div>
-                            <div class="invalid-feedback">
-                                Please select a check-in date.
-                            </div>
-                        </div>
-
-                        <div class="mb-3 col-md-6">
-                            <label for="checkOut" class="form-label">Check-out</label>
-                            <input id="checkOut" name="booking[checkOut]" type="date" class="form-control" required>
-                            <div class="valid-feedback">Looks good.</div>
-                            <div class="invalid-feedback">
-                                Please select a check-out date.
-                            </div>
-                        </div>
+            <div class="dm-group">
+                <h2>Lease dates</h2>
+                <div class="dm-field-row">
+                    <div class="dm-field">
+                        <label for="checkIn">Check-in</label>
+                        <input id="checkIn" name="booking[checkIn]" type="date" class="form-control" required>
+                        <div class="invalid-feedback">Please select a check-in date.</div>
                     </div>
 
-
-                    <!-- Guests -->
-                    <div class="mb-3">
-                        <label for="guests" class="form-label">
-                            Number of guests
-                        </label>
-
-                        <input id="guests" name="booking[guests]" type="number" min="1" value="1" class="form-control"
-                            required>
-
-                        <div class="valid-feedback">Got it.</div>
-                        <div class="invalid-feedback">
-                            Please enter the number of guests.
-                        </div>
+                    <div class="dm-field">
+                        <label for="checkOut">Check-out</label>
+                        <input id="checkOut" name="booking[checkOut]" type="date" class="form-control" required>
+                        <div class="invalid-feedback">Please select a check-out date.</div>
                     </div>
-
-
-
-
-                    <!-- Guest information -->
-                    <div class="mb-3">
-                        <label for="guestName" class="form-label">
-                            Guest name
-                        </label>
-
-                        <input id="guestName" type="text" class="form-control"
-                            value="<%= CurrUser.name || CurrUser.username || '' %>" readonly>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="guestEmail" class="form-label">
-                            Email
-                        </label>
-
-                        <input id="guestEmail" type="email" class="form-control" value="<%= CurrUser.email || '' %>"
-                            readonly>
-                    </div>
-
-
-                    <!-- Message -->
-                    <div class="mb-4">
-                        <label for="message" class="form-label">
-                            Message to host
-                        </label>
-
-                        <textarea id="message" name="booking[message]" class="form-control" rows="4"
-                            placeholder="Introduce yourself or leave a message for the host..."></textarea>
-                    </div>
-                    <!-- Price summary -->
-                    <div class="mb-4">
-                        <h5>Price summary</h5>
-
-                        <div class="d-flex justify-content-between">
-                            <span>
-                                ₹<%= listing.price.toLocaleString("en-IN") %> monthly rent, prorated over <span id="days">(select lease dates)</span> days
-                            </span>
-
-                            <span>
-                                Base Price : ₹<span id="base-price">0</span>
-                            </span>
-                        </div>
-
-                        <% if (listing.cleaningFee) { %>
-                            <div class="d-flex justify-content-between">
-                                <span>Cleaning fee</span>
-                                <span>₹<%= listing.cleaningFee %></span>
-                            </div>
-                            <% } %>
-
-                                <% if (listing.serviceFee) { %>
-                                    <div class="d-flex justify-content-between">
-                                        <span>Service fee</span>
-                                        <span>₹<%= listing.serviceFee %></span>
-                                    </div>
-                                    <% } %>
-
-                                        <hr>
-
-                                        <div class="d-flex justify-content-between">
-                                            <strong>Total</strong>
-                                            <strong id="total-price">₹0</strong>
-                                        </div>
-                    </div>
-
-
-                    <button class="btn btn-dark">
-                        Request to book
-                    </button>
-
-                </form>
-
+                </div>
             </div>
-        </div>
-    </body>
-    <script>
-    const checkIn = document.querySelector("#checkIn");
-    const checkOut = document.querySelector("#checkOut");
 
-    const daysElement = document.querySelector("#days");
-    const basePriceElement = document.querySelector("#base-price");
-    const totalPriceElement = document.querySelector("#total-price");
+            <div class="dm-group">
+                <h2>Guest details</h2>
+                <div class="dm-guest">
+                    <dl>
+                        <dt>Name</dt>
+                        <dd><%= CurrUser.name || CurrUser.username || 'Guest' %></dd>
+                    </dl>
+                    <dl>
+                        <dt>Email</dt>
+                        <dd><%= CurrUser.email || 'No email on file' %></dd>
+                    </dl>
+                </div>
+
+                <div class="dm-field">
+                    <label for="guests">Number of guests</label>
+                    <input id="guests" name="booking[guests]" type="number" min="1" value="1" class="form-control" required>
+                    <div class="invalid-feedback">Please enter the number of guests.</div>
+                </div>
+            </div>
+
+            <div class="dm-group">
+
+                <div class="dm-field">
+                    <label for="message" class="sr-only">Message to host</label>
+                    <textarea id="message" name="booking[message]" class="form-control" rows="4" placeholder="Introduce yourself or leave a short note for the host..."></textarea>
+                </div>
+                <p class="dm-submit-note">You can update the dates and guest count before sending the request.</p>
+            </div>
+
+            <button class="dm-btn dm-btn-block" type="submit">Request to book</button>
+        </form>
+
+        <aside class="dm-lease" aria-label="Price summary">
+            <img class="dm-lease-photo" src="<%= listing.image && listing.image.url ? listing.image.url : (typeof listing.image === 'string' ? listing.image : '') %>" alt="<%= listing.title %>">
+            <div class="dm-lease-body">
+                <h2><%= listing.title %></h2>
+                <p class="dm-lease-place"><%= listing.location %>, <%= listing.country %></p>
+
+                <dl class="dm-ledger">
+                    <div>
+                        <dt>Monthly rent</dt>
+                        <span class="dm-leader" aria-hidden="true"></span>
+                        <dd>₹<%= listing.price.toLocaleString('en-IN') %></dd>
+                    </div>
+                    <div>
+                        <dt>Lease length</dt>
+                        <span class="dm-leader" aria-hidden="true"></span>
+                        <dd><span id="days">0</span> days</dd>
+                    </div>
+                    <div>
+                        <dt>Base price</dt>
+                        <span class="dm-leader" aria-hidden="true"></span>
+                        <dd>₹<span id="base-price">0</span></dd>
+                    </div>
+                    <% if (listing.cleaningFee) { %>
+                        <div>
+                            <dt>Cleaning fee</dt>
+                            <span class="dm-leader" aria-hidden="true"></span>
+                            <dd>₹<%= listing.cleaningFee.toLocaleString('en-IN') %></dd>
+                        </div>
+                    <% } %>
+                    <% if (listing.serviceFee) { %>
+                        <div>
+                            <dt>Service fee</dt>
+                            <span class="dm-leader" aria-hidden="true"></span>
+                            <dd>₹<%= listing.serviceFee.toLocaleString('en-IN') %></dd>
+                        </div>
+                    <% } %>
+                    <div class="dm-total">
+                        <dt>Total</dt>
+                        <span class="dm-leader" aria-hidden="true"></span>
+                        <dd>₹<span id="total-price">0</span></dd>
+                    </div>
+                </dl>
+
+                <p class="dm-lease-note">Amounts are calculated using the selected lease dates and prorated rent. Any final total is confirmed by the host.</p>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<script>
+    const checkIn = document.querySelector('#checkIn');
+    const checkOut = document.querySelector('#checkOut');
+    const daysElement = document.querySelector('#days');
+    const basePriceElement = document.querySelector('#base-price');
+    const totalPriceElement = document.querySelector('#total-price');
 
     const monthlyRate = <%= listing.price %>;
     const cleaningFee = <%= listing.cleaningFee || 0 %>;
     const serviceFee = <%= listing.serviceFee || 0 %>;
 
     function updatePrice() {
-
-        if (!checkIn.value || !checkOut.value) {
-            return;
-        }
+        if (!checkIn.value || !checkOut.value) return;
 
         const checkInDate = new Date(checkIn.value);
         const checkOutDate = new Date(checkOut.value);
-        const days =
-            (checkOutDate - checkInDate) /
-            (1000 * 60 * 60 * 24);
+        const days = (checkOutDate - checkInDate) / (1000 * 60 * 60 * 24);
 
-        if (days <= 0) {
-            return;
-        }
+        if (days <= 0) return;
 
         let fullMonths = 0;
         let current = new Date(checkInDate);
         while (true) {
             const next = new Date(current);
             next.setUTCMonth(next.getUTCMonth() + 1);
-            if (next > checkOutDate) {
-                break;
-            }
-            fullMonths++;
+            if (next > checkOutDate) break;
+            fullMonths += 1;
             current = next;
         }
+
         const extraDays = (checkOutDate - current) / (1000 * 60 * 60 * 24);
         const basePrice = fullMonths * monthlyRate + extraDays * (monthlyRate / 30);
+        const total = basePrice + cleaningFee + serviceFee;
 
-        const total =
-            basePrice +
-            cleaningFee +
-            serviceFee;
-
-        // Display on page
         daysElement.textContent = days;
-        basePriceElement.textContent = basePrice.toLocaleString("en-IN");
-        totalPriceElement.textContent = `₹${total.toLocaleString("en-IN")}`;
-
-
+        basePriceElement.textContent = basePrice.toLocaleString('en-IN');
+        totalPriceElement.textContent = total.toLocaleString('en-IN');
     }
 
-    checkIn.addEventListener("change", updatePrice);
-    checkOut.addEventListener("change", updatePrice);
+    checkIn.addEventListener('change', updatePrice);
+    checkOut.addEventListener('change', updatePrice);
 </script>

@@ -4,7 +4,7 @@
         <div>
             <p class="admin-eyebrow">Admin review</p>
             <h1><%= queueStatus === "approved" ? "Approved listings" : "Pending listings" %></h1>
-            <p class="admin-pending-intro"><%= queueStatus === "approved" ? "Browse rooms that have passed listing verification." : "Review rooms waiting for verification before they appear as trusted listings." %></p>
+            <p class="admin-pending-intro"><%= queueStatus === "approved" ? "Browse listings that have passed verification." : "Review listings waiting for verification before they appear as trusted listings." %></p>
         </div>
         <nav class="admin-queue-tabs" aria-label="Listing verification queues">
             <a class="<%= queueStatus === 'pending' ? 'is-active' : '' %>" href="/admin/listings/pending">Pending</a>
@@ -18,7 +18,7 @@
             <span class="admin-empty-icon"><i class="fa-solid fa-check" aria-hidden="true"></i></span>
             <h2><%= queueStatus === "approved" ? "No approved listings yet" : "Review queue is clear" %></h2>
             <p><%= queueStatus === "approved" ? "Approved listings will appear here after review." : "No listings are waiting for verification right now." %></p>
-            <a class="btn btn-dark" href="/listings">View all rooms</a>
+            <a class="btn btn-dark" href="/listings">View all listings</a>
         </section>
     <% } else { %>
         <section class="admin-review-list" aria-label="<%= queueStatus === 'approved' ? 'Approved listings' : 'Listings awaiting review' %>">

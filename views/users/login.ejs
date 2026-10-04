@@ -1,40 +1,37 @@
 <% layout('layouts/boilerplate') -%>
 
-    <div class="auth-shell">
-        <div class="auth-intro">
-            <p class="eyebrow">WELCOME BACK</p>
-            <h1>Your move, made easier.</h1>
-            <p>Continue your room search, manage lease requests, or look after your listing.</p>
-        </div>
-        <div class="auth-form-panel">
-            <h2>Log in</h2>
-            <form action="/login" method="POST" class="needs-validation" novalidate>
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
-                    <input 
-                        id="username"
-                        name="username" 
-                        type="text"
-                        class="form-control"
-                        required
-                    />
-                    <div class="valid-feedback">Looks good</div>  
-                    <div class="invalid-feedback">Enter your username </div>  
+<main class="dm-auth">
+    <figure class="dm-auth-photo">
+        <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=85" alt="A bright furnished listing">
+        <figcaption>Furnished listings for leases of one to six months.</figcaption>
+    </figure>
+
+    <section class="dm-auth-main" aria-labelledby="login-title">
+        <h1 id="login-title">Log in</h1>
+        <p class="dm-auth-lede">Continue browsing listings or manage your listings.</p>
+
+        <form action="/login" method="POST" class="needs-validation" novalidate>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+            <div class="dm-field">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" class="form-control" autocomplete="username" autocapitalize="none" required>
+                <div class="invalid-feedback">Enter your username.</div>
+            </div>
+
+            <div class="dm-field">
+                <label for="password">Password</label>
+                <div class="dm-password">
+                    <input id="password" name="password" type="password" class="form-control" autocomplete="current-password" required>
+                    <button class="dm-reveal" type="button" data-reveal="password" aria-controls="password" aria-pressed="false">Show</button>
                 </div>
-                <div class="mb-3">
-                    <label for="password" class="form-label">password</label>
-                    <input 
-                        id="password"
-                        name="password" 
-                        type="password"
-                        class="form-control"
-                        required
-                    />
-                    <div class="valid-feedback">Looks good</div>  
-                    <div class="invalid-feedback">Enter a strong password</div>  
-                </div>
-                <button class="btn btn-dark w-100">Login to my account</button>
-            </form>
-        </div>
-    </div>
+                <div class="invalid-feedback">Enter your password.</div>
+            </div>
+
+            <button class="dm-btn dm-btn-block" type="submit">Log in</button>
+        </form>
+
+        <p class="dm-auth-switch">New to Dimora? <a class="dm-link" href="/signup">Create an account</a></p>
+    </section>
+</main>
+<script src="/js/auth.js" defer></script>

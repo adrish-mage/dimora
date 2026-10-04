@@ -2,176 +2,129 @@
 
 <% const pendingCount = bookings.filter(booking => booking.status === "pending").length; %>
 <% const approvedCount = bookings.filter(booking => ["approved", "accepted"].includes(booking.status)).length; %>
-<main class="host-bookings-page" data-host-bookings>
-    <div class="host-bookings-heading">
-        <div class="host-bookings-heading-copy">
-            <a class="host-bookings-back" href="<%= listing ? '/booking/view-bookings' : `/users/${CurrUser._id}` %>">
-                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
-                <%= listing ? "All room bookings" : "Back to profile" %>
-            </a>
-            <h1><%= listing ? listing.title : "Booking requests" %></h1>
-            <p class="host-bookings-intro"><%= listing ? "Requests for this room" : "Requests across all your rooms" %></p>
+
+<main class="dm-requests" data-host-bookings>
+    <header class="dm-requests-head">
+        <div>
+            <a class="dm-back" href="<%= listing ? '/booking/view-bookings' : `/users/${CurrUser._id}` %>"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> <%= listing ? 'All listing bookings' : 'Back to profile' %></a>
+            <h1><%= listing ? listing.title : 'Booking requests' %></h1>
+            <p><%= listing ? 'Requests for this listing' : 'Requests across all your listings' %></p>
         </div>
-        <div class="host-bookings-summary" aria-label="Booking summary">
-            <div><span>Awaiting reply</span><strong><%= pendingCount %></strong></div>
-            <div><span>Approved</span><strong><%= approvedCount %></strong></div>
+        <div class="dm-head-links">
+            <span class="dm-state" data-state="pending">Pending <strong><%= pendingCount %></strong></span>
+            <span class="dm-state" data-state="approved">Approved <strong><%= approvedCount %></strong></span>
         </div>
-    </div>
+    </header>
 
     <% if (bookings.length === 0) { %>
-        <section class="host-bookings-empty" aria-label="No booking requests">
-            <span class="host-bookings-empty-icon" aria-hidden="true"><i class="fa-regular fa-calendar"></i></span>
+        <section class="dm-blank" aria-label="No booking requests">
             <h2>No requests yet</h2>
-            <p>New room requests will appear here when someone applies to book.</p>
+            <p>New booking requests will appear here once a guest sends one.</p>
         </section>
     <% } else { %>
-        <div class="host-bookings-toolbar">
-            <div class="host-bookings-filters" role="group" aria-label="Filter booking requests">
-                <button type="button" data-booking-filter="all" aria-pressed="true">All <span><%= bookings.length %></span></button>
-                <button type="button" data-booking-filter="pending" aria-pressed="false">Pending <span><%= pendingCount %></span></button>
-                <button type="button" data-booking-filter="approved" aria-pressed="false">Approved <span><%= approvedCount %></span></button>
-                <button type="button" data-booking-filter="completed" aria-pressed="false">Completed <span><%= bookings.filter(booking => booking.status === "completed").length %></span></button>
-                <button type="button" data-booking-filter="rejected" aria-pressed="false">Rejected <span><%= bookings.filter(booking => booking.status === "rejected").length %></span></button>
-                <button type="button" data-booking-filter="cancelled" aria-pressed="false">Cancelled <span><%= bookings.filter(booking => booking.status === "cancelled").length %></span></button>
-            </div>
-            <p class="host-bookings-result-count" data-booking-results aria-live="polite"><%= bookings.length %> <%= bookings.length === 1 ? "request" : "requests" %></p>
+        <div class="dm-tabs" role="tablist" aria-label="Filter requests">
+            <button type="button" data-booking-filter="all" aria-pressed="true">All <span><%= bookings.length %></span></button>
+            <button type="button" data-booking-filter="pending" aria-pressed="false">Pending <span><%= pendingCount %></span></button>
+            <button type="button" data-booking-filter="approved" aria-pressed="false">Approved <span><%= approvedCount %></span></button>
+            <button type="button" data-booking-filter="completed" aria-pressed="false">Completed <span><%= bookings.filter(booking => booking.status === 'completed').length %></span></button>
+            <button type="button" data-booking-filter="rejected" aria-pressed="false">Rejected <span><%= bookings.filter(booking => booking.status === 'rejected').length %></span></button>
+            <button type="button" data-booking-filter="cancelled" aria-pressed="false">Cancelled <span><%= bookings.filter(booking => booking.status === 'cancelled').length %></span></button>
         </div>
 
-        <section class="host-bookings-list" aria-label="Booking requests">
+        <div class="dm-request-list">
             <% bookings.forEach(booking => { %>
-                <% const guestName = booking.guest?.name || booking.guest?.username || "Guest account unavailable"; %>
-                <% const initials = guestName.split(/\s+/).map(part => part[0]).slice(0, 2).join("").toUpperCase(); %>
+                <% const guestName = booking.guest?.name || booking.guest?.username || 'Guest account unavailable'; %>
+                <% const guestLink = booking.guest?._id ? `/users/${booking.guest._id}` : null; %>
                 <% const bookingListing = listing || booking.listing; %>
-                <% const listingImage = bookingListing?.image?.url || (typeof bookingListing?.image === "string" ? bookingListing.image : ""); %>
-                <% const bookingStatus = booking.status === "accepted" ? "approved" : (booking.status || "pending"); %>
+                <% const listingImage = bookingListing?.image?.url || (typeof bookingListing?.image === 'string' ? bookingListing.image : ''); %>
+                <% const bookingStatus = booking.status === 'accepted' ? 'approved' : (booking.status || 'pending'); %>
                 <% const leaseEnded = new Date(booking.checkOut) <= new Date(); %>
-                <article class="host-booking-item" data-booking-card data-status="<%= bookingStatus %>">
-                    <div class="host-booking-image-frame">
-                        <span class="host-booking-image-fallback" aria-hidden="true"><i class="fa-solid fa-house"></i></span>
+
+                <article class="dm-request" data-booking-card data-status="<%= bookingStatus %>">
+                    <a class="dm-request-photo" href="<%= bookingListing?._id ? `/listings/${bookingListing._id}` : '#' %>" aria-label="View listing">
                         <% if (listingImage) { %>
-                            <% if (bookingListing?._id) { %>
-                                <a class="host-booking-image-link" href="/listings/<%= bookingListing._id %>" aria-label="View <%= bookingListing.title || 'room' %>">
-                                    <img class="host-booking-image" src="<%= listingImage %>" alt="<%= bookingListing.title || 'Room' %>" loading="lazy" onerror="this.hidden = true">
-                                </a>
+                            <img src="<%= listingImage %>" alt="<%= bookingListing?.title || 'Listing' %>">
+                        <% } %>
+                    </a>
+
+                    <div>
+                        <h2><a href="<%= bookingListing?._id ? `/listings/${bookingListing._id}` : '#' %>"><%= bookingListing?.title || 'Listing no longer available' %></a></h2>
+                        <p class="dm-request-guest">
+                            <% if (guestLink) { %>
+                                <a href="<%= guestLink %>"><%= guestName %></a>
                             <% } else { %>
-                                <img class="host-booking-image" src="<%= listingImage %>" alt="<%= bookingListing?.title || 'Room' %>" loading="lazy" onerror="this.hidden = true">
+                                <%= guestName %>
                             <% } %>
+                        </p>
+                        <p class="dm-request-terms"><span>Lease</span> <%= new Date(booking.checkIn).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %> &ndash; <%= new Date(booking.checkOut).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) %></p>
+                        <p class="dm-request-terms"><span>Guests</span> <%= booking.guests %> &bull; <span>Total</span> ₹<%= Number(booking.totalPrice || 0).toLocaleString('en-IN') %></p>
+                        <% if (booking.message) { %>
+                            <p class="dm-request-message"><%= booking.message %></p>
                         <% } %>
                     </div>
 
-                    <div class="host-booking-content">
-                        <div class="host-booking-content-head">
-                            <div class="host-booking-identity">
-                                <div class="host-booking-room-title">
-                                    <% if (bookingListing?._id) { %>
-                                        <h2><a href="/listings/<%= bookingListing._id %>"><%= bookingListing.title %></a></h2>
-                                    <% } else { %>
-                                        <h2><%= bookingListing?.title || "Room no longer available" %></h2>
-                                    <% } %>
-                                </div>
-                                <div class="host-booking-guest">
-                                    <span class="host-booking-avatar" aria-hidden="true"><%= initials || "G" %></span>
-                                    <div>
-                                        <% if (booking.guest?._id) { %>
-                                            <h3><a href="/users/<%= booking.guest._id %>"><%= guestName %></a></h3>
-                                        <% } else { %>
-                                            <h3><%= guestName %></h3>
-                                        <% } %>
-                                        <p><%= booking.guest?.email || "No email available" %></p>
-                                    </div>
-                                </div>
-                            </div>
-                            <span class="host-booking-status status-<%= bookingStatus %>"><%= bookingStatus %></span>
-                        </div>
-
-                        <div class="host-booking-footer">
-                            <dl class="host-booking-details">
-                                <div>
-                                    <dt>Lease</dt>
-                                    <dd><%= new Date(booking.checkIn).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %> &rarr; <%= new Date(booking.checkOut).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %></dd>
-                                </div>
-                                <div>
-                                    <dt>Duration</dt>
-                                    <dd><%= booking.days %> days</dd>
-                                </div>
-                                <div>
-                                    <dt>Guests</dt>
-                                    <dd><%= booking.guests %></dd>
-                                </div>
-                                <div class="host-booking-total">
-                                    <dt>Total</dt>
-                                    <dd>&#8377;<%= Number(booking.totalPrice || 0).toLocaleString("en-IN") %></dd>
-                                </div>
-                            </dl>
-
-                            <% if (bookingStatus === "pending" || bookingStatus === "approved") { %>
-                                <div class="host-booking-actions">
-                                    <% if (bookingStatus === "pending") { %>
-                                        <form method="POST" action="/booking/<%= booking._id %>/status">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                            <input type="hidden" name="status" value="rejected">
-                                            <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
-                                            <button class="host-booking-decline" type="submit">Decline</button>
-                                        </form>
-                                        <form method="POST" action="/booking/<%= booking._id %>/status">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                            <input type="hidden" name="status" value="approved">
-                                            <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
-                                            <button class="host-booking-approve" type="submit">Accept request</button>
-                                        </form>
-                                    <% } else if (leaseEnded) { %>
-                                        <form method="POST" action="/booking/<%= booking._id %>/status">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                            <input type="hidden" name="status" value="completed">
-                                            <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
-                                            <button class="host-booking-approve" type="submit">Mark completed</button>
-                                        </form>
-                                    <% } else { %>
-                                        <form method="POST" action="/booking/<%= booking._id %>/status">
-                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-                                            <input type="hidden" name="status" value="cancelled">
-                                            <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
-                                            <button class="host-booking-decline" type="submit">Cancel booking</button>
-                                        </form>
-                                    <% } %>
-                                </div>
+                    <div class="dm-request-side">
+                        <span class="dm-state" data-state="<%= bookingStatus === 'approved' ? 'approved' : bookingStatus === 'completed' ? 'verified' : bookingStatus === 'rejected' ? 'rejected' : bookingStatus === 'cancelled' ? 'cancelled' : 'pending' %>"><%= bookingStatus %></span>
+                        <div class="dm-request-actions">
+                            <% if (bookingStatus === 'pending') { %>
+                                <form method="POST" action="/booking/<%= booking._id %>/status">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" name="status" value="rejected">
+                                    <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
+                                    <button class="dm-btn dm-btn-quiet" type="submit">Decline</button>
+                                </form>
+                                <form method="POST" action="/booking/<%= booking._id %>/status">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" name="status" value="approved">
+                                    <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
+                                    <button class="dm-btn" type="submit">Accept</button>
+                                </form>
+                            <% } else if (bookingStatus === 'approved' && leaseEnded) { %>
+                                <form method="POST" action="/booking/<%= booking._id %>/status">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" name="status" value="completed">
+                                    <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
+                                    <button class="dm-btn" type="submit">Mark complete</button>
+                                </form>
+                            <% } else if (bookingStatus === 'approved') { %>
+                                <form method="POST" action="/booking/<%= booking._id %>/status">
+                                    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                    <input type="hidden" name="status" value="cancelled">
+                                    <input type="hidden" name="returnTo" value="<%= listing ? 'listing' : 'all' %>">
+                                    <button class="dm-btn dm-btn-quiet" type="submit">Cancel</button>
+                                </form>
                             <% } %>
                         </div>
-
-                        <% if (booking.message) { %>
-                            <p class="host-booking-message"><%= booking.message %></p>
-                        <% } %>
                     </div>
                 </article>
             <% }) %>
-        </section>
-        <p class="host-bookings-no-results" data-booking-empty-filter hidden>No requests match this status.</p>
+        </div>
+
+        <p class="dm-no-results" data-booking-empty-filter hidden>No requests match this status.</p>
     <% } %>
 </main>
 
 <script>
     (() => {
-        const page = document.querySelector("[data-host-bookings]");
+        const page = document.querySelector('[data-host-bookings]');
         if (!page) return;
 
-        const cards = [...page.querySelectorAll("[data-booking-card]")];
-        const filters = [...page.querySelectorAll("[data-booking-filter]")];
-        const resultCount = page.querySelector("[data-booking-results]");
-        const emptyMessage = page.querySelector("[data-booking-empty-filter]");
+        const cards = [...page.querySelectorAll('[data-booking-card]')];
+        const filters = [...page.querySelectorAll('[data-booking-filter]')];
+        const emptyMessage = page.querySelector('[data-booking-empty-filter]');
 
         filters.forEach(filter => {
-            filter.addEventListener("click", () => {
+            filter.addEventListener('click', () => {
                 const status = filter.dataset.bookingFilter;
                 let visibleCount = 0;
 
                 cards.forEach(card => {
-                    const isVisible = status === "all" || card.dataset.status === status;
+                    const isVisible = status === 'all' || card.dataset.status === status;
                     card.hidden = !isVisible;
                     if (isVisible) visibleCount += 1;
                 });
 
-                filters.forEach(option => option.setAttribute("aria-pressed", String(option === filter)));
-                resultCount.textContent = `${visibleCount} ${visibleCount === 1 ? "request" : "requests"}`;
+                filters.forEach(option => option.setAttribute('aria-pressed', String(option === filter)));
                 emptyMessage.hidden = visibleCount > 0;
             });
         });

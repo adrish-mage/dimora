@@ -1,52 +1,55 @@
 <% layout('layouts/boilerplate') -%>
 
-<div class="auth-shell">
-    <div class="auth-intro">
-        <p class="eyebrow">START YOUR MOVE</p>
-        <h1>A room for your next chapter.</h1>
-        <p>Create an account to find a room for your semester or internship, or apply to host students and interns.</p>
-    </div>
-    <div class="auth-form-panel">
-        <h2>Create your account</h2>
+<main class="dm-auth">
+    <figure class="dm-auth-photo">
+        <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=85" alt="A modern furnished listing">
+        <figcaption>Find a listing for your next semester or internship.</figcaption>
+    </figure>
+
+    <section class="dm-auth-main" aria-labelledby="signup-title">
+        <h1 id="signup-title">Create your account</h1>
+        <p class="dm-auth-lede">Set up your profile to start browsing listings or hosting students and interns.</p>
 
         <form action="/signup" method="POST" class="needs-validation" novalidate>
             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-            <div class="mb-3">
-                <label for="name" class="form-label">Full name</label>
-                <input id="name" name="name" type="text" class="form-control" autocomplete="name" required />
-                <div class="valid-feedback">Looks good</div>
-                <div class="invalid-feedback">Enter your name</div>
+
+            <div class="dm-field">
+                <label for="name">Full name</label>
+                <input id="name" name="name" type="text" class="form-control" autocomplete="name" required>
+                <div class="invalid-feedback">Enter your name.</div>
             </div>
 
-            <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input id="username" name="username" type="text" class="form-control" autocomplete="username" required />
-                <div class="valid-feedback">Looks good</div>
-                <div class="invalid-feedback">Enter your username</div>
+            <div class="dm-field">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" class="form-control" autocomplete="username" required>
+                <div class="invalid-feedback">Enter your username.</div>
             </div>
 
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input id="email" name="email" type="email" class="form-control" autocomplete="email" required />
-                <div class="valid-feedback">Looks good</div>
-                <div class="invalid-feedback">Enter your email</div>
+            <div class="dm-field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" class="form-control" autocomplete="email" required>
+                <div class="invalid-feedback">Enter your email.</div>
             </div>
 
-            <div class="mb-3">
-                <label for="dob" class="form-label">Date of birth</label>
-                <input id="dob" name="dob" type="date" class="form-control" autocomplete="bday" required />
-                <div class="valid-feedback">Looks good</div>
-                <div class="invalid-feedback">Enter your date of birth</div>
+            <div class="dm-field">
+                <label for="dob">Date of birth</label>
+                <input id="dob" name="dob" type="date" class="form-control" autocomplete="bday" required>
+                <div class="invalid-feedback">Enter your date of birth.</div>
             </div>
 
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input id="password" name="password" type="password" class="form-control" autocomplete="new-password" required />
-                <div class="valid-feedback">Looks good</div>
-                <div class="invalid-feedback">Enter a strong password</div>
+            <div class="dm-field">
+                <label for="password">Password</label>
+                <div class="dm-password">
+                    <input id="password" name="password" type="password" class="form-control" autocomplete="new-password" required>
+                    <button class="dm-reveal" type="button" data-reveal="password" aria-controls="password" aria-pressed="false">Show</button>
+                </div>
+                <div class="invalid-feedback">Enter a strong password.</div>
             </div>
 
-            <button class="btn btn-dark w-100">Create my account</button>
+            <button class="dm-btn dm-btn-block" type="submit">Create account</button>
         </form>
-    </div>
-</div>
+
+        <p class="dm-auth-switch">Already have an account? <a class="dm-link" href="/login">Log in</a></p>
+    </section>
+</main>
+<script src="/js/auth.js" defer></script>

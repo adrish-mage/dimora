@@ -5,7 +5,7 @@
             eyebrow: "REQUEST NEEDS A CHECK",
             title: "A few details need another look.",
             icon: "fa-clipboard-check",
-            action: "Back to rooms",
+            action: "Back to listings",
             href: "/listings",
             fallback: "Please review the request and try again."
         },
@@ -13,15 +13,15 @@
             eyebrow: "ACCESS RESTRICTED",
             title: "This part of Dimora is private.",
             icon: "fa-lock",
-            action: "Explore rooms",
+            action: "Explore listings",
             href: "/listings",
             fallback: "You do not have permission to view this page."
         },
         404: {
-            eyebrow: "ROOM NOT FOUND",
+            eyebrow: "LISTING NOT FOUND",
             title: "Looks like this page has moved out.",
             icon: "fa-house-circle-xmark",
-            action: "Find a room",
+            action: "Find a listing",
             href: "/listings",
             fallback: "We could not find the page you requested."
         },
@@ -29,7 +29,7 @@
             eyebrow: "TAKE A BREATH",
             title: "That was a lot of requests at once.",
             icon: "fa-hourglass-half",
-            action: "Back to rooms",
+            action: "Back to listings",
             href: "/listings",
             fallback: "Please wait a moment, then try again."
         },
@@ -37,7 +37,7 @@
             eyebrow: "A TEMPORARY SETBACK",
             title: "We hit a snag on our side.",
             icon: "fa-screwdriver-wrench",
-            action: "Find a room",
+            action: "Find a listing",
             href: "/listings",
             fallback: "Something went wrong on our side. Please try again in a little while."
         }
@@ -46,7 +46,7 @@
 %>
 <main class="error-state" aria-labelledby="error-title">
     <div class="error-state__visual" aria-hidden="true">
-        <span class="error-state__brand">DIMORA / ROOM TO BEGIN</span>
+            <span class="error-state__brand">DIMORA / LISTINGS TO BEGIN</span>
         <i class="fa-solid <%= errorPage.icon %>"></i>
         <span class="error-state__code"><%= statusCode %></span>
         <span class="error-state__note">A small detour in your search</span>

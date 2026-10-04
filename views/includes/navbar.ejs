@@ -10,7 +10,7 @@
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav site-nav-links">
         <a class="nav-link <%= currentPath === '/' ? 'nav-link-active' : '' %>" href="/" <%= currentPath === '/' ? 'aria-current="page"' : '' %>>Home</a>
-        <a class="nav-link <%= currentPath.startsWith('/listings') && !currentPath.includes('/new') ? 'nav-link-active' : '' %>" href="/listings" <%= currentPath.startsWith('/listings') && !currentPath.includes('/new') ? 'aria-current="page"' : '' %>>Find a room</a>
+        <a class="nav-link <%= currentPath.startsWith('/listings') && !currentPath.includes('/new') ? 'nav-link-active' : '' %>" href="/listings" <%= currentPath.startsWith('/listings') && !currentPath.includes('/new') ? 'aria-current="page"' : '' %>>Find a listing</a>
         <% if (CurrUser && CurrUser.isVerifiedHost) { %>
           <a class="nav-link nav-link-accent <%= currentPath === '/listings/new' ? 'nav-link-active' : '' %>" href="/listings/new" <%= currentPath === '/listings/new' ? 'aria-current="page"' : '' %>><i class="fa-solid fa-plus me-1" aria-hidden="true"></i>Add a listing</a>
         <% } else if (CurrUser && CurrUser.hostApplicationStatus === "pending") { %>
