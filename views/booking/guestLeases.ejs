@@ -1,0 +1,96 @@
+<% layout("layouts/boilerplate") %>
+
+<main class="host-bookings-page guest-leases-page">
+    <div class="host-bookings-heading">
+        <div class="host-bookings-heading-copy">
+            <a class="host-bookings-back" href="/users/<%= CurrUser._id %>">
+                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                Back to profile
+            </a>
+            <h1>My Leases</h1>
+            <p class="host-bookings-intro">Track your room requests and lease decisions.</p>
+        </div>
+    </div>
+
+    <% if (bookings.length === 0) { %>
+        <section class="host-bookings-empty" aria-label="No leases yet">
+            <span class="host-bookings-empty-icon" aria-hidden="true"><i class="fa-regular fa-calendar"></i></span>
+            <h2>No lease requests yet</h2>
+            <p>Your room requests and their status will appear here.</p>
+            <a class="btn btn-dark mt-3" href="/listings">Find a room</a>
+        </section>
+    <% } else { %>
+        <section class="host-bookings-list" aria-label="Your leases">
+            <% bookings.forEach(booking => { %>
+                <% const leaseListing = booking.listing; %>
+                <% const leaseStatus = booking.status === "accepted" ? "approved" : booking.status; %>
+                <% const hasReviewed = reviewedBookingIds.includes(String(booking._id)); %>
+                <% const canCancel = ["pending", "approved"].includes(leaseStatus) && new Date(booking.checkIn) > new Date(); %>
+                <article class="host-booking-item guest-lease-item">
+                    <div class="host-booking-image-frame">
+                        <span class="host-booking-image-fallback" aria-hidden="true"><i class="fa-solid fa-house"></i></span>
+                        <% if (leaseListing?.image?.url) { %>
+                            <a class="host-booking-image-link" href="/listings/<%= leaseListing._id %>" aria-label="View <%= leaseListing.title %>">
+                                <img class="host-booking-image" src="<%= leaseListing.image.url %>" alt="<%= leaseListing.title %>" loading="lazy" onerror="this.hidden = true">
+                            </a>
+                        <% } %>
+                    </div>
+                    <div class="host-booking-content">
+                        <div class="host-booking-content-head">
+                            <div class="host-booking-identity">
+                                <div class="host-booking-room-title">
+                                    <% if (leaseListing?._id) { %>
+                                        <h2><a href="/listings/<%= leaseListing._id %>"><%= leaseListing.title %></a></h2>
+                                        <p class="admin-review-location"><%= leaseListing.location %></p>
+                                    <% } else { %>
+                                        <h2><%= leaseListing?.title || "Room no longer available" %></h2>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <span class="host-booking-status status-<%= leaseStatus %>"><%= leaseStatus %></span>
+                        </div>
+                        <div class="host-booking-footer">
+                            <dl class="host-booking-details">
+                                <div>
+                                    <dt>Lease dates</dt>
+                                    <dd><%= new Date(booking.checkIn).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %> &rarr; <%= new Date(booking.checkOut).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) %></dd>
+                                </div>
+                                <div>
+                                    <dt>Duration</dt>
+                                    <dd><%= booking.days %> days</dd>
+                                </div>
+                                <div>
+                                    <dt>Guests</dt>
+                                    <dd><%= booking.guests %></dd>
+                                </div>
+                                <div class="host-booking-total">
+                                    <dt>Total</dt>
+                                    <dd>&#8377;<%= Number(booking.totalPrice || 0).toLocaleString("en-IN") %></dd>
+                                </div>
+                            </dl>
+                            <div class="host-booking-actions">
+                                <% if (canCancel) { %>
+                                    <form method="POST" action="/booking/<%= booking._id %>/cancel">
+                                        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                        <button class="host-booking-decline" type="submit">Cancel lease</button>
+                                    </form>
+                                <% } %>
+                                <% if (leaseStatus === "completed" && !hasReviewed && leaseListing?._id) { %>
+                                    <a class="host-booking-approve guest-lease-review" href="/listings/<%= leaseListing._id %>?reviewBooking=<%= booking._id %>#reviews-title">
+                                        <i class="fa-solid fa-pen" aria-hidden="true"></i>
+                                        Write review
+                                    </a>
+                                <% } else if (leaseStatus === "completed" && hasReviewed) { %>
+                                    <span class="guest-lease-reviewed"><i class="fa-solid fa-circle-check" aria-hidden="true"></i> Review submitted</span>
+                                <% } %>
+                            </div>
+                        </div>
+                        <% if (booking.message) { %>
+                            <p class="host-booking-message"><%= booking.message %></p>
+                        <% } %>
+                    </div>
+                </article>
+            <% }) %>
+        </section>
+    <% } %>
+</main>

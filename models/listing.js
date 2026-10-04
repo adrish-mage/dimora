@@ -40,6 +40,11 @@ const listingSchema = new mongoose.Schema({
         type: String,
         enum : ["unverified", "verified", "pending", "flagged"],
         default: "unverified",
+    },
+    bookingWriteVersion: {
+        type: Number,
+        default: 0,
+        select: false
     }
 });
 

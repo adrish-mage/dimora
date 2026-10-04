@@ -1,5 +1,7 @@
 const ExpressError = require("../utils/expressError.js");
 const Listing = require("../models/listing");
+const Booking = require("../models/booking");
+const Review = require("../models/review");
 const { transitionListingStatus } = require("../utils/verificationStateMachine");
 const { computeTrustScore, averageRating } = require("../utils/trustScore");
 const escapeRegex = require("../utils/escapeRegex.js");
@@ -62,10 +64,33 @@ module.exports.show = async (req, res) => {
     const trustScore = computeTrustScore(listing);
     const avgRating = averageRating(listing.reviews || []);
 
+    const completedBookings = req.user
+        ? await Booking.find({ listing: listing._id, guest: req.user._id, status: "completed" })
+            .select("_id checkIn checkOut")
+            .lean()
+        : [];
+    const existingReviews = completedBookings.length
+        ? await Review.find({ booking: { $in: completedBookings.map(booking => booking._id) } })
+            .select("booking")
+            .lean()
+        : [];
+    const reviewedBookingIds = new Set(existingReviews.map(review => String(review.booking)));
+    const reviewableBookings = completedBookings.filter(booking => !reviewedBookingIds.has(String(booking._id)));
+    const requestedReviewBooking = String(req.query.reviewBooking || "");
+    const selectedReviewBookingId = reviewableBookings.some(booking => String(booking._id) === requestedReviewBooking)
+        ? requestedReviewBooking
+        : String(reviewableBookings[0]?._id || "");
+
     listing.reviews.sort((first, second) =>
         new Date(second.createdAt) - new Date(first.createdAt)
     );
-    res.render("listings/show.ejs", { listing, trustScore, avgRating });
+    res.render("listings/show.ejs", {
+        listing,
+        trustScore,
+        avgRating,
+        reviewableBookings,
+        selectedReviewBookingId
+    });
 };
 
 module.exports.renderEditForm = async (req, res) => {

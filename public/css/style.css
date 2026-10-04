@@ -3489,6 +3489,88 @@ body.auth-route .auth-shell {
   font-size: 0.78rem;
 }
 
+.profile-workspace {
+  margin: 1.5rem 2.25rem 0;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.profile-workspace-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-bottom: 0.8rem;
+}
+
+.profile-workspace-heading h2 {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.profile-workspace-kicker {
+  margin: 0;
+  color: var(--brand-green);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.profile-shortcut-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.profile-shortcut {
+  display: grid;
+  min-height: 76px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  transition: border-color 160ms ease, background-color 160ms ease;
+}
+
+.profile-shortcut:hover {
+  border-color: #aabcb0;
+  background: #f7faf8;
+  color: var(--ink);
+}
+
+.profile-shortcut-icon {
+  display: grid;
+  width: 2.5rem;
+  aspect-ratio: 1;
+  place-items: center;
+  border-radius: 6px;
+  background: var(--sage);
+  color: var(--brand-green);
+}
+
+.profile-shortcut-label {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.profile-shortcut-label small {
+  color: var(--muted-ink);
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+
+.profile-shortcut-label strong {
+  font-size: 0.95rem;
+}
+
+.profile-shortcut-arrow {
+  color: var(--brand-green);
+  font-size: 0.85rem;
+}
+
 .profile-content-grid {
   display: grid;
   grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.8fr);
@@ -3680,6 +3762,11 @@ body.auth-route .auth-shell {
     margin: 0 1.5rem;
   }
 
+  .profile-workspace {
+    margin-right: 1.5rem;
+    margin-left: 1.5rem;
+  }
+
   .profile-header {
     padding: 1.3rem 1.5rem 1rem;
   }
@@ -3708,6 +3795,15 @@ body.auth-route .auth-shell {
 
   .profile-stats {
     margin: 0 1rem;
+  }
+
+  .profile-workspace {
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .profile-shortcut-grid {
+    grid-template-columns: 1fr;
   }
 
   .profile-stats div {
@@ -4350,6 +4446,32 @@ body.auth-route .auth-shell {
 .host-booking-actions .host-booking-decline:hover {
   border-color: #a94836;
   color: #a94836;
+}
+
+.guest-lease-item .host-booking-actions {
+  flex-wrap: wrap;
+}
+
+.guest-lease-review {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #fff;
+  text-decoration: none;
+}
+
+.guest-lease-review:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
+.guest-lease-reviewed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--brand-green);
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
 .host-booking-message {

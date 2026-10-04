@@ -1,5 +1,7 @@
+const mongoose = require("mongoose");
 const Listing = require("../models/listing");
 const Booking = require("../models/booking.js");
+const Review = require("../models/review.js");
 const { getDays } = require("../utils/durationOfStay");
 const proration = require("../utils/proration");
 const {
@@ -7,6 +9,33 @@ const {
     createDateOverlapQuery,
     normalizeBookingStatus
 } = require("../utils/bookingRules");
+
+const activeBookingRequests = new Map();
+
+function waitForConcurrentBookingRequests(listingId) {
+    const key = String(listingId);
+    let group = activeBookingRequests.get(key);
+    if (!group) {
+        group = { active: 0, waiters: [] };
+        activeBookingRequests.set(key, group);
+    }
+    group.active++;
+
+    let releasePromise;
+    return () => {
+        if (!releasePromise) {
+            releasePromise = new Promise(resolve => {
+                group.active--;
+                group.waiters.push(resolve);
+                if (group.active === 0) {
+                    activeBookingRequests.delete(key);
+                    group.waiters.splice(0).forEach(release => release());
+                }
+            });
+        }
+        return releasePromise;
+    };
+}
 
 function parseUtcMidnight(dateValue) {
     const match = typeof dateValue === "string" && /^(\d{4})-(\d{2})-(\d{2})$/.exec(dateValue);
@@ -61,47 +90,86 @@ module.exports.sendBooking = async (req, res) => {
         return res.redirect(`/listings/${listing._id}`);
     }
 
-    const overlapQuery = createDateOverlapQuery(listing._id, checkInDate, checkOutDate);
-    const conflictingBooking = await Booking.exists(overlapQuery);
-    if (conflictingBooking) {
-        req.flash("error", "dates unavailable");
-        return res.redirect(`/booking/${listing._id}/request-booking`);
+    const waitForConcurrentRequests = waitForConcurrentBookingRequests(listing._id);
+    try {
+        const overlapQuery = createDateOverlapQuery(listing._id, checkInDate, checkOutDate);
+        const conflictingBooking = await Booking.exists(overlapQuery);
+        if (conflictingBooking) {
+            req.flash("error", "dates unavailable");
+            return res.redirect(`/booking/${listing._id}/request-booking`);
+        }
+
+        const cleaningFee = Number(listing.cleaningFee) || 0;
+        const serviceFee = Number(listing.serviceFee) || 0;
+        const basePrice = proration(Number(listing.price), checkInDate, checkOutDate).total;
+        const totalPrice = basePrice + cleaningFee + serviceFee;
+
+        const booking = new Booking({
+            listing: listing._id,
+            guest: req.user._id,
+            checkIn: checkInDate,
+            checkOut: checkOutDate,
+            guests: guestCount,
+            message,
+            days,
+            basePrice,
+            cleaningFee,
+            serviceFee,
+            totalPrice,
+            status: "pending"
+        });
+
+        let lostRace = false;
+        const session = await mongoose.startSession();
+        try {
+            await session.withTransaction(async () => {
+                await Listing.updateOne(
+                    { _id: listing._id },
+                    { $inc: { bookingWriteVersion: 1 } },
+                    { session }
+                );
+
+                await booking.save({ session });
+
+                const raceQuery = createDateOverlapQuery(
+                    listing._id,
+                    checkInDate,
+                    checkOutDate,
+                    booking._id
+                );
+                const racedBooking = await Booking.findOne(raceQuery)
+                    .sort({ _id: 1 })
+                    .session(session);
+
+                if (racedBooking && String(racedBooking._id) < String(booking._id)) {
+                    await Booking.deleteOne({ _id: booking._id }, { session });
+                    lostRace = true;
+                    return;
+                }
+
+                if (racedBooking) {
+                    await Booking.deleteMany({
+                        ...raceQuery,
+                        _id: { $gt: booking._id }
+                    }, { session });
+                }
+            });
+        } finally {
+            await session.endSession();
+        }
+
+        await waitForConcurrentRequests();
+        const bookingStillExists = !lostRace && await Booking.exists({ _id: booking._id });
+        if (!bookingStillExists) {
+            req.flash("error", "dates unavailable");
+            return res.redirect(`/booking/${listing._id}/request-booking`);
+        }
+
+        req.flash("success", "Your booking request has been sent to the host.");
+        return res.redirect(`/listings/${listing._id}`);
+    } finally {
+        await waitForConcurrentRequests();
     }
-
-    const cleaningFee = Number(listing.cleaningFee) || 0;
-    const serviceFee = Number(listing.serviceFee) || 0;
-    const basePrice = proration(Number(listing.price), checkInDate, checkOutDate).total;
-    const totalPrice = basePrice + cleaningFee + serviceFee;
-
-    const booking = new Booking({
-        listing: listing._id,
-        guest: req.user._id,
-        checkIn: checkInDate,
-        checkOut: checkOutDate,
-        guests: guestCount,
-        message,
-        days,
-        basePrice,
-        cleaningFee,
-        serviceFee,
-        totalPrice,
-        status: "pending"
-    });
-
-    await booking.save();
-
-    const racedBooking = await Booking.findOne(
-        createDateOverlapQuery(listing._id, checkInDate, checkOutDate, booking._id)
-    ).sort({ _id: 1 });
-
-    if (racedBooking && String(racedBooking._id) < String(booking._id)) {
-        await booking.deleteOne();
-        req.flash("error", "dates unavailable");
-        return res.redirect(`/booking/${listing._id}/request-booking`);
-    }
-
-    req.flash("success", "Your booking request has been sent to the host.");
-    res.redirect(`/listings/${listing._id}`);
 };
 
 module.exports.viewBooking = async (req, res) => {
@@ -140,6 +208,46 @@ module.exports.viewAllBookings = async (req, res) => {
         listing: null,
         bookings
     });
+};
+
+module.exports.viewMyLeases = async (req, res) => {
+    const bookings = await Booking.find({ guest: req.user._id })
+        .populate("listing")
+        .sort({ createdAt: -1 });
+    const completedBookingIds = bookings
+        .filter(booking => booking.status === "completed")
+        .map(booking => booking._id);
+    const reviews = completedBookingIds.length
+        ? await Review.find({ booking: { $in: completedBookingIds } }).select("booking").lean()
+        : [];
+
+    res.render("booking/guestLeases.ejs", {
+        bookings,
+        reviewedBookingIds: reviews.map(review => String(review.booking))
+    });
+};
+
+module.exports.cancelGuestBooking = async (req, res) => {
+    const booking = await Booking.findById(req.params.id);
+    if (!booking) {
+        req.flash("error", "Lease request not found.");
+        return res.redirect("/booking/my-leases");
+    }
+
+    if (!booking.guest || String(booking.guest) !== String(req.user._id)) {
+        req.flash("error", "You cannot cancel another guest's lease request.");
+        return res.redirect("/booking/my-leases");
+    }
+
+    if (!canTransitionBooking(normalizeBookingStatus(booking.status), "cancelled") || new Date(booking.checkIn) <= new Date()) {
+        req.flash("error", "Only upcoming pending or approved leases can be cancelled.");
+        return res.redirect("/booking/my-leases");
+    }
+
+    booking.status = "cancelled";
+    await booking.save();
+    req.flash("success", "Your lease request has been cancelled.");
+    return res.redirect("/booking/my-leases");
 };
 
 module.exports.updateBookingStatus = async (req, res) => {

@@ -127,13 +127,23 @@
             </div>
             <section class="detail-reviews" aria-labelledby="reviews-title">
                         <hr>
-                        <%if (CurrUser) { %>
+                        <% if (CurrUser && reviewableBookings.length) { %>
                             <div class="col-12 mb-4 mt-4 review-section">
                                 <div class="submission-card card p-3 mb-4">
                                     <div class="card-body">
                                         <h4 class="mb-3">Leave a Review</h4>
                                         <form action="/listings/<%=listing._id%>/reviews" method="POST" class="needs-validation" novalidate>
                                             <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                                            <div class="mb-3">
+                                                <label for="reviewBooking" class="form-label">Completed lease</label>
+                                                <select class="form-select" name="review[booking]" id="reviewBooking" required>
+                                                    <% reviewableBookings.forEach(booking => { %>
+                                                        <option value="<%= booking._id %>" <%= String(booking._id) === selectedReviewBookingId ? "selected" : "" %>>
+                                                            <%= new Date(booking.checkIn).toLocaleDateString("en-IN") %> – <%= new Date(booking.checkOut).toLocaleDateString("en-IN") %>
+                                                        </option>
+                                                    <% }) %>
+                                                </select>
+                                            </div>
                                             <input type="hidden" name="review[rating]" id="reviewRating" value="3">
                                             <div class="d-flex align-items-center mb-3">
                                                 <label class="me-3 mb-0 fw-semibold">Rating</label>
@@ -154,7 +164,12 @@
                                         </form>
                                     </div>
                                 </div>
-                            <% } %>
+                            </div>
+                        <% } else if (CurrUser) { %>
+                            <p class="profile-empty-state">Reviews are available after a host marks your lease completed.</p>
+                        <% } %>
+                        <br>
+                        
                             <div class="reviews-heading"><p id="reviews-title" class="mb-0"><b>Guest notes</b> <span>(<%= listing.reviews ? listing.reviews.length : 0 %>)</span></p></div>
                             <div class="row g-4">
                                 <% if (listing.reviews && listing.reviews.length) { %>

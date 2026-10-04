@@ -81,6 +81,18 @@ const sampleHosts = [
   },
 ];
 
+const sampleGuests = [
+  {
+    name: "Aarav Mehta",
+    username: "demo_guest",
+    email: "aarav@example.com",
+    dob: "2002-02-18",
+    institution: "BITS Pilani",
+    institutionVerified: true,
+    verificationType: "student",
+  },
+];
+
 const sampleListings = [
   {
     title: "Sunlit Private Room",
@@ -529,6 +541,38 @@ sampleListings.forEach((listing, index) => {
   ];
 });
 
+const bookingStatuses = ["pending", "approved", "rejected", "cancelled"];
+const bookingMessages = [
+  "I am relocating for an upcoming semester and would like to request these lease dates.",
+  "I will be moving for a work placement near this room.",
+  "I am considering this room for my next study term.",
+  "My relocation dates have changed.",
+];
+const guestLeaseCounts = Array(sampleHosts.length + sampleGuests.length).fill(0);
+const sampleBookings = sampleListings.map((listing, listingIndex) => {
+  const guestAccountCount = sampleHosts.length + sampleGuests.length;
+  let guestAccountIndex = (listingIndex + 1) % guestAccountCount;
+  if (guestAccountIndex === listing.hostIndex) {
+    guestAccountIndex = (guestAccountIndex + 1) % guestAccountCount;
+  }
+
+  const guestType = guestAccountIndex < sampleHosts.length ? "host" : "guest";
+  const guestIndex = guestType === "host"
+    ? guestAccountIndex
+    : guestAccountIndex - sampleHosts.length;
+  const guestLeaseNumber = guestLeaseCounts[guestAccountIndex]++;
+
+  return {
+    listingIndex,
+    guestType,
+    guestIndex,
+    startOffsetDays: 30 + guestLeaseNumber * 135,
+    durationDays: [60, 90, 120][listingIndex % 3],
+    status: bookingStatuses[listingIndex % bookingStatuses.length],
+    message: bookingMessages[listingIndex % bookingMessages.length],
+  };
+});
+
 const sampleReviews = [
   {
     listingIndex: 0,
@@ -862,4 +906,10 @@ const sampleReviews = [
   },
 ];
 
-module.exports = { data: sampleListings, hosts: sampleHosts, reviews: sampleReviews };
+module.exports = {
+  data: sampleListings,
+  hosts: sampleHosts,
+  guests: sampleGuests,
+  bookings: sampleBookings,
+  reviews: sampleReviews,
+};

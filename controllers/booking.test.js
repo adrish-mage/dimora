@@ -1,10 +1,18 @@
 const mockSave = jest.fn();
-const mockDeleteOne = jest.fn();
 const mockSort = jest.fn();
+const mockSessionQuery = jest.fn();
+const mockWithTransaction = jest.fn();
+const mockEndSession = jest.fn();
 let mockBookingId = "new-booking-id";
 
+jest.mock("mongoose", () => ({
+    ...jest.requireActual("mongoose"),
+    startSession: jest.fn()
+}));
+
 jest.mock("../models/listing", () => ({
-    findById: jest.fn()
+    findById: jest.fn(),
+    updateOne: jest.fn()
 }));
 
 jest.mock("../models/booking", () => {
@@ -12,16 +20,24 @@ jest.mock("../models/booking", () => {
         Object.assign(this, values);
         this._id = mockBookingId;
         this.save = mockSave;
-        this.deleteOne = mockDeleteOne;
     });
     MockBooking.exists = jest.fn();
+    MockBooking.find = jest.fn();
+    MockBooking.deleteOne = jest.fn();
+    MockBooking.deleteMany = jest.fn();
     MockBooking.findOne = jest.fn(() => ({ sort: mockSort }));
     MockBooking.findById = jest.fn();
     return MockBooking;
 });
 
+jest.mock("../models/review", () => ({
+    find: jest.fn()
+}));
+
 const Listing = require("../models/listing");
 const Booking = require("../models/booking");
+const Review = require("../models/review");
+const mongoose = require("mongoose");
 const bookingController = require("./booking");
 
 function futureDate(daysFromToday) {
@@ -56,8 +72,17 @@ beforeEach(() => {
     jest.clearAllMocks();
     mockBookingId = "new-booking-id";
     mockSave.mockResolvedValue(undefined);
-    mockDeleteOne.mockResolvedValue(undefined);
-    mockSort.mockResolvedValue(null);
+    mockSessionQuery.mockResolvedValue(null);
+    mockSort.mockImplementation(() => ({ session: mockSessionQuery }));
+    mockWithTransaction.mockImplementation(callback => callback());
+    mockEndSession.mockResolvedValue(undefined);
+    mongoose.startSession.mockResolvedValue({
+        withTransaction: mockWithTransaction,
+        endSession: mockEndSession
+    });
+    Listing.updateOne.mockResolvedValue({ matchedCount: 1 });
+    Booking.deleteOne.mockResolvedValue({ deletedCount: 1 });
+    Booking.deleteMany.mockResolvedValue({ deletedCount: 0 });
     Booking.exists.mockResolvedValue(null);
 });
 
@@ -88,6 +113,7 @@ describe("booking controller", () => {
             serviceFee: 2
         });
         Booking.exists.mockResolvedValue(null);
+        Booking.exists.mockResolvedValueOnce(null).mockResolvedValueOnce({ _id: "new-booking-id" });
         const checkIn = futureDate(2);
         const checkOut = futureDate(5);
         const req = makeRequest({
@@ -115,6 +141,11 @@ describe("booking controller", () => {
             checkOut: new Date(`${checkOut}T00:00:00.000Z`)
         }));
         expect(mockSave).toHaveBeenCalled();
+        expect(Listing.updateOne).toHaveBeenCalledWith(
+            { _id: "room-id" },
+            { $inc: { bookingWriteVersion: 1 } },
+            expect.objectContaining({ session: expect.any(Object) })
+        );
         expect(Booking.findOne).toHaveBeenCalledWith(expect.objectContaining({
             listing: "room-id",
             _id: { $ne: "new-booking-id" }
@@ -167,14 +198,17 @@ describe("booking controller", () => {
 
     test("deletes its request when a lower-ID booking wins the race", async () => {
         Listing.findById.mockResolvedValue({ _id: "room-id", price: 100 });
-        mockSort.mockResolvedValue({ _id: "aaa-booking-id" });
+        mockSessionQuery.mockResolvedValue({ _id: "aaa-booking-id" });
         const req = makeRequest();
         const res = makeResponse();
 
         await bookingController.sendBooking(req, res);
 
         expect(mockSave).toHaveBeenCalled();
-        expect(mockDeleteOne).toHaveBeenCalled();
+        expect(Booking.deleteOne).toHaveBeenCalledWith(
+            { _id: "new-booking-id" },
+            expect.objectContaining({ session: expect.any(Object) })
+        );
         expect(req.flash).toHaveBeenCalledWith("error", "dates unavailable");
         expect(res.redirect).toHaveBeenCalledWith("/booking/room-id/request-booking");
     });
@@ -182,15 +216,53 @@ describe("booking controller", () => {
     test("keeps its request when its ID wins the race", async () => {
         Listing.findById.mockResolvedValue({ _id: "room-id", price: 100 });
         mockBookingId = "aaa-booking-id";
-        mockSort.mockResolvedValue({ _id: "zzz-booking-id" });
+        Booking.exists.mockResolvedValueOnce(null).mockResolvedValueOnce({ _id: "aaa-booking-id" });
+        mockSessionQuery.mockResolvedValue({ _id: "zzz-booking-id" });
         const req = makeRequest();
         const res = makeResponse();
 
         await bookingController.sendBooking(req, res);
 
-        expect(mockDeleteOne).not.toHaveBeenCalled();
+        expect(Booking.deleteOne).not.toHaveBeenCalled();
         expect(req.flash).toHaveBeenCalledWith("success", expect.any(String));
         expect(res.redirect).toHaveBeenCalledWith("/listings/room-id");
+    });
+
+    test("allows a guest to cancel their upcoming pending lease", async () => {
+        const booking = {
+            guest: "guest-id",
+            status: "pending",
+            checkIn: new Date(`${futureDate(4)}T00:00:00.000Z`),
+            save: mockSave
+        };
+        Booking.findById.mockResolvedValue(booking);
+        const req = makeRequest({ params: { id: "booking-id" } });
+        const res = makeResponse();
+
+        await bookingController.cancelGuestBooking(req, res);
+
+        expect(booking.status).toBe("cancelled");
+        expect(mockSave).toHaveBeenCalled();
+        expect(req.flash).toHaveBeenCalledWith("success", expect.stringContaining("cancelled"));
+        expect(res.redirect).toHaveBeenCalledWith("/booking/my-leases");
+    });
+
+    test("prevents a guest from cancelling another guest's lease", async () => {
+        const booking = {
+            guest: "another-guest-id",
+            status: "pending",
+            checkIn: new Date(`${futureDate(4)}T00:00:00.000Z`),
+            save: mockSave
+        };
+        Booking.findById.mockResolvedValue(booking);
+        const req = makeRequest({ params: { id: "booking-id" } });
+        const res = makeResponse();
+
+        await bookingController.cancelGuestBooking(req, res);
+
+        expect(booking.status).toBe("pending");
+        expect(mockSave).not.toHaveBeenCalled();
+        expect(req.flash).toHaveBeenCalledWith("error", expect.stringContaining("another guest"));
     });
 
     test("approves a pending booking when the host owns its room", async () => {

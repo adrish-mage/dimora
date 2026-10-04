@@ -17,6 +17,13 @@ router.post(
     doubleCsrfProtection,
     wrapAsync(bookingController.sendBooking)
 );
+router.get("/my-leases", isLoggedIn, wrapAsync(bookingController.viewMyLeases));
+router.post(
+    "/:id/cancel",
+    isLoggedIn,
+    doubleCsrfProtection,
+    wrapAsync(bookingController.cancelGuestBooking)
+);
 router.get("/view-bookings",
     isLoggedIn,
     isApprovedHost,

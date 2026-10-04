@@ -5,6 +5,7 @@
     <% const isHostApproved = user.isVerifiedHost || user.hostApplicationStatus === "approved"; %>
     <% const roleLabel = user.role === "admin" ? "Admin" : user.role === "host" ? "Host" : "Guest"; %>
     <% const isOwnAdminProfile = user.role === "admin" && CurrUser && CurrUser._id.equals(user._id); %>
+    <% const isOwnProfile = CurrUser && CurrUser._id.equals(user._id); %>
     <% const profileRoleText = user.role === "admin" ? "Admin" : isStudentVerified && isHostApproved ? "Verified student + host" : isStudentVerified ? "Verified student" : isHostApproved ? "Host" : roleLabel; %>
     <% const studentStatusLabels = { unverified: "Not started", pending: "Pending review", verified: "Verified", rejected: "Rejected", needs_information: "Needs information" }; %>
     <% const hostStatusLabels = { not_started: "Not started", pending: "Pending review", approved: "Approved", rejected: "Rejected", needs_information: "Needs information" }; %>
@@ -91,6 +92,35 @@
             </section>
         <% } %>
 
+        <% if (!isOwnAdminProfile && isOwnProfile) { %>
+            <section class="profile-workspace" aria-labelledby="profile-workspace-title">
+                <div class="profile-workspace-heading">
+                    <p class="profile-workspace-kicker">YOUR DIMORA</p>
+                    <h2 id="profile-workspace-title">Workspace</h2>
+                </div>
+                <nav class="profile-shortcut-grid" aria-label="Your workspace">
+                    <a class="profile-shortcut" href="/booking/my-leases">
+                        <span class="profile-shortcut-icon" aria-hidden="true"><i class="fa-solid fa-calendar-check"></i></span>
+                        <span class="profile-shortcut-label">
+                            <small>GUEST</small>
+                            <strong>My Leases</strong>
+                        </span>
+                        <i class="fa-solid fa-arrow-right profile-shortcut-arrow" aria-hidden="true"></i>
+                    </a>
+                    <% if (isHostApproved) { %>
+                        <a class="profile-shortcut" href="/booking/view-bookings">
+                            <span class="profile-shortcut-icon" aria-hidden="true"><i class="fa-solid fa-house-circle-check"></i></span>
+                            <span class="profile-shortcut-label">
+                                <small>HOST</small>
+                                <strong>Room bookings</strong>
+                            </span>
+                            <i class="fa-solid fa-arrow-right profile-shortcut-arrow" aria-hidden="true"></i>
+                        </a>
+                    <% } %>
+                </nav>
+            </section>
+        <% } %>
+
         <% if (!isOwnAdminProfile) { %>
         <div class="profile-content-grid">
             <section class="profile-contact" aria-labelledby="profile-info-title">
@@ -150,10 +180,6 @@
                         <h2 id="listings-title">Rooms listed</h2>
                         <span class="section-count"><%= listings.length %></span>
                     </div>
-                    <% if (isHostApproved && CurrUser && CurrUser._id.equals(user._id)) { %>
-                        <p><a class="btn btn-dark" href="/booking/view-bookings">View all room bookings</a></p>
-                    <% } %>
-
                     <% if (listings.length === 0) { %>
                         <p class="profile-empty-state">No rooms listed yet.</p>
                     <% } %>

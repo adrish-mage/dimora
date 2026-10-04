@@ -82,13 +82,6 @@
                         <textarea id="message" name="booking[message]" class="form-control" rows="4"
                             placeholder="Introduce yourself or leave a message for the host..."></textarea>
                     </div>
-                    <input type="hidden" name="booking[days]" id="booking-days">
-                    <input type="hidden" name="booking[basePrice]" id="booking-base-price">
-                    <input type="hidden" name="booking[cleaningFee]" value="<%= listing.cleaningFee || 0 %>">
-                    <input type="hidden" name="booking[serviceFee]" value="<%= listing.serviceFee || 0 %>">
-                    <input type="hidden" name="booking[totalPrice]" id="booking-total-price">
-
-
                     <!-- Price summary -->
                     <div class="mb-4">
                         <h5>Price summary</h5>
@@ -143,10 +136,6 @@
     const basePriceElement = document.querySelector("#base-price");
     const totalPriceElement = document.querySelector("#total-price");
 
-    const bookingDays = document.querySelector("#booking-days");
-    const bookingBasePrice = document.querySelector("#booking-base-price");
-    const bookingTotalPrice = document.querySelector("#booking-total-price");
-
     const monthlyRate = <%= listing.price %>;
     const cleaningFee = <%= listing.cleaningFee || 0 %>;
     const serviceFee = <%= listing.serviceFee || 0 %>;
@@ -192,10 +181,6 @@
         totalPriceElement.textContent = `₹${total.toLocaleString("en-IN")}`;
 
 
-        // Store values in form
-        bookingDays.value = days;
-        bookingBasePrice.value = basePrice;
-        bookingTotalPrice.value = total;
     }
 
     checkIn.addEventListener("change", updatePrice);

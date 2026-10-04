@@ -8,7 +8,9 @@ const mongoose = require("mongoose");
 const initData = require("./data.js");
 const Listing = require("../listing.js");
 const Review = require("../review.js");
+const Booking = require("../booking.js");
 const User = require("../user.js");
+const proration = require("../../utils/proration.js");
 
 async function connectDB() {
     await mongoose.connect(process.env.MONGO_URI);
@@ -21,10 +23,17 @@ const adminUsername = "Adrish Dey";
 const adminPassword = "dimoraAdmin";
 
 const initDB = async () => {
+    await Booking.deleteMany({});
     await Review.deleteMany({});
     await Listing.deleteMany({});
     await User.deleteMany({
-        username: { $in: [...initData.hosts.map(h => h.username), adminUsername] }
+        username: {
+            $in: [
+                ...initData.hosts.map(host => host.username),
+                ...initData.guests.map(guest => guest.username),
+                adminUsername
+            ]
+        }
     });
 
     const seededHosts = [];
@@ -42,6 +51,19 @@ const initDB = async () => {
         });
         const registered = await User.register(newUser, "password123");
         seededHosts.push(registered);
+    }
+
+    const seededGuests = [];
+    for (const guest of initData.guests) {
+        const newUser = new User({
+            ...guest,
+            role: "guest",
+            verificationStatus: "verified",
+            verificationVerifiedAt: new Date(),
+            verificationExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+        });
+        const registered = await User.register(newUser, "password123");
+        seededGuests.push(registered);
     }
 
     const adminUser = new User({
@@ -72,20 +94,58 @@ const initDB = async () => {
         Listing.findByIdAndUpdate(review.listing, { $push: { reviews: review._id } })
     ));
 
+    const demoBookings = initData.bookings.map((bookingData) => {
+        const listing = seededListings[bookingData.listingIndex];
+        const guest = bookingData.guestType === "host"
+            ? seededHosts[bookingData.guestIndex]
+            : seededGuests[bookingData.guestIndex];
+        const checkIn = new Date();
+        checkIn.setUTCHours(0, 0, 0, 0);
+        checkIn.setUTCDate(checkIn.getUTCDate() + bookingData.startOffsetDays);
+        const checkOut = new Date(checkIn);
+        checkOut.setUTCDate(checkOut.getUTCDate() + bookingData.durationDays);
+        const days = (checkOut - checkIn) / (1000 * 60 * 60 * 24);
+        const basePrice = proration(Number(listing.price), checkIn, checkOut).total;
+        const cleaningFee = Number(listing.cleaningFee) || 0;
+        const serviceFee = Number(listing.serviceFee) || 0;
+
+        return {
+            listing: listing._id,
+            guest: guest._id,
+            checkIn,
+            checkOut,
+            guests: 1,
+            message: bookingData.message,
+            days,
+            basePrice,
+            cleaningFee,
+            serviceFee,
+            totalPrice: basePrice + cleaningFee + serviceFee,
+            status: bookingData.status,
+        };
+    });
+    const seededBookings = await Booking.insertMany(demoBookings);
+
     console.log("data was initialized");
     console.log(`Seeded ${seededReviews.length} reviews`);
     console.log(`Seeded ${seededHosts.length} hosts, login with password: password123`);
+    console.log(`Seeded ${seededGuests.length} demo guest${seededGuests.length === 1 ? "" : "s"}, login with password: password123`);
+    console.log(`Seeded ${seededBookings.length} demo booking requests`);
     console.log(`Seeded admin "${adminUsername}", login with password: ${adminPassword}`);
 };
 
-(async () => {
-    try {
-        await connectDB();
-        await initDB();
-    } catch (err) {
-        console.log("error initializing database", err);
-    } finally {
-        await mongoose.disconnect();
-        console.log("Database seed finished");
-    }
-})();
+if (require.main === module) {
+    (async () => {
+        try {
+            await connectDB();
+            await initDB();
+        } catch (err) {
+            console.log("error initializing database", err);
+        } finally {
+            await mongoose.disconnect();
+            console.log("Database seed finished");
+        }
+    })();
+}
+
+module.exports = { connectDB, initDB };

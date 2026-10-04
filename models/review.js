@@ -17,8 +17,14 @@ const reviewSchema = new Schema({
         ref : "User",
     },
     listing: {
-    type: Schema.Types.ObjectId,
-    ref: "Listing"
+        type: Schema.Types.ObjectId,
+        ref: "Listing"
+    },
+    booking: {
+        type: Schema.Types.ObjectId,
+        ref: "Booking",
+        unique: true,
+        sparse: true
     }
 })
 
