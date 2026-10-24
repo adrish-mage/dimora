@@ -6,67 +6,47 @@
             <% const hostInitials = hostDisplayName.split(/\s+/).filter(Boolean).slice(0, 2).map(namePart => namePart.charAt(0).toUpperCase()).join(""); %>
             <aside class="listing-sidebar" aria-label="Listing summary">
                 <div class="listing-summary-card">
-                    <div class="sidebar-host">
-                        <span class="sidebar-host-avatar" aria-hidden="true"><%= hostInitials %></span>
-                        <div>
-                            <a class="sidebar-host-name" href="/users/<%= listing.owner._id %>"><%= hostDisplayName %></a>
-                            <% if (listing.owner.isVerifiedHost) { %>
-                                <p class="sidebar-host-verification"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Identity verified</p>
-                            <% } %>
+                    <div class="listing-summary-top">
+                        <div class="sidebar-host">
+                            <span class="sidebar-host-avatar" aria-hidden="true"><%= hostInitials %></span>
+                            <div>
+                                <a class="sidebar-host-name" href="/users/<%= listing.owner._id %>"><%= hostDisplayName %></a>
+                                <% if (listing.owner.isVerifiedHost) { %>
+                                    <p class="sidebar-host-verification"><i class="fa-regular fa-circle-check" aria-hidden="true"></i> Identity verified</p>
+                                <% } %>
+                            </div>
                         </div>
-                    </div>
-                    <button class="sidebar-book-button" type="button">
-                        <a href="/booking/<%=listing._id%>/request-booking"  style="text-decoration: none; color:aliceblue" >
+                        <a class="sidebar-book-button" href="/booking/<%=listing._id%>/request-booking">
                             Request to book
-                        </a></button>
-                    <details class="trust-panel">
-                        <summary class="trust-panel-summary">
-                            <span class="trust-panel-brand">
-                                <span class="trust-panel-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
-                                <span>Dimora<strong>Trust profile</strong></span>
-                            </span>
-                            <span class="trust-panel-copy">
-                                <strong>Confidence for your next room</strong>
-                                <span>Built from verification and guest feedback</span>
-                            </span>
-                            <span class="trust-panel-metric">
-                                <strong><%= listing.reviews && listing.reviews.length ? avgRating.toFixed(1) : "-" %></strong>
-                                <span><i class="fa-solid fa-star" aria-hidden="true"></i> <%= listing.reviews && listing.reviews.length ? "Rating" : "No reviews" %></span>
-                            </span>
-                            <span class="trust-panel-metric">
-                                <strong><%= listing.reviews ? listing.reviews.length : 0 %></strong>
-                                <span><i class="fa-solid fa-comments" aria-hidden="true"></i> Reviews</span>
-                            </span>
-                            <span class="trust-panel-metric trust-panel-metric-score">
-                                <strong><%= trustScore %></strong>
-                                <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trust score</span>
-                            </span>
-                        </summary>
-                        <div class="trust-panel-details">
-                            <div class="trust-panel-score">
-                                <span class="trust-panel-score-label">Dimora trust score</span>
-                                <strong><%= trustScore %><small>/100</small></strong>
-                            </div>
-                            <div class="trust-panel-facts">
-                                <div class="trust-panel-fact">
-                                    <i class="fa-solid fa-user-shield" aria-hidden="true"></i>
-                                    <span>Host identity<small><%= listing.owner.isVerifiedHost ? "Verified" : "Not verified" %></small></span>
-                                </div>
-                                <div class="trust-panel-fact">
-                                    <i class="fa-solid fa-certificate" aria-hidden="true"></i>
-                                    <span>Listing status<small><%= verificationLabels[listing.verificationStatus] %></small></span>
-                                </div>
-                                <div class="trust-panel-fact">
-                                    <i class="fa-solid fa-star" aria-hidden="true"></i>
-                                    <span>Guest rating<small><%= listing.reviews && listing.reviews.length ? `${avgRating.toFixed(1)}/5 average` : "No reviews yet" %></small></span>
-                                </div>
-                                <div class="trust-panel-fact">
-                                    <i class="fa-solid fa-comments" aria-hidden="true"></i>
-                                    <span>Reviews<small><%= listing.reviews ? listing.reviews.length : 0 %> published</small></span>
-                                </div>
-                            </div>
+                        </a>
+                    </div>
+
+                    <div class="trust-panel" aria-label="Trust profile">
+                        <div class="trust-panel-brand">
+                            <span class="trust-panel-icon" aria-hidden="true"><i class="fa-solid fa-shield-halved"></i></span>
+                            <span class="trust-panel-brand-text">DIMORA <strong>Trust profile</strong></span>
                         </div>
-                    </details>
+
+                        <div class="trust-panel-copy">
+                            <strong>Confidence for your next room</strong>
+                            <span>Built from verification and guest feedback</span>
+                        </div>
+
+                        <div class="trust-panel-metric">
+                            <strong><%= listing.reviews && listing.reviews.length ? avgRating.toFixed(1) : "-" %></strong>
+                            <span><i class="fa-solid fa-star" aria-hidden="true"></i> Rating</span>
+                        </div>
+                        <div class="trust-panel-metric">
+                            <strong><%= listing.reviews ? listing.reviews.length : 0 %></strong>
+                            <span><i class="fa-solid fa-comments" aria-hidden="true"></i> Reviews</span>
+                        </div>
+                        <div class="trust-panel-metric trust-panel-metric-score">
+                            <strong><%= trustScore %></strong>
+                            <span><i class="fa-solid fa-shield-halved" aria-hidden="true"></i> Trust score</span>
+                        </div>
+
+                        <div class="trust-panel-more" aria-hidden="true">+</div>
+                    </div>
                 </div>
             </aside>
             <div class="detail-main-column">

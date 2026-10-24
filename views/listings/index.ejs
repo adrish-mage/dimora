@@ -29,6 +29,7 @@
             <% if (allListings.length) { %>
             <div class="row row-cols-xl-3 row-cols-lg-3 row-cols-md-2 row-cols-sm-1 g-4 listings-grid">
                 <% for(let listing of allListings) { %>
+                    <% const isSaved = savedListingIds.includes(String(listing._id)); %>
                     <a href="/listings/<%=listing._id%>" class="listing-link">
                         <div class="card col listing-card h-100">
                             <% const imgSrc=(listing && listing.image && listing.image.url) ? listing.image.url :
@@ -41,15 +42,30 @@
                                 <div class="card-body listing-card-body">
                                     <div class="listing-card-kicker">
                                         <span><i class="fa-solid fa-door-open" aria-hidden="true"></i> Listing in <%= listing.location %></span>
-                                        <span class="listing-arrow" aria-hidden="true"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+                                        
                                     </div>
                                     <div class="listing-card-title-row">
                                         <p class="card-text title mb-0"><b><%= listing.title %></b></p>
                                     </div>
                                     <div class="listing-meta-row">
                                         <p class="listing-price mb-0"><strong>&#8377;<%= listing.price.toLocaleString("en-IN") %></strong> <span>/ month</span></p>
-                                        <span class="listing-lease"><i class="fa-regular fa-calendar" aria-hidden="true"></i> 1–6 month lease</span>
+                                        <div
+                                            class="listing-card-saved"
+                                            role="button"
+                                            tabindex="0"
+                                            aria-label="<%= isSaved ? 'Remove ' + listing.title + ' from saved rooms' : 'Save ' + listing.title %>"
+                                            aria-pressed="<%= isSaved %>"
+                                            data-listing-title="<%= listing.title %>"
+                                            data-save-url="/listings/<%= listing._id %>/save"
+                                            data-unsave-url="/listings/<%= listing._id %>/unsave"
+                                            data-csrf-token="<%= csrfToken %>"
+                                            data-authenticated="<%= !!CurrUser %>"
+                                        >
+                                            <i class="<%= isSaved ? 'fa-solid' : 'fa-regular' %> fa-bookmark" aria-hidden="true"></i>
+                                            <span class="visually-hidden" role="status" aria-live="polite"></span>
+                                     </div>
                                     </div>
+                                    
                                     <% if (listing.nearestCampus) { %>
                                         <p class="listing-campus-meta"><i class="fa-solid fa-location-dot" aria-hidden="true"></i>Near to <%= listing.nearestCampus %></p>
                                     <% } %>
@@ -67,4 +83,3 @@
                     <a class="btn btn-dark" href="/listings">View all listings</a>
                 </div>
             <% } %>
-

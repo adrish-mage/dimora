@@ -183,6 +183,64 @@
                 </section>
 
             </div>
+            
+            <section class="profile-section profile-rooms" aria-labelledby="listings-title">
+                    <div class="profile-section-heading">
+                        <h2 id="listings-title">Rooms listed <small style="opacity: .8;">(<%= listings.length %>)</small></h2>
+
+                    </div>
+                    <% if (isHostApproved && isOwn) { %>
+                        <p><a class="btn btn-dark" href="/booking/view-bookings">View all room bookings</a></p>
+                    <% } %>
+
+                    <% if (listings.length === 0) { %>
+                        <p class="profile-empty-state">No rooms listed yet.</p>
+                    <% } %>
+                    <section class="admin-review-list profile-listing-bars" aria-label="Rooms listed by <%= user.username %>">
+                        <% listings.forEach(listing => { %>
+                            <article class="admin-review-item profile-listing-bar">
+                                <% const imgSrc = (listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === "string" ? listing.image : ""); %>
+
+                                <a class="admin-review-image-link" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
+                                    <img class="admin-review-image" src="<%= imgSrc %>" alt="<%= listing.title %>" loading="lazy">
+                                    <span class="listing-verification-overlay status-<%= listing.verificationStatus %>">
+                                        <%= verificationLabels[listing.verificationStatus] %>
+                                    </span>
+                                </a>
+
+                                <div class="admin-review-details">
+                                    <div>
+                                        <h2><a href="/listings/<%= listing._id %>"><%= listing.title %></a></h2>
+                                        <p class="admin-review-location"><%= listing.location %></p>
+                                    </div>
+
+                                    <dl>
+                                        <div>
+                                            <dt>Price</dt>
+                                            <dd>&#8377;<%= listing.price.toLocaleString("en-IN") %> / month</dd>
+                                        </div>
+                                        <div>
+                                            <dt>Status</dt>
+                                            <dd>
+                                                <span class="badge status-<%= listing.verificationStatus %>">
+                                                    <span class="status-dot" aria-hidden="true"></span>
+                                                    <%= verificationLabels[listing.verificationStatus] %>
+                                                </span>
+                                            </dd>
+                                        </div>
+                                    </dl>
+                                </div>
+
+                                <div class="admin-review-actions">
+                                    <a class="btn btn-dark" href="/listings/<%= listing._id %>">View Room</a>
+                                    <% if (isHostApproved && isOwn) { %>
+                                        <a class="btn btn-outline-dark" href="/booking/<%= listing._id %>/view-booking">View Bookings</a>
+                                    <% } %>
+                                </div>
+                            </article>
+                        <% }) %>
+                    </section>
+                </section>
 
             <section class="dm-section" aria-labelledby="reviews-title">
                 <div class="dm-section-head">
@@ -209,5 +267,58 @@
             </section>
         </div>
     </div>
+    <% } %>
+
+    <% if (isOwn) { %>
+        <section class="dm-section profile-saved-rooms" aria-labelledby="saved-rooms-title">
+            <div class="dm-section-head">
+                <h2 id="saved-rooms-title">Saved rooms<span><%= savedListings.length %></span></h2>
+            </div>
+
+            <% if (savedListings.length === 0) { %>
+                <p class="dm-empty">Rooms you bookmark will appear here.</p>
+            <% } else { %>
+                <section class="admin-review-list profile-listing-bars" aria-label="Saved rooms by <%= user.username %>">
+                    <% savedListings.forEach(listing => { %>
+                        <% const imgSrc = (listing && listing.image && listing.image.url) ? listing.image.url : (typeof listing.image === "string" ? listing.image : ""); %>
+                        <article class="admin-review-item profile-listing-bar">
+                            <a class="admin-review-image-link" href="/listings/<%= listing._id %>" aria-label="View <%= listing.title %>">
+                                <img class="admin-review-image" src="<%= imgSrc %>" alt="<%= listing.title %>" loading="lazy">
+                                <span class="listing-verification-overlay status-<%= listing.verificationStatus %>">
+                                    <%= verificationLabels[listing.verificationStatus] %>
+                                </span>
+                            </a>
+
+                            <div class="admin-review-details">
+                                <div>
+                                    <h2><a href="/listings/<%= listing._id %>"><%= listing.title %></a></h2>
+                                    <p class="admin-review-location"><%= listing.location %></p>
+                                </div>
+
+                                <dl>
+                                    <div>
+                                        <dt>Price</dt>
+                                        <dd>&#8377;<%= listing.price.toLocaleString("en-IN") %> / month</dd>
+                                    </div>
+                                    <div>
+                                        <dt>Status</dt>
+                                        <dd>
+                                            <span class="badge status-<%= listing.verificationStatus %>">
+                                                <span class="status-dot" aria-hidden="true"></span>
+                                                <%= verificationLabels[listing.verificationStatus] %>
+                                            </span>
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </div>
+
+                            <div class="admin-review-actions">
+                                <a class="btn btn-dark" href="/listings/<%= listing._id %>">View Room</a>
+                            </div>
+                        </article>
+                    <% }) %>
+                </section>
+            <% } %>
+        </section>
     <% } %>
 </main>

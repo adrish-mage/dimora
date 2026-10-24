@@ -1,12 +1,14 @@
+const mongoose = require("mongoose");
 const ExpressError = require("../utils/expressError.js");
 const Listing = require("../models/listing");
 const Booking = require("../models/booking");
 const Review = require("../models/review");
+const User = require("../models/user");
 const { transitionListingStatus } = require("../utils/verificationStateMachine");
 const { computeTrustScore, averageRating } = require("../utils/trustScore");
 const escapeRegex = require("../utils/escapeRegex.js");
 
-module.exports.index = async (req, res) => {
+async function renderListingsIndex(req, res, savedOnly = false) {
     const search = (req.query.q || "").trim();
     const campus = req.query.campus ? String(req.query.campus).trim() : "";
     const verified = req.query.verified === "true";
@@ -33,20 +35,30 @@ module.exports.index = async (req, res) => {
     if (verified) {
         filters.push({ verificationStatus: "verified" });
     }
+    if (savedOnly) {
+        filters.push({ _id: { $in: req.user.savedListings || [] } });
+    }
 
     const campusOptions = (await Listing.distinct("nearestCampus"))
         .filter(Boolean)
         .sort((first, second) => first.localeCompare(second));
 
     const allListings = await Listing.find(filters.length ? { $and: filters } : {});
+    const savedListingIds = (req.user?.savedListings || []).map(id => String(id));
     res.render("listings/index.ejs", {
         allListings,
         search,
         campus,
         verified,
-        campusOptions
+        campusOptions,
+        savedListingIds,
+        savedOnly,
     });
-};
+}
+
+module.exports.index = (req, res) => renderListingsIndex(req, res);
+
+module.exports.saved = (req, res) => renderListingsIndex(req, res, true);
 
 module.exports.renderNewForm = (req, res) => {
     res.render("listings/new");
@@ -158,4 +170,43 @@ module.exports.requestVerification = async (req, res) => {
     }
     res.redirect(`/listings/${req.params.id}`);
     
+};
+
+function getListingId(req) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+        throw new ExpressError(404, "Listing not found");
+    }
+
+    return req.params.id;
+}
+
+module.exports.saveListing = async (req, res) => {
+    const listingId = getListingId(req);
+    const listingExists = await Listing.exists({ _id: listingId });
+    if (!listingExists) {
+        throw new ExpressError(404, "Listing not found");
+    }
+
+    const result = await User.updateOne(
+        { _id: req.user._id },
+        { $addToSet: { savedListings: listingId } }
+    );
+    if (result.matchedCount !== 1) {
+        throw new ExpressError(404, "Account not found");
+    }
+
+    return res.json({ saved: true });
+};
+
+module.exports.unsaveListing = async (req, res) => {
+    const listingId = getListingId(req);
+    const result = await User.updateOne(
+        { _id: req.user._id },
+        { $pull: { savedListings: listingId } }
+    );
+    if (result.matchedCount !== 1) {
+        throw new ExpressError(404, "Account not found");
+    }
+
+    return res.json({ saved: false });
 };

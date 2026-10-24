@@ -105,7 +105,11 @@ const userSchema = new Schema({
     isVerifiedHost: {
         type: Boolean,
         default: false
-    }
+    },
+    savedListings : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Listing",
+    }]
 })
 
 userSchema.plugin(passportLocalMongoose);

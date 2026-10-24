@@ -84,7 +84,7 @@ Dimora isn't a nightly-stay app. A host renting a spare room for three months wa
 - Enforced lease lifecycle: invalid status jumps are rejected
 - Automated tests for pricing, overlap, status rules and the booking controller
 
-<p align="center">Part 3 (saved rooms, comparisons, in-app communication, relocation tools) is not built yet.</p>
+Saved rooms are now available from listing cards and the user's profile. Comparisons, in-app communication, and additional relocation tools remain future work.
 
 ---
 
@@ -134,6 +134,8 @@ Approving a request re-runs the overlap check, since state may have changed sinc
   - [ ] reviews gated on a completed lease
   - [ ] real concurrency test against a test database
 - [ ] **Part 3: Relocate + Grow**: saved rooms, comparisons, relocation tools
+  - [x] Save and remove rooms; view saved rooms from your profile
+  - [ ] Compare rooms and add relocation tools
 
 ---
 
@@ -195,10 +197,13 @@ Admins handle this through a dedicated verification desk (`/admin/verification`)
 
 | Method | Route | Description |
 |---|---|---|
+| GET | `/listings/saved` | View your saved rooms |
 | GET/POST | `/listings/new` | Create listing (approved hosts only) |
 | PUT | `/listings/:id` | Edit listing (owner only) |
 | DELETE | `/listings/:id` | Delete listing (owner only) |
 | POST | `/listings/:id/request-verification` | Owner submits for review |
+| POST | `/listings/:id/save` | Save a room to your account |
+| POST | `/listings/:id/unsave` | Remove a room from your saved list |
 | POST | `/listings/:id/reviews` | Leave a review |
 | DELETE | `/listings/:id/reviews/:reviewId` | Remove a review |
 | GET/POST | `/verify/student` | Student ID verification |

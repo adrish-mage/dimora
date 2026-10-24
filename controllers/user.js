@@ -138,7 +138,17 @@ module.exports.showProfile = async (req, res) => {
     if (!user) {
         req.flash("error","User Not Found");
         return res.redirect("/listings");
-    }   
+    }
+
+    const savedListingsById = await Listing.find({
+        _id: { $in: user.savedListings || [] }
+    });
+    const savedListingsByIdMap = new Map(
+        savedListingsById.map(listing => [String(listing._id), listing])
+    );
+    const savedListings = (user.savedListings || [])
+        .map(listingId => savedListingsByIdMap.get(String(listingId)))
+        .filter(Boolean);
                             
     let verificationPortals = [];
     if (user.role === "admin" && req.user && req.user._id.equals(user._id)) {
@@ -158,7 +168,13 @@ module.exports.showProfile = async (req, res) => {
         ];
     }
 
-    res.render("users/showProfile.ejs", { user, listings, reviews, verificationPortals });
+    res.render("users/showProfile.ejs", {
+        user,
+        listings,
+        reviews,
+        savedListings,
+        verificationPortals
+    });
 }
 module.exports.renderLoginForm = (req, res) => {
     if (req.isAuthenticated()) {
@@ -182,5 +198,4 @@ module.exports.logout = (req, res, next) => {
         res.redirect("/listings");
     });
 };
-
 

@@ -12,6 +12,7 @@ const { doubleCsrfProtection } = require("../utils/csrf.js");
 
 // Index Route
 router.get("/", wrapAsync(listingController.index));
+router.get("/saved", isLoggedIn, wrapAsync(listingController.saved));
 
 // New Route
 router.get("/new", isLoggedIn, isApprovedHost, listingController.renderNewForm);
@@ -57,4 +58,18 @@ router.delete("/:id", isLoggedIn, isOwner, doubleCsrfProtection, wrapAsync(listi
 // verification route 
 router.post("/:id/request-verification", isLoggedIn, isOwner, doubleCsrfProtection,wrapAsync(listingController.requestVerification));
 
+// Save and unsave
+router.post(
+    "/:id/save",
+    isLoggedIn,
+    doubleCsrfProtection,
+    wrapAsync(listingController.saveListing)
+);
+
+router.post(
+    "/:id/unsave",
+    isLoggedIn,
+    doubleCsrfProtection,
+    wrapAsync(listingController.unsaveListing)
+);
 module.exports = router;
